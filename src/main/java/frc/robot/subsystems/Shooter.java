@@ -11,7 +11,6 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
-import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,16 +29,18 @@ public class Shooter extends SubsystemBase {
   private final CANEncoder sparkEncoderOne = motorOne.getEncoder();
   private final CANEncoder sparkEncoderTwo = motorTwo.getEncoder();
 
-
-  public Shooter() {     
+  public Shooter() {
     configureSpark();
   }
 
-  public void setSpeed(double speed) {
-    // motorOne.set(speed);
-    // motorTwo.set(speed);
-    sparkPIDControllerOne.setReference(1500, ControlType.kVelocity);
-    sparkPIDControllerTwo.setReference(1500, ControlType.kVelocity);
+  public void setThrottle(double throttle) {
+    motorOne.set(throttle);
+    motorTwo.set(throttle);
+  }
+
+  public void setVelocity(double velocityRPM) {
+    sparkPIDControllerOne.setReference(velocityRPM, ControlType.kVelocity);
+    sparkPIDControllerTwo.setReference(velocityRPM, ControlType.kVelocity);
   }
 
   private void configureSpark() {
@@ -61,21 +62,20 @@ public class Shooter extends SubsystemBase {
     motorTwo.setSmartCurrentLimit(40, 35);
 
     // set PID coefficients
-    sparkPIDControllerOne.setFF(Constants.ShooterConstants.SHOOTER_FPID.kf);
-    sparkPIDControllerOne.setP(Constants.ShooterConstants.SHOOTER_FPID.kP);
-    sparkPIDControllerOne.setI(Constants.ShooterConstants.SHOOTER_FPID.kI);
-    sparkPIDControllerOne.setD(Constants.ShooterConstants.SHOOTER_FPID.kD);
+    sparkPIDControllerOne.setFF(Constants.ShooterConstants.SHOOTER_ONE_FPID.kF);
+    sparkPIDControllerOne.setP(Constants.ShooterConstants.SHOOTER_ONE_FPID.kP);
+    sparkPIDControllerOne.setI(Constants.ShooterConstants.SHOOTER_ONE_FPID.kI);
+    sparkPIDControllerOne.setD(Constants.ShooterConstants.SHOOTER_ONE_FPID.kD);
 
-    sparkPIDControllerTwo.setFF(Constants.ShooterConstants.SHOOTER_TWO_FPID.kf);
+    sparkPIDControllerTwo.setFF(Constants.ShooterConstants.SHOOTER_TWO_FPID.kF);
     sparkPIDControllerTwo.setP(Constants.ShooterConstants.SHOOTER_TWO_FPID.kP);
     sparkPIDControllerTwo.setI(Constants.ShooterConstants.SHOOTER_TWO_FPID.kI);
     sparkPIDControllerTwo.setD(Constants.ShooterConstants.SHOOTER_TWO_FPID.kD);
   }
 
-  public void startRefresh() {
+  public void log() {
     SmartDashboard.putNumber("velocity one", sparkEncoderOne.getVelocity());
     SmartDashboard.putNumber("velocity two", sparkEncoderTwo.getVelocity());
-
   }
 
   @Override
