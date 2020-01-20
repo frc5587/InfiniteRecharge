@@ -16,4 +16,41 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static final class ShooterConstants {
+        public static final int SHOOTER_MOTOR_ONE = 31;
+        public static final int SHOOTER_MOTOR_TWO = 32; 
+        
+        public static final float MIN_OUTPUT = 1;
+        public static final float MAX_OUTPUT = 1;
+     
+        public static final double V_COMP_SATURATION = 12.0;
+
+        public static final int SMART_MOTION_SLOT = 0;
+
+        public static final int K_TIMEOUT_MS = 10;
+
+        public static final double MAX_VELOCITY_ONE = 4948;
+        public static final double MAX_VELOCITY_TWO = 4650; // 4650 4530
+
+
+        public static final FPID SHOOTER_FPID = new FPID (
+            (1 / MAX_VELOCITY_ONE), // kF
+            ((.065 / (3000 - 2954)) * 1.5), // kP // .1 / error // 2.01
+            0, // kI
+            // ((10 * ((.1 / (3000 - 2954)) / 2)) * 8) // kD
+            // (10 * (.065 / (3000 - 2954)) * 1.5)
+            .1 * 6
+        );
+
+        public static final FPID SHOOTER_TWO_FPID = new FPID (
+            (1 / MAX_VELOCITY_TWO), // kF
+            // ((.1 / (3040 - 3000)) * 1.5),
+            ((.057 / (3040 - 3000)) * 1.5),
+            // .0001,
+            0, // kI
+            // 0
+            (8.5 * (.05 / (3040 - 3000)) * 12.5) // kD // first val was 10, 8.5, 8
+            // 0
+        );
+    }
 }
