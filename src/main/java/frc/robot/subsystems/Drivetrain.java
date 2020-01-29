@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
@@ -22,13 +24,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
 
 public class Drivetrain extends SubsystemBase {
-  private final CANSparkMax leftLeader = new CANSparkMax(DrivetrainConstants.LEFT_LEADER, MotorType.kBrushless);
-  private final CANSparkMax leftFollower = new CANSparkMax(DrivetrainConstants.LEFT_FOLLOWER, MotorType.kBrushless);
-  private final CANSparkMax rightLeader = new CANSparkMax(DrivetrainConstants.RIGHT_LEADER, MotorType.kBrushless);
-  private final CANSparkMax rightFollower = new CANSparkMax(DrivetrainConstants.RIGHT_FOLLOWER, MotorType.kBrushless);
+  private final WPI_TalonFX leftLeader = new WPI_TalonFX(DrivetrainConstants.LEFT_LEADER);
+  private final WPI_TalonFX leftFollower = new WPI_TalonFX(DrivetrainConstants.LEFT_FOLLOWER);
+  private final WPI_TalonFX rightLeader = new WPI_TalonFX(DrivetrainConstants.RIGHT_LEADER);
+  private final WPI_TalonFX rightFollower = new WPI_TalonFX(DrivetrainConstants.RIGHT_FOLLOWER);
 
-  private final CANEncoder leftEncoder = leftLeader.getEncoder();
-  private final CANEncoder rightEncoder = rightLeader.getEncoder();
+  private final TalonFXSensorCollection leftCollection = leftLeader.getSensorCollection();
+  private final TalonFXSensorCollection rightCollection = rightLeader.getSensorCollection();
   private final AHRS ahrs = new AHRS();
 
   private final DifferentialDrive differentialDrive;
@@ -62,21 +64,21 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getLeftPosition() {
-    return leftEncoder.getPosition();
+    return leftCollection.getIntegratedSensorPosition();
   }
 
   public double getRightPosition() {
-    return rightEncoder.getPosition();
+    return rightCollection.getIntegratedSensorPosition();
   }
 
   public double getLeftVelocity() {
     // TODO: convert to m/s
-    return leftEncoder.getVelocity();
+    return leftCollection.getIntegratedSensorVelocity();
   }
 
   public double getRightVelocity() {
     // TODO: convert to m/s
-    return rightEncoder.getVelocity();
+    return rightCollection.getIntegratedSensorVelocity();
   }
 
   public double getHeading() {
