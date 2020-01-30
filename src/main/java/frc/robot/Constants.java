@@ -16,4 +16,15 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    /**
+     * Constants used by the Limelight.
+     */
+    public static class LimelightConstants {
+        public static final double ARM_HEIGHT_INCHES = 8.75;
+        public static final double STANDOFF_INCHES = 1.097;
+        public static final double GOAL_HEIGHT_INCHES = 98.25;
+        public static final double ARM_LENGTH_INCHES = 4404471.0 / 125000;
+        public static final double ARM_AXLE_HEIGHT_INCHES = 1739459.0 / 250000;
+    }
 }
