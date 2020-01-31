@@ -19,6 +19,7 @@ import frc.robot.Constants.LimelightConstants;
 public class Limelight extends SubsystemBase {
   private NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
   public NetworkTableEntry ty = limelightTable.getEntry("ty"); // angle measured in degrees
+  public NetworkTableEntry tx = limelightTable.getEntry("tx"); // angle measured in degrees
 
   /**
    * Gets the angle between the shooter and the front of the goal.
@@ -44,7 +45,18 @@ public class Limelight extends SubsystemBase {
     // The distance between the center of the shooter and the goal, in inches
     double shooterDistance = (LimelightConstants.GOAL_HEIGHT_INCHES - shooterHeight) / Math.sin(armAngle);
 
-    return (Math.PI / 2.0) - Math.asin((limelightDistance / shooterDistance) * Math.sin((Math.PI / 2.0) + Math.toRadians(ty.getDouble(0.0))));
+    return (Math.PI / 2.0) - Math
+        .asin((limelightDistance / shooterDistance) * Math.sin((Math.PI / 2.0) + Math.toRadians(ty.getDouble(0.0))));
+  }
+
+  /**
+   * Gets the horizontal angle, in degrees, between the Limelight and the
+   * Limelight's current target.
+   *
+   * @return the horizontal angle between the Limelight and the target in degrees
+   */
+  public double getHorizontalAngleOffset() {
+    return tx.getDouble(0);
   }
 
   @Override

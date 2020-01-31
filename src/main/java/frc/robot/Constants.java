@@ -64,6 +64,7 @@ public final class Constants {
         public static final FPID TURN_FPID = new FPID(0, 0.03, 0, 0);
         public static final double TURN_PID_TOLERANCE_DEG = 2.0;
         public static final double TURN_PID_FORWARD_THROTTLE = 0.2;
+        public static final double TURN_PID_UPDATE_PERIOD_SEC = 0.010;
 
         // TODO: tune PIDVA constants
         public static final boolean PATHFINDER_TUNING = false;
