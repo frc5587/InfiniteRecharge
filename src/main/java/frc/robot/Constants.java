@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import org.frc5587.lib.pid.FPID;
 import org.frc5587.lib.pid.PIDVA;
 
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
@@ -58,6 +59,11 @@ public final class Constants {
         public static final int TICKS_PER_REV = 1024;
         public static final double WHEEL_DIAMETER = 8.0; // in
         public static final double MAX_VELOCITY = 60; // in/s
+
+        // TODO: Verify that assumed constants are good
+        public static final FPID TURN_FPID = new FPID(0, 0.03, 0, 0);
+        public static final double TURN_PID_TOLERANCE_DEG = 2.0;
+        public static final double TURN_PID_FORWARD_THROTTLE = 0.2;
 
         // TODO: tune PIDVA constants
         public static final boolean PATHFINDER_TUNING = false;
