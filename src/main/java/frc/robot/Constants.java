@@ -46,9 +46,9 @@ public final class Constants {
 
     public static class DrivetrainConstants {
         public static final int LEFT_LEADER = 21;
-        public static final int RIGHT_LEADER = 24;
-        public static final int LEFT_FOLLOWER = 23;
-        public static final int RIGHT_FOLLOWER = 22;
+        public static final int RIGHT_LEADER = 20;
+        public static final int LEFT_FOLLOWER = 22;
+        public static final int RIGHT_FOLLOWER = 23;
 
         // TODO: Figure out real values
         // Make sure that paths with Pathfinder/WPILib respect the following as well:

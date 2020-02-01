@@ -47,6 +47,7 @@ public class Drivetrain extends PIDSubsystem {
     var rightGroup = new SpeedControllerGroup(rightLeader, rightFollower);
 
     leftGroup.setInverted(true);
+    rightGroup.setInverted(true);
 
     this.differentialDrive = new DifferentialDrive(leftGroup, rightGroup);
 
