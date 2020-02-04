@@ -26,5 +26,6 @@ public final class Constants {
         public static final double GOAL_HEIGHT_INCHES = 98.25;
         public static final double ARM_LENGTH_INCHES = 4404471.0 / 125000;
         public static final double ARM_AXLE_HEIGHT_INCHES = 1739459.0 / 250000;
+        public static final double INNER_OUTER_GOAL_DISTANCE_INCHES = 29.25;
     }
 }

@@ -21,30 +21,81 @@ public class Limelight extends SubsystemBase {
   public NetworkTableEntry ty = limelightTable.getEntry("ty"); // angle measured in degrees
 
   /**
+   * Gets the height that the Limelight is raised above the floor.
+   * 
+   * @param armAngle the angle that the arm is at, in radians
+   * @return the height between the center of the Limelight and the floor, in inches
+   */
+  public double getLimelightHeight(double armAngle) {
+    return LimelightConstants.ARM_LENGTH_INCHES * Math.sin(armAngle)
+        + (LimelightConstants.ARM_HEIGHT_INCHES + LimelightConstants.STANDOFF_INCHES) * Math.cos(armAngle)
+        + LimelightConstants.ARM_HEIGHT_INCHES;
+  }
+
+  /**
+   * Gets the height that the shooter is raised above the floor.
+   * 
+   * @param armAngle the angle that the arm is at, in radians
+   * @return the height between the center of the shooter and the floor, in inches
+   */
+  public double getShooterHeight(double armAngle) {
+    return LimelightConstants.ARM_LENGTH_INCHES * Math.sin(armAngle)
+        + (1 / 2.0) * LimelightConstants.ARM_HEIGHT_INCHES * Math.cos(armAngle)
+        + LimelightConstants.ARM_AXLE_HEIGHT_INCHES;
+  }
+
+  /**
+   * Gets the distance between the Limelight and the goal.
+   * 
+   * @param armAngle the angle that the arm is at, in radians
+   * @return the distance between the Limelight and the goal, in inches
+   */
+  public double getLimelightDistance(double armAngle) {
+    return (LimelightConstants.GOAL_HEIGHT_INCHES - getLimelightHeight(armAngle)) / Math.sin(armAngle);
+  }
+
+  /**
+   * Gets the distance between the shooter and the goal.
+   * 
+   * @param armAngle the angle that the arm is at, in radians
+   * @return the distance between the center of the shooter and the goal, in inches
+   */
+  public double getShooterDistance(double armAngle) {
+    return (LimelightConstants.GOAL_HEIGHT_INCHES - getShooterHeight(armAngle)) / Math.sin(armAngle);
+  }
+
+  /**
    * Gets the angle between the shooter and the front of the goal.
    * 
    * @param armAngle the angle that the arm is at, in radians
    * @return the angle between the shooter and the front of the goal, in radians
    */
   public double getShooterGoalAngle(double armAngle) {
+    return (Math.PI / 2.0) - Math.asin((getLimelightDistance(armAngle) / getShooterDistance(armAngle))
+        * Math.sin((Math.PI / 2.0) + Math.toRadians(ty.getDouble(0.0))));
+  }
 
-    // The height between the center of the Limelight and the floor, in inches
-    double limelightHeight = LimelightConstants.ARM_LENGTH_INCHES * Math.sin(armAngle)
-        + (LimelightConstants.ARM_HEIGHT_INCHES + LimelightConstants.STANDOFF_INCHES) * Math.cos(armAngle)
-        + LimelightConstants.ARM_HEIGHT_INCHES;
+  /**
+   * Gets the horizontal difference between the shooter and the goal.
+   * 
+   * @param armAngle the angle that the arm is at, in radians
+   * @return the horizontal difference between the shooter and the goal, in inches
+   */
+  public double getShooterHorizontalDifference(double armAngle) {
+    return (LimelightConstants.GOAL_HEIGHT_INCHES - getShooterHeight(armAngle))
+        / Math.tan(getShooterGoalAngle(armAngle) + armAngle);
+  }
 
-    // The height between the center of the shooter and the floor, in inches
-    double shooterHeight = LimelightConstants.ARM_LENGTH_INCHES * Math.sin(armAngle)
-        + (1 / 2.0) * LimelightConstants.ARM_HEIGHT_INCHES * Math.cos(armAngle)
-        + LimelightConstants.ARM_AXLE_HEIGHT_INCHES;
-
-    // The distance between the center of the Limelight and the goal, in inches
-    double limelightDistance = (LimelightConstants.GOAL_HEIGHT_INCHES - limelightHeight) / Math.sin(armAngle);
-
-    // The distance between the center of the shooter and the goal, in inches
-    double shooterDistance = (LimelightConstants.GOAL_HEIGHT_INCHES - shooterHeight) / Math.sin(armAngle);
-
-    return (Math.PI / 2.0) - Math.asin((limelightDistance / shooterDistance) * Math.sin((Math.PI / 2.0) + Math.toRadians(ty.getDouble(0.0))));
+  /**
+   * Gets the angle between the shooter and the inner goal.
+   * 
+   * @param armAngle the angle that the arm is at, in radians
+   * @return the angle between the shooter and the inner goal, in radians
+   */
+  public double getShooterInnerGoalAngle(double armAngle) {
+    return Math.atan((LimelightConstants.GOAL_HEIGHT_INCHES - getShooterHeight(armAngle))
+        / (getShooterHorizontalDifference(armAngle) + LimelightConstants.INNER_OUTER_GOAL_DISTANCE_INCHES))
+        - armAngle;
   }
 
   @Override
