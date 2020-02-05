@@ -7,11 +7,16 @@
 
 package frc.robot;
 
+import org.frc5587.lib.control.DeadbandXboxController;
+
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.Arm;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -20,13 +25,15 @@ import edu.wpi.first.wpilibj2.command.Command;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
+  private final DeadbandXboxController xb = new DeadbandXboxController(0);
+  private final Joystick joystick = new Joystick(1);
+
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final Arm m_arm = new Arm();
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-
-
-
+  //buttons configurations
+  private final Trigger rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -42,6 +49,9 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    rightJoy.whileActiveContinuous(() -> {
+      m_arm.setArm(xb.getY(Hand.kRight));
+    }, m_arm);
   }
 
 
@@ -50,8 +60,7 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return m_autoCommand;
-  }
+  // public Command getAutonomousCommand() {
+  
+  // }
 }
