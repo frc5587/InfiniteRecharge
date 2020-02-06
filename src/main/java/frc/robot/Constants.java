@@ -50,4 +50,7 @@ public final class Constants {
                 (8.5 * (.05 / (3040 - 3000)) * 12.5) // kD
         );
     }
+  public static final class ConveyorConstants {
+    public static final int CONVEYOR_MOTOR = 10;
+  }
 }
