@@ -40,6 +40,7 @@ public final class Constants {
             0.0, //kI
             131.0 //kD
             );
+    }
       
     public static final class ShooterConstants {
         public static final int SHOOTER_MOTOR_ONE = 31;
