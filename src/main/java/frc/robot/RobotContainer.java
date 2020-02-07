@@ -7,12 +7,18 @@
 
 package frc.robot;
 
+import org.frc5587.lib.control.DeadbandXboxController;
+
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 
 import frc.robot.subsystems.Conveyor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.Arm;
 
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.Shoot;
@@ -26,15 +32,21 @@ import edu.wpi.first.wpilibj.Joystick;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
   // The robot's subsystems and commands are defined here...
 
-  private final XboxController xBoxController = new XboxController(0);
-  private final Joystick joy = new Joystick(1);
 
-  private final Conveyor conveyorCode = new Conveyor();
+  private final Joystick joy = new Joystick(0);
+  private final DeadbandXboxController xb = new DeadbandXboxController(0);
+  
+  private final Conveyor conveyor = new Conveyor();
   private final Shooter shooter = new Shooter();
   private final Shoot shoot = new Shoot(shooter, joy::getY);
+  private final Arm m_arm = new Arm();
 
+
+  //buttons configurations
+  private final Trigger rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -52,11 +64,15 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    var leftBumper = new JoystickButton(xBoxController, XboxController.Button.kBumperLeft.value);
-    leftBumper.whenPressed(conveyorCode::moveBackward).whenReleased(conveyorCode::stopMovement);
+    var leftBumper = new JoystickButton(xb, xb.Button.kBumperLeft.value);
+    leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
 
-    var rightBumper = new JoystickButton(xBoxController, XboxController.Button.kBumperRight.value);
-    rightBumper.whenPressed(conveyorCode::moveForward).whenReleased(conveyorCode::stopMovement);
+    var rightBumper = new JoystickButton(xb, xb.Button.kBumperRight.value);
+    rightBumper.whenPressed(conveyor::moveForward).whenReleased(conveyor::stopMovement);
+
+    rightJoy.whileActiveContinuous(() -> {
+      m_arm.setArm(xb.getY(Hand.kRight));
+    }, m_arm);
   }
 
   /**
@@ -64,6 +80,7 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
+
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return null;

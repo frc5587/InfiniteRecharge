@@ -7,7 +7,12 @@
 
 package frc.robot;
 
+
+import org.frc5587.lib.pid.PID;
 import org.frc5587.lib.pid.FPID;
+
+import edu.wpi.first.wpilibj.controller.ArmFeedforward;
+
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -21,10 +26,27 @@ import org.frc5587.lib.pid.FPID;
  */
 public final class Constants {
 
+
   public static final class ConveyorConstants {
     public static final int CONVEYOR_MOTOR = 10;
   }
 
+    public static final class ArmConstants {
+        public static final int ARM_MOTOR = 23;
+
+        public static final ArmFeedforward FF = new ArmFeedforward (
+            .204, //kS 
+            .163, //kCos
+            .211, //kV
+            .0214 //kA
+            );
+        public static final PID ARM_PID = new PID(
+            .221, //kP
+            0.0, //kI
+            131.0 //kD
+            );
+    }
+      
     public static final class ShooterConstants {
         public static final int SHOOTER_MOTOR_ONE = 31;
         public static final int SHOOTER_MOTOR_TWO = 32;
