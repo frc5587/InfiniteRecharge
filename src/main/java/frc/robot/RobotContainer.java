@@ -47,7 +47,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joystick::getY, () -> -joystick.getX()));
+    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joystick::getY, joystick::getX));
 
     // Configure the button bindings
     configureButtonBindings();

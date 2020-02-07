@@ -44,6 +44,11 @@ public class Drivetrain extends PIDSubsystem {
         new PIDController(DrivetrainConstants.TURN_FPID.kP, DrivetrainConstants.TURN_FPID.kI,
             DrivetrainConstants.TURN_FPID.kD));
 
+    leftLeader.restoreFactoryDefaults();
+    leftFollower.restoreFactoryDefaults();
+    rightLeader.restoreFactoryDefaults();
+    rightFollower.restoreFactoryDefaults();
+
     var leftGroup = new SpeedControllerGroup(leftLeader, leftFollower);
     var rightGroup = new SpeedControllerGroup(rightLeader, rightFollower);
 
