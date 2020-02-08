@@ -7,6 +7,11 @@
 
 package frc.robot;
 
+import com.revrobotics.ColorMatch;
+
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants.  This class should not be used for any other purpose.  All constants should be
@@ -16,4 +21,15 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    /**
+     * Constants used by the control panel.
+     */
+    public static final class ControlPanelConstants {
+        public static final I2C.Port i2cPort = I2C.Port.kOnboard;
+
+        public static final Color BLUE_TARGET = ColorMatch.makeColor(0.143, 0.427, 0.429); 
+        public static final Color GREEN_TARGET = ColorMatch.makeColor(0.197, 0.561, 0.240); 
+        public static final Color RED_TARGET = ColorMatch.makeColor(0.561, 0.232, 0.114);
+        public static final Color YELLOW_TARGET = ColorMatch.makeColor(0.361, 0.524, 0.113);
+    }  
 }
