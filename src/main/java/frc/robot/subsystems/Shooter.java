@@ -47,7 +47,7 @@ public class Shooter extends SubsystemBase {
     motorOne.restoreFactoryDefaults();
     motorTwo.restoreFactoryDefaults();
 
-    motorOne.setInverted(true);
+    motorOne.setInverted(false);
     motorTwo.setInverted(false);
 
     sparkPIDControllerOne.setFeedbackDevice(sparkEncoderOne);

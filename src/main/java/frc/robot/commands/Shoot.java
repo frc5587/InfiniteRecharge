@@ -41,8 +41,8 @@ public class Shoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // shooter.setThrottle(yAxis.getAsDouble());
-    shooter.setVelocity(SmartDashboard.getNumber("Setpoint", 0.0));
+    shooter.setThrottle(yAxis.getAsDouble());
+    // shooter.setVelocity(SmartDashboard.getNumber("Setpoint", 0.0));
     shooter.log();
   }
 
