@@ -22,7 +22,6 @@ import frc.robot.subsystems.Arm;
 
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.Shoot;
-import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -37,7 +36,7 @@ public class RobotContainer {
 
 
   private final Joystick joy = new Joystick(0);
-  private final DeadbandXboxController xb = new DeadbandXboxController(0);
+  private final DeadbandXboxController xb = new DeadbandXboxController(1);
   
   private final Conveyor conveyor = new Conveyor();
   private final Shooter shooter = new Shooter();
@@ -64,10 +63,10 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    var leftBumper = new JoystickButton(xb, xb.Button.kBumperLeft.value);
+    var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
     leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
 
-    var rightBumper = new JoystickButton(xb, xb.Button.kBumperRight.value);
+    var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
     rightBumper.whenPressed(conveyor::moveForward).whenReleased(conveyor::stopMovement);
 
     rightJoy.whileActiveContinuous(() -> {
