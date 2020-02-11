@@ -5,6 +5,7 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,7 +18,10 @@ public class Arm extends SubsystemBase {
     private final CANEncoder armEncoder = armSpark.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
 
     public Arm() {
-
+        configSpark();
+        resetEncoder();
+        startPID();
+        refreshPID();
     }
 
     /**
@@ -28,13 +32,14 @@ public class Arm extends SubsystemBase {
 
         armSpark.setInverted(true);
         armEncoder.setInverted(true);
+        armSpark.setIdleMode(IdleMode.kBrake);
 
         armPIDController.setFeedbackDevice(armEncoder);
 
         armPIDController.setP(Constants.ArmConstants.ARM_PID.kP);
         armPIDController.setI(Constants.ArmConstants.ARM_PID.kI);
         armPIDController.setD(Constants.ArmConstants.ARM_PID.kD);
-        armPIDController.setFF(calcFeedForward());
+        armPIDController.setFF(calcFeedForward(), 0);
     }
 
     /**
@@ -53,14 +58,14 @@ public class Arm extends SubsystemBase {
      *              encoder ticks
      */
     public void setArmAngle(double angle) {
-        armPIDController.setReference(angle, ControlType.kPosition);
+        armPIDController.setReference(angle / 180., ControlType.kPosition);
     }
 
     /**
      * Reset arm encoder to zero
      */
     public void resetEncoder() {
-        armEncoder.setPosition(0);
+        armEncoder.setPosition(15. / 180);
     }
 
     /**
@@ -78,7 +83,7 @@ public class Arm extends SubsystemBase {
      * @return output velocity of the encoder
      */
     public double getVelocity() {
-        return armEncoder.getVelocity();
+        return armEncoder.getVelocity() * 180;
     }
 
     /**
@@ -87,7 +92,8 @@ public class Arm extends SubsystemBase {
      * @return current position of the arm
      */
     public double getAngle() {
-        return Math.toRadians(armEncoder.getPosition() * 180 + 7);
+        // return Math.toRadians(armEncoder.getPosition() * 180 + 15);
+        return (getPosition() * 180);
     }
 
     /**
@@ -97,7 +103,11 @@ public class Arm extends SubsystemBase {
      * @return calculated FeedForward value
      */
     public double calcFeedForward() {
-        return Constants.ArmConstants.FF.calculate(getAngle(), getVelocity() * Math.PI / 60);
+        return Constants.ArmConstants.FF.calculate(Math.toRadians(getAngle()), Math.toRadians(getVelocity()));
+    }
+
+    public void startPID() {
+        SmartDashboard.putNumber("Goto Position", 15);
     }
 
     /**
@@ -107,15 +117,15 @@ public class Arm extends SubsystemBase {
     public void refreshPID() {
         SmartDashboard.putNumber("Angle", getAngle());
         SmartDashboard.putNumber("Position", getPosition());
-        SmartDashboard.putNumber("Goto Position", 0.0);
+        SmartDashboard.putNumber("Encoder Val", getPosition());
         SmartDashboard.putNumber("FF", calcFeedForward());
-        SmartDashboard.putNumber("Vel", armEncoder.getVelocity() * Math.PI);
-        setArmAngle(SmartDashboard.getNumber("Goto Position", 0.0));
+        SmartDashboard.putNumber("Vel", getVelocity() * Math.PI);
+        setArmAngle(SmartDashboard.getNumber("Goto Position", 15));
     }
 
     @Override
     public void periodic() {
-        armPIDController.setFF(calcFeedForward());
         refreshPID();
+        armPIDController.setFF(calcFeedForward(), 0);
     }
 }
