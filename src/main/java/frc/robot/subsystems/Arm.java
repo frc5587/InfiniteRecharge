@@ -56,15 +56,15 @@ public class Arm extends SubsystemBase {
      * 
      * @param angle angle wanted to set the arm - DEGREES
      */
-    public void setArmAngle(double angle) {
-        armPIDController.setReference(angle / 180., ControlType.kPosition);
+    public void setArmAngle_degrees(double angle) {
+        armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
     }
 
     /**
      * Reset arm encoder to zero
      */
     public void resetEncoder() {
-        armEncoder.setPosition(15. / 180);
+        armEncoder.setPosition(degreesToTicks(15));
     }
 
     /**
@@ -82,7 +82,7 @@ public class Arm extends SubsystemBase {
      * @return output velocity of the encoder - DEGREES / SECOND
      */
     public double getVelocity_degreesPerSecond() {
-        return armEncoder.getVelocity() * 180;
+        return ticksToDegrees(armEncoder.getVelocity());
     }
 
     /**
@@ -92,7 +92,7 @@ public class Arm extends SubsystemBase {
      */
     public double getAngle_degrees() {
         // return Math.toRadians(armEncoder.getPosition() * 180 + 15);
-        return (getPosition_ticks() * 180);
+        return ticksToDegrees(getPosition_ticks());
     }
 
     /**
@@ -118,12 +118,34 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Encoder Val", getPosition_ticks());
         SmartDashboard.putNumber("FF", calcFeedForward());
         SmartDashboard.putNumber("Vel", getVelocity_degreesPerSecond());
-        setArmAngle(SmartDashboard.getNumber("Goto Position", 15));
+        setArmAngle_degrees(SmartDashboard.getNumber("Goto Position", 15));
     }
 
     @Override
     public void periodic() {
         refreshPID();
         armPIDController.setFF(calcFeedForward(), 0);
+    }
+
+    /**
+     * Converts degrees of a circle to encoder ticks
+     * 1 tick == 180 degrees
+     * 
+     * @param degrees angle to convert to ticks
+     * @return angle in ticks
+     */
+    public double degreesToTicks(double degrees) {
+        return degrees / 180;
+    }
+
+    /**
+     * Converts encoder ticks to degrees of a circle
+     * 1 tick == 180 degrees
+     * 
+     * @param ticks angle to convert to degrees
+     * @return angle in degrees
+     */
+    public double ticksToDegrees(double ticks) {
+        return ticks * 180;
     }
 }
