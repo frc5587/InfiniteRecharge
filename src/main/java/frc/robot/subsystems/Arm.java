@@ -36,9 +36,9 @@ public class Arm extends SubsystemBase {
 
         armPIDController.setFeedbackDevice(armEncoder);
 
-        armPIDController.setP(Constants.ArmConstants.ARM_PID.kP);
-        armPIDController.setI(Constants.ArmConstants.ARM_PID.kI);
-        armPIDController.setD(Constants.ArmConstants.ARM_PID.kD);
+        // armPIDController.setP(Constants.ArmConstants.ARM_PID.kP);
+        // armPIDController.setI(Constants.ArmConstants.ARM_PID.kI);
+        // armPIDController.setD(Constants.ArmConstants.ARM_PID.kD);
         armPIDController.setFF(calcFeedForward(), 0);
     }
 
@@ -54,8 +54,7 @@ public class Arm extends SubsystemBase {
     /**
      * Set the arm to a specific angle
      * 
-     * @param angle angle wanted to set the arm, divided by 360 in order to get
-     *              encoder ticks
+     * @param angle angle wanted to set the arm - DEGREES
      */
     public void setArmAngle(double angle) {
         armPIDController.setReference(angle / 180., ControlType.kPosition);
@@ -71,29 +70,29 @@ public class Arm extends SubsystemBase {
     /**
      * Get current position of the encoder relative to the starting position
      * 
-     * @return the position of the arm encoder
+     * @return the position of the arm encoder - ENCODER TICKS
      */
-    public double getPosition() {
+    public double getPosition_ticks() {
         return armEncoder.getPosition();
     }
 
     /**
      * Get the current velocity of the encoder
      * 
-     * @return output velocity of the encoder
+     * @return output velocity of the encoder - DEGREES / SECOND
      */
-    public double getVelocity() {
+    public double getVelocity_degreesPerSecond() {
         return armEncoder.getVelocity() * 180;
     }
 
     /**
      * Get the current angle of the arm relative to the down position
      * 
-     * @return current position of the arm
+     * @return current position of the arm - DEGREES
      */
-    public double getAngle() {
+    public double getAngle_degrees() {
         // return Math.toRadians(armEncoder.getPosition() * 180 + 15);
-        return (getPosition() * 180);
+        return (getPosition_ticks() * 180);
     }
 
     /**
@@ -103,7 +102,7 @@ public class Arm extends SubsystemBase {
      * @return calculated FeedForward value
      */
     public double calcFeedForward() {
-        return Constants.ArmConstants.FF.calculate(Math.toRadians(getAngle()), Math.toRadians(getVelocity()));
+        return Constants.ArmConstants.FF.calculate(Math.toRadians(getAngle_degrees()), Math.toRadians(getVelocity_degreesPerSecond()));
     }
 
     public void startPID() {
@@ -115,11 +114,10 @@ public class Arm extends SubsystemBase {
      * SmartDashboard to update FeedForward
      */
     public void refreshPID() {
-        SmartDashboard.putNumber("Angle", getAngle());
-        SmartDashboard.putNumber("Position", getPosition());
-        SmartDashboard.putNumber("Encoder Val", getPosition());
+        SmartDashboard.putNumber("Angle", getAngle_degrees());
+        SmartDashboard.putNumber("Encoder Val", getPosition_ticks());
         SmartDashboard.putNumber("FF", calcFeedForward());
-        SmartDashboard.putNumber("Vel", getVelocity() * Math.PI);
+        SmartDashboard.putNumber("Vel", getVelocity_degreesPerSecond());
         setArmAngle(SmartDashboard.getNumber("Goto Position", 15));
     }
 
