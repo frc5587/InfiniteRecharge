@@ -25,6 +25,14 @@ import edu.wpi.first.wpilibj.controller.ArmFeedforward;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    /**
+     * Constants used by the intake
+     */
+    public static final class IntakeConstants {
+        public static final int INTAKE_SPARKMAX = 41;
+        public static final int INTAKE_SPARKMAX2 = 42;
+      
+    }
 
   public static final class ConveyorConstants {
     public static final int CONVEYOR_MOTOR = 10;
@@ -76,5 +84,6 @@ public final class Constants {
                 0, // kI
                 (8.5 * (.05 / (3040 - 3000)) * 12.5) // kD
         );
+
     }
 }

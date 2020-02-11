@@ -18,10 +18,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Arm;
 
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.Shoot;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -34,7 +36,6 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
 
-
   private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
   
@@ -43,6 +44,7 @@ public class RobotContainer {
   // private final Shoot shoot = new Shoot(shooter, joy::getY);
   private final Arm m_arm = new Arm();
   private final Conveyor conveyor = new Conveyor();
+  private final Intake intake = new Intake();
 
   //buttons configurations
   private final Trigger rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
@@ -63,6 +65,13 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
+    var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
+    xButton.whenPressed(() -> intake.set(1), intake).whenReleased(() -> intake.set(0), intake);
+
+    var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
+    yButton.whenPressed(() -> intake.set(-1), intake).whenReleased(() -> intake.set(0), intake);
+
     var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
     leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
 
