@@ -18,6 +18,9 @@ package frc.robot;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    /**
+     * Constants used by the intake
+     */
     public static final class IntakeConstants {
         public static final int INTAKE_SPARKMAX = 31;
         public static final int INTAKE_SPARKMAX2 = 32;

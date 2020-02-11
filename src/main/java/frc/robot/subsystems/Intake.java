@@ -14,17 +14,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
 /**
- * Intake subsystem allows the intake to run by operating both SparkMaxes at
- * full speed. Constants are available in constants and other things are
- * initialized in the robot container.
+ * The subsystem for the intake
  */
 public class Intake extends SubsystemBase {
   private final CANSparkMax intakeSparkMax = new CANSparkMax(IntakeConstants.INTAKE_SPARKMAX, MotorType.kBrushless);
   private final CANSparkMax intakeSparkMax2 = new CANSparkMax(IntakeConstants.INTAKE_SPARKMAX2, MotorType.kBrushless);
 
   /**
-   * public void set, sets the SparkMaxes to -throttle which is full speed in the
-   * positive direction.
+   * Set the intake to a particular speed
+   * 
+   * @param throttle the speed at which the intake takes in or removes power cells
    */
   public void set(double throttle) {
     intakeSparkMax.set(-throttle);
