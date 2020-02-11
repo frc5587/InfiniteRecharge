@@ -31,7 +31,7 @@ public final class Constants {
   }
 
     public static final class ArmConstants {
-        public static final int ARM_MOTOR = 21;
+        public static final int ARM_MOTOR = 10;
 
         public static final ArmFeedforward FF = new ArmFeedforward (
             .219, //kS 

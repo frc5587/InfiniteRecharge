@@ -58,14 +58,14 @@ public class Arm extends SubsystemBase {
      *              encoder ticks
      */
     public void setArmAngle(double angle) {
-        armPIDController.setReference((angle * .0054875) + 15, ControlType.kPosition);
+        armPIDController.setReference(angle / 180., ControlType.kPosition);
     }
 
     /**
      * Reset arm encoder to zero
      */
     public void resetEncoder() {
-        armEncoder.setPosition(.0823125);
+        armEncoder.setPosition(15. / 180);
     }
 
     /**
@@ -83,7 +83,7 @@ public class Arm extends SubsystemBase {
      * @return output velocity of the encoder
      */
     public double getVelocity() {
-        return armEncoder.getVelocity();
+        return armEncoder.getVelocity() * 180;
     }
 
     /**
@@ -93,7 +93,7 @@ public class Arm extends SubsystemBase {
      */
     public double getAngle() {
         // return Math.toRadians(armEncoder.getPosition() * 180 + 15);
-        return (getPosition() / .0054875) + 15;
+        return (getPosition() * 180);
     }
 
     /**
@@ -107,7 +107,7 @@ public class Arm extends SubsystemBase {
     }
 
     public void startPID() {
-        SmartDashboard.putNumber("Goto Position", 0);
+        SmartDashboard.putNumber("Goto Position", 15);
     }
 
     /**
@@ -120,7 +120,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Encoder Val", getPosition());
         SmartDashboard.putNumber("FF", calcFeedForward());
         SmartDashboard.putNumber("Vel", getVelocity() * Math.PI);
-        setArmAngle(SmartDashboard.getNumber("Goto Position", 0.0));
+        setArmAngle(SmartDashboard.getNumber("Goto Position", 15));
     }
 
     @Override
