@@ -7,8 +7,8 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
@@ -17,8 +17,8 @@ import frc.robot.Constants.IntakeConstants;
  * The subsystem for the intake
  */
 public class Intake extends SubsystemBase {
-  private final CANSparkMax intakeSparkMax = new CANSparkMax(IntakeConstants.INTAKE_SPARKMAX, MotorType.kBrushless);
-  private final CANSparkMax intakeSparkMax2 = new CANSparkMax(IntakeConstants.INTAKE_SPARKMAX2, MotorType.kBrushless);
+  private final TalonSRX intakeTalon = new TalonSRX(IntakeConstants.INTAKE_MOTOR);
+  private final TalonSRX centeringTalon = new TalonSRX(IntakeConstants.CENTERING_MOTOR);
 
   /**
    * Set the intake to a particular speed
@@ -26,8 +26,8 @@ public class Intake extends SubsystemBase {
    * @param throttle the speed at which the intake takes in or removes power cells
    */
   public void set(double throttle) {
-    intakeSparkMax.set(-throttle);
-    intakeSparkMax2.set(-throttle);
+    intakeTalon.set(ControlMode.Velocity, -throttle);
+    centeringTalon.set(ControlMode.Velocity, -throttle);
   }
 
   @Override

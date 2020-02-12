@@ -29,8 +29,8 @@ public final class Constants {
      * Constants used by the intake
      */
     public static final class IntakeConstants {
-        public static final int INTAKE_SPARKMAX = 41;
-        public static final int INTAKE_SPARKMAX2 = 42;
+        public static final int INTAKE_MOTOR = 41;
+        public static final int CENTERING_MOTOR = 42;
       
     }
 
