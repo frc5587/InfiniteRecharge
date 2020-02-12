@@ -36,7 +36,7 @@ public class Shooter extends SubsystemBase {
 
   /**
    * For manual control of the shooter
-   * @param throttle (-1 - 1) voltage to set to shooter to
+   * @param throttle (-1 to 1) voltage to set to shooter to
    */
   public void setThrottle(double throttle) {
     motorOne.set(throttle);
@@ -52,7 +52,7 @@ public class Shooter extends SubsystemBase {
   }
 
   /**
-   * Does all of the configuration to the sparkMaxs
+   * Fully configures all sparkMaxs
    *    - sets factory defaults
    *    - sets the feedback encoder
    *    - sets current limits and output ranges
@@ -89,7 +89,7 @@ public class Shooter extends SubsystemBase {
   }
 
   /**
-   * Logs velocity data to smartdashboard
+   * Logs velocity data to Smartdashboard
    */
   public void log() {
     SmartDashboard.putNumber("velocity one", sparkEncoderOne.getVelocity());
