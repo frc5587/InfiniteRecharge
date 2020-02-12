@@ -7,21 +7,21 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ColorSensor;
 
 /**
- * Detects whatever desired match is closest to the color currently being
- * detected.
+ * Counts rotations of the control panel wheel and spins the wheel.
  */
-public class DetectColor extends CommandBase {
+public class RotateControlPanel extends CommandBase {
   private ColorSensor colorSensor;
+  private String previousColor;
+  private double rotations = 0;
 
   /**
-   * Creates a new DetectColor.
+   * Creates a new RotateControlPanel.
    */
-  public DetectColor(ColorSensor colorSensor) {
+  public RotateControlPanel(ColorSensor colorSensor) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.colorSensor = colorSensor;
     addRequirements(colorSensor);
@@ -31,25 +31,27 @@ public class DetectColor extends CommandBase {
   @Override
   public void initialize() {
     colorSensor.addAllColorMatches();
+    colorSensor.set(0.5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    SmartDashboard.putNumber("Confidence", colorSensor.getConfidence());
-    SmartDashboard.putString("Detected Color", colorSensor.getClosestColorMatchToString());
-
+    if (previousColor != null && !colorSensor.getClosestColorMatchToString().equals(previousColor)) {
+      rotations += (1.0 / 8);
+    }
+    previousColor = colorSensor.getClosestColorMatchToString();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    colorSensor.set(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return rotations > 4;
   }
 }

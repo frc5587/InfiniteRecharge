@@ -7,14 +7,16 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.Constants.ControlPanelConstants;
-
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.util.Color;
-
-import com.revrobotics.ColorSensorV3;
-import com.revrobotics.ColorMatchResult;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
+import com.revrobotics.ColorSensorV3;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.Constants.ControlPanelConstants;
 
 /**
  * The subsystem for the color sensor.
@@ -22,6 +24,7 @@ import com.revrobotics.ColorMatch;
 public class ColorSensor extends SubsystemBase {
   private ColorSensorV3 colorSensor = new ColorSensorV3(ControlPanelConstants.i2cPort);
   private ColorMatch colorMatcher = new ColorMatch();
+  private CANSparkMax colorRotator = new CANSparkMax(ControlPanelConstants.CONTROL_PANEL_MOTOR, MotorType.kBrushless);
 
   /**
    * Add all colors that are desired matches to an ArrayList of matches that
@@ -39,8 +42,8 @@ public class ColorSensor extends SubsystemBase {
    * 
    * @return the color that the sensor is detecting
    */
-  public Color getCurrentDetectedColor() {
-    return colorSensor.getColor(); 
+  private Color getCurrentDetectedColor() {
+    return colorSensor.getColor();
   }
 
   /**
@@ -48,9 +51,9 @@ public class ColorSensor extends SubsystemBase {
    * the closest
    * 
    * @return the color that matches the detected color the closest from the list
-   * of options
+   *         of options
    */
-  public ColorMatchResult getClosestColorMatch() {
+  private ColorMatchResult getClosestColorMatch() {
     return colorMatcher.matchClosestColor(getCurrentDetectedColor());
   }
 
@@ -74,11 +77,20 @@ public class ColorSensor extends SubsystemBase {
   }
 
   /**
+   * Set the motor to a particular value
+   * 
+   * @param percent percent to set the motor to
+   */
+  public void set(double percent) {
+    colorRotator.set(percent);
+  }
+
+  /**
    * Get the confidence that the colormatcher feels that it has regarding the
    * color match
    * 
    * @return a double, where 0 <= double < 1, that represents how confident the
-   * colormatcher is with its choice
+   *         colormatcher is with its choice
    */
   public double getConfidence() {
     return getClosestColorMatch().confidence;
