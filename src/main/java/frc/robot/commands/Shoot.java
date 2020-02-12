@@ -14,20 +14,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
- * An example command that uses an example subsystem.
+ * A Shoot command that operates the shooter
  */
 public class Shoot extends CommandBase {
   private Shooter shooter;
   private DoubleSupplier yAxis;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new Shoot command
    *
    * @param subsystem The subsystem used by this command.
    */
   public Shoot(Shooter shooter, DoubleSupplier y) {
     this.shooter = shooter;
     yAxis = y;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
   }
@@ -44,16 +45,5 @@ public class Shoot extends CommandBase {
     shooter.setThrottle(yAxis.getAsDouble());
     // shooter.setVelocity(SmartDashboard.getNumber("Setpoint", 0.0));
     shooter.log();
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
   }
 }

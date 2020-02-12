@@ -29,9 +29,4 @@ public class Intake extends SubsystemBase {
     intakeTalon.set(ControlMode.Velocity, -throttle);
     centeringTalon.set(ControlMode.Velocity, -throttle);
   }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
 }
