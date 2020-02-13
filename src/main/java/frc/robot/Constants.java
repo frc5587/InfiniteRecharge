@@ -85,5 +85,13 @@ public final class Constants {
                 (8.5 * (.05 / (3040 - 3000)) * 12.5) // kD
         );
 
+        public static final double FLYWHEEL_RADIUS = 0.0508; // radius in meters (2")
+
+        public static final double CONVERSION_FACTOR = 30 / Math.PI; // RPM --> radians/second
+
+        public static final double GOAL_HEIGHT = 2.495; // height in meters
+
+        public static final double G = 9.8; // gravitational acceleration
+
     }
 }

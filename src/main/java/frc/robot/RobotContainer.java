@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.commands.Shoot;
 
 
 /**
@@ -40,11 +39,10 @@ public class RobotContainer {
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
   
   // private final Conveyor conveyor = new Conveyor();
-  // private final Shooter shooter = new Shooter();
-  // private final Shoot shoot = new Shoot(shooter, joy::getY);
   private final Arm m_arm = new Arm();
   private final Conveyor conveyor = new Conveyor();
   private final Intake intake = new Intake();
+  private final Shooter shooter = new Shooter();
 
   //buttons configurations
   private final Trigger rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
@@ -54,7 +52,6 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    // shooter.setDefaultCommand(shoot);
     configureButtonBindings();
   }
 
@@ -77,6 +74,9 @@ public class RobotContainer {
 
     var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
     rightBumper.whenPressed(conveyor::moveForward).whenReleased(conveyor::stopMovement);
+
+    var startButton = new JoystickButton(xb, XboxController.Button.kStart.value);
+    startButton.whenPressed(() -> shooter.setVelocity(3000)).whenReleased(() -> shooter.setVelocity(0));
 
     // rightJoy.whileActiveContinuous(() -> {
     //   m_arm.setArm(xb.getY(Hand.kRight));

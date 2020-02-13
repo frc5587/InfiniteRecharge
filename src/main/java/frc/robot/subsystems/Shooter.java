@@ -78,6 +78,15 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("velocity two", sparkEncoderTwo.getVelocity());
   }
 
+  public double getBallExitVelocity() {
+    return (sparkEncoderOne.getVelocity() * Constants.ShooterConstants.FLYWHEEL_RADIUS * Constants.ShooterConstants.CONVERSION_FACTOR); // tangential velocity = angular velocity * radius
+  }
+
+  // returns RPM 
+  public double calculateShooterSpeed(double distanceFromTarget, double armAngle) {
+    return (((1 / (Math.sqrt((Constants.ShooterConstants.GOAL_HEIGHT - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * Constants.ShooterConstants.G))))) * (distanceFromTarget / Math.cos(armAngle)) * (Constants.ShooterConstants.CONVERSION_FACTOR / Constants.ShooterConstants.FLYWHEEL_RADIUS)));
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
