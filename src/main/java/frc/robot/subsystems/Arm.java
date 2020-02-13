@@ -10,18 +10,16 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.ArmConstants;
 
 public class Arm extends SubsystemBase {
-    private final CANSparkMax armSpark = new CANSparkMax(Constants.ArmConstants.ARM_MOTOR, MotorType.kBrushless);
+    private final CANSparkMax armSpark = new CANSparkMax(ArmConstants.ARM_MOTOR, MotorType.kBrushless);
     private final CANPIDController armPIDController = armSpark.getPIDController();
     private final CANEncoder armEncoder = armSpark.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
 
     public Arm() {
         configSpark();
         resetEncoder();
-        startPID();
-        refreshPID();
     }
 
     /**
@@ -30,16 +28,28 @@ public class Arm extends SubsystemBase {
     public void configSpark() {
         armSpark.restoreFactoryDefaults();
 
+        // TODO: Determine if brake mode makes feedforward ineffective b/c
+        // characterization doesn't use it
+        // armSpark.setIdleMode(IdleMode.kBrake);
+        armSpark.setIdleMode(IdleMode.kCoast);
+
+        // Invert so that counter-clockwise is positive
         armSpark.setInverted(true);
         armEncoder.setInverted(true);
-        armSpark.setIdleMode(IdleMode.kBrake);
 
+        // Conversion factor for rotations of axle encoder -> angle of arm in radians
+        // Changes both the value when retrieved and the units the onboard PID loop uses
+        // (so make sure setReference uses the correct units too!)
+        armEncoder.setPositionConversionFactor(Math.PI);
+        armEncoder.setVelocityConversionFactor(Math.PI);
+
+        // Set the PID loop to use the axle encoder (which uses radians as its units now)
         armPIDController.setFeedbackDevice(armEncoder);
 
-        // armPIDController.setP(Constants.ArmConstants.ARM_PID.kP);
-        // armPIDController.setI(Constants.ArmConstants.ARM_PID.kI);
-        // armPIDController.setD(Constants.ArmConstants.ARM_PID.kD);
-        armPIDController.setFF(calcFeedForward(), 0);
+        armPIDController.setP(ArmConstants.ARM_PID.kP);
+        armPIDController.setI(ArmConstants.ARM_PID.kI);
+        armPIDController.setD(ArmConstants.ARM_PID.kD);
+        armPIDController.setFF(calcFeedForward());
     }
 
     /**
@@ -52,47 +62,37 @@ public class Arm extends SubsystemBase {
     }
 
     /**
-     * Set the arm to a specific angle
+     * Set the arm to a specific angle in degrees
      * 
-     * @param angle angle wanted to set the arm - DEGREES
+     * @param angleDegrees angle to set the arm to in degrees
      */
-    public void setArmAngle_degrees(double angle) {
-        armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
+    public void setArmAngleDegrees(double angleDegrees) {
+        armPIDController.setReference(Math.toRadians(angleDegrees), ControlType.kPosition);
     }
 
     /**
      * Reset arm encoder to zero
      */
     public void resetEncoder() {
-        armEncoder.setPosition(degreesToTicks(15));
+        armEncoder.setPosition(Math.toRadians(ArmConstants.ARM_OFFSET_DEG));
     }
 
     /**
-     * Get current position of the encoder relative to the starting position
+     * Get the current velocity of the encoder in radians per second
      * 
-     * @return the position of the arm encoder - ENCODER TICKS
+     * @return output velocity of the encoder in radians per second
      */
-    public double getPosition_ticks() {
+    public double getVelocityRadiansPerSecond() {
+        return armEncoder.getVelocity();
+    }
+
+    /**
+     * Get the current angle of the arm in radians
+     * 
+     * @return current position of the arm in radians
+     */
+    public double getAngleRadians() {
         return armEncoder.getPosition();
-    }
-
-    /**
-     * Get the current velocity of the encoder
-     * 
-     * @return output velocity of the encoder - DEGREES / SECOND
-     */
-    public double getVelocity_degreesPerSecond() {
-        return ticksToDegrees(armEncoder.getVelocity());
-    }
-
-    /**
-     * Get the current angle of the arm relative to the down position
-     * 
-     * @return current position of the arm - DEGREES
-     */
-    public double getAngle_degrees() {
-        // return Math.toRadians(armEncoder.getPosition() * 180 + 15);
-        return ticksToDegrees(getPosition_ticks());
     }
 
     /**
@@ -102,11 +102,12 @@ public class Arm extends SubsystemBase {
      * @return calculated FeedForward value
      */
     public double calcFeedForward() {
-        return Constants.ArmConstants.FF.calculate(Math.toRadians(getAngle_degrees()), Math.toRadians(getVelocity_degreesPerSecond()));
+        // Uses current angle and velocity to effectively hold the current value
+        return ArmConstants.FF.calculate(getAngleRadians(), getVelocityRadiansPerSecond());
     }
 
     public void startPID() {
-        SmartDashboard.putNumber("Goto Position", 15);
+        SmartDashboard.putNumber("Goto Position", ArmConstants.ARM_OFFSET_DEG);
     }
 
     /**
@@ -114,38 +115,16 @@ public class Arm extends SubsystemBase {
      * SmartDashboard to update FeedForward
      */
     public void refreshPID() {
-        SmartDashboard.putNumber("Angle", getAngle_degrees());
-        SmartDashboard.putNumber("Encoder Val", getPosition_ticks());
+        var angle = getAngleRadians();
+        SmartDashboard.putNumber("Angle Rad", angle);
+        SmartDashboard.putNumber("Angle Deg", Math.toDegrees(angle));
         SmartDashboard.putNumber("FF", calcFeedForward());
-        SmartDashboard.putNumber("Vel", getVelocity_degreesPerSecond());
-        setArmAngle_degrees(SmartDashboard.getNumber("Goto Position", 15));
+        SmartDashboard.putNumber("Vel Rad/s", getVelocityRadiansPerSecond());
+        setArmAngleDegrees(SmartDashboard.getNumber("Goto Position", ArmConstants.ARM_OFFSET_DEG));
     }
 
     @Override
     public void periodic() {
-        refreshPID();
-        armPIDController.setFF(calcFeedForward(), 0);
-    }
-
-    /**
-     * Converts degrees of a circle to encoder ticks
-     * 1 tick == 180 degrees
-     * 
-     * @param degrees angle to convert to ticks
-     * @return angle in ticks
-     */
-    public double degreesToTicks(double degrees) {
-        return degrees / 180;
-    }
-
-    /**
-     * Converts encoder ticks to degrees of a circle
-     * 1 tick == 180 degrees
-     * 
-     * @param ticks angle to convert to degrees
-     * @return angle in degrees
-     */
-    public double ticksToDegrees(double ticks) {
-        return ticks * 180;
+        armPIDController.setFF(calcFeedForward());
     }
 }
