@@ -26,11 +26,7 @@ public class ColorSensor extends SubsystemBase {
   private ColorMatch colorMatcher = new ColorMatch();
   private CANSparkMax colorRotator = new CANSparkMax(ControlPanelConstants.CONTROL_PANEL_MOTOR, MotorType.kBrushless);
 
-  /**
-   * Add all colors that are desired matches to an ArrayList of matches that
-   * belongs to the colormatcher
-   */
-  public void addAllColorMatches() {
+  public ColorSensor() {
     colorMatcher.addColorMatch(ControlPanelConstants.BLUE_TARGET);
     colorMatcher.addColorMatch(ControlPanelConstants.GREEN_TARGET);
     colorMatcher.addColorMatch(ControlPanelConstants.RED_TARGET);

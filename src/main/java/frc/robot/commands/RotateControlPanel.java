@@ -30,7 +30,6 @@ public class RotateControlPanel extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    colorSensor.addAllColorMatches();
     colorSensor.set(0.5);
   }
 
