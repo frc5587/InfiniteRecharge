@@ -31,13 +31,15 @@ public final class Constants {
   }
 
     public static final class ArmConstants {
-        public static final int ARM_MOTOR = 10;
+        public static final int ARM_MOTOR = 30;
 
+        public static final double kV = .169;
+        public static final double kA = .0125;
         public static final ArmFeedforward FF = new ArmFeedforward (
             .219, //kS 
             .439, //kCos
-            .169, //kV
-            .0125 //kA
+            kV, //kV
+            kA //kA
             );
 
         public static final PID ARM_PID = new PID(
@@ -45,36 +47,6 @@ public final class Constants {
             0.0, //kI
             125.//0 //kD
             );
-    }
-      
-    public static final class ShooterConstants {
-        public static final int SHOOTER_MOTOR_ONE = 31; // top
-        public static final int SHOOTER_MOTOR_TWO = 32; // bottom
-
-        public static final float MIN_OUTPUT = 1;
-        public static final float MAX_OUTPUT = 1;
-
-        public static final double V_COMP_SATURATION = 12.0;
-
-        public static final int SMART_MOTION_SLOT = 0;
-
-        public static final int K_TIMEOUT_MS = 10;
-
-        public static final double MAX_VELOCITY_ONE = 5074;
-        public static final double MAX_VELOCITY_TWO = 5080;
-
-        public static final FPID SHOOTER_ONE_FPID = new FPID(
-                (1 / MAX_VELOCITY_ONE), // kF
-                ((.065 / (3000 - 2954)) * 1.5), // kP
-                0, // kI
-                .1 * 6 // kD
-        );
-
-        public static final FPID SHOOTER_TWO_FPID = new FPID(
-                (1 / MAX_VELOCITY_TWO), // kF
-                ((.057 / (3040 - 3000)) * 1.5), // kP
-                0, // kI
-                (8.5 * (.05 / (3040 - 3000)) * 12.5) // kD
-        );
+        public static final double ARM_OFFSET_RADS = 14 * Math.PI / 180.0;
     }
 }

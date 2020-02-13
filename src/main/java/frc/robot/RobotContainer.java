@@ -10,13 +10,14 @@ package frc.robot;
 import org.frc5587.lib.control.DeadbandXboxController;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Arm;
+import frc.robot.commands.ManualArmControl;
+import frc.robot.commands.TestArm;
+import frc.robot.subsystems.ArmSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -26,27 +27,17 @@ import frc.robot.subsystems.Arm;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
-  // The robot's subsystems and commands are defined here...
-
-
-  private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
-  
-  // private final Conveyor conveyor = new Conveyor();
-  // private final Shooter shooter = new Shooter();
-  // private final Shoot shoot = new Shoot(shooter, joy::getY);
-  private final Arm m_arm = new Arm();
 
-  //buttons configurations
-  private final Trigger rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
+  private final ArmSubsystem arm = new ArmSubsystem();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
-    // shooter.setDefaultCommand(shoot);
+    arm.setDefaultCommand(new TestArm(arm));
+
     configureButtonBindings();
   }
 
@@ -57,9 +48,8 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // rightJoy.whileActiveContinuous(() -> {
-    //   m_arm.setArm(xb.getY(Hand.kRight));
-    // }, m_arm);
+    var leftTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
+    leftTrigger.whileActiveContinuous(new ManualArmControl(arm, () -> xb.getY(Hand.kLeft)));
   }
 
   /**
