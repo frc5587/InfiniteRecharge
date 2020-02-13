@@ -31,7 +31,7 @@ public final class Constants {
   }
 
     public static final class ArmConstants {
-        public static final int ARM_MOTOR = 10;
+        public static final int ARM_MOTOR = 30;
 
         public static final ArmFeedforward FF = new ArmFeedforward (
             .219, //kS 
@@ -41,15 +41,16 @@ public final class Constants {
             );
 
         public static final PID ARM_PID = new PID(
-            .273, //kP
+            23, //kP
             0.0, //kI
-            125.//0 //kD
+            // 127.//0 //kD
+            0
             );
     }
       
     public static final class ShooterConstants {
-        public static final int SHOOTER_MOTOR_ONE = 31; // top
-        public static final int SHOOTER_MOTOR_TWO = 32; // bottom
+        public static final int SHOOTER_MOTOR_ONE = 20; // top
+        public static final int SHOOTER_MOTOR_TWO = 21; // bottom
 
         public static final float MIN_OUTPUT = 1;
         public static final float MAX_OUTPUT = 1;
