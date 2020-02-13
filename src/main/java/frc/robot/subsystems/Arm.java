@@ -43,7 +43,7 @@ public class Arm extends SubsystemBase {
         armEncoder.setPositionConversionFactor(Math.PI);
         armEncoder.setVelocityConversionFactor(Math.PI);
 
-        // Set the PID loop to use the axle encoder (which uses radians as its units now)
+        // Set the PID loop to use the axle encoder (which uses radians as units now)
         armPIDController.setFeedbackDevice(armEncoder);
 
         armPIDController.setP(ArmConstants.ARM_PID.kP);
@@ -103,7 +103,7 @@ public class Arm extends SubsystemBase {
      */
     public double calcFeedForward() {
         // Uses current angle and velocity to effectively hold the current value
-        return ArmConstants.FF.calculate(getAngleRadians(), getVelocityRadiansPerSecond());
+        return ArmConstants.FF.calculate(getAngleRadians(), getVelocityRadiansPerSecond()) / 12.0;
     }
 
     public void startPID() {
