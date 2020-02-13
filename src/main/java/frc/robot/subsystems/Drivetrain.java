@@ -76,6 +76,11 @@ public class Drivetrain extends PIDSubsystem {
     differentialDrive.tankDrive(leftThrottle, rightThrottle, false);
   }
 
+  public void tankLRVolts(double leftVoltage, double rightVoltage) {
+    // Convert voltages to percents by dividing by maximum value
+    tankLR(leftVoltage / 12.0, rightVoltage / 12.0);
+  }
+
   public void stop() {
     differentialDrive.stopMotor();
   }
