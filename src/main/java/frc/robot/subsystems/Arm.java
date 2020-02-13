@@ -56,7 +56,7 @@ public class Arm extends SubsystemBase {
      * 
      * @param angle angle wanted to set the arm - DEGREES
      */
-    public void setArmAngle_degrees(double angle) {
+    public void setArmAngleDegrees(double angle) {
         armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
     }
 
@@ -72,7 +72,7 @@ public class Arm extends SubsystemBase {
      * 
      * @return the position of the arm encoder - ENCODER TICKS
      */
-    public double getPosition_ticks() {
+    public double getPositionTicks() {
         return armEncoder.getPosition();
     }
 
@@ -81,7 +81,7 @@ public class Arm extends SubsystemBase {
      * 
      * @return output velocity of the encoder - DEGREES / SECOND
      */
-    public double getVelocity_degreesPerSecond() {
+    public double getVelocityDegreesPerSecond() {
         return ticksToDegrees(armEncoder.getVelocity());
     }
 
@@ -90,9 +90,9 @@ public class Arm extends SubsystemBase {
      * 
      * @return current position of the arm - DEGREES
      */
-    public double getAngle_degrees() {
+    public double getAngleDegrees() {
         // return Math.toRadians(armEncoder.getPosition() * 180 + 15);
-        return ticksToDegrees(getPosition_ticks());
+        return ticksToDegrees(getPositionTicks());
     }
 
     /**
@@ -102,7 +102,7 @@ public class Arm extends SubsystemBase {
      * @return calculated FeedForward value
      */
     public double calcFeedForward() {
-        return Constants.ArmConstants.FF.calculate(Math.toRadians(getAngle_degrees()), Math.toRadians(getVelocity_degreesPerSecond()));
+        return Constants.ArmConstants.FF.calculate(Math.toRadians(getAngleDegrees()), Math.toRadians(getVelocityDegreesPerSecond()));
     }
 
     public void startPID() {
@@ -114,11 +114,11 @@ public class Arm extends SubsystemBase {
      * SmartDashboard to update FeedForward
      */
     public void refreshPID() {
-        SmartDashboard.putNumber("Angle", getAngle_degrees());
-        SmartDashboard.putNumber("Encoder Val", getPosition_ticks());
+        SmartDashboard.putNumber("Angle", getAngleDegrees());
+        SmartDashboard.putNumber("Encoder Val", getPositionTicks());
         SmartDashboard.putNumber("FF", calcFeedForward());
-        SmartDashboard.putNumber("Vel", getVelocity_degreesPerSecond());
-        setArmAngle_degrees(SmartDashboard.getNumber("Goto Position", 15));
+        SmartDashboard.putNumber("Vel", getVelocityDegreesPerSecond());
+        setArmAngleDegrees(SmartDashboard.getNumber("Goto Position", 15));
     }
 
     @Override
