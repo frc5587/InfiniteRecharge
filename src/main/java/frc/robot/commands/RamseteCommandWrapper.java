@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
@@ -25,7 +26,9 @@ import frc.robot.subsystems.Drivetrain;
 
 public class RamseteCommandWrapper extends CommandBase {
   private final Drivetrain drivetrain;
-  private final SequentialCommandGroup pathFollowCommand;
+  private final Trajectory trajectory;
+
+  private SequentialCommandGroup pathFollowCommand;
 
   /**
    * Creates a new RamseteCommandWrapper.
@@ -40,13 +43,29 @@ public class RamseteCommandWrapper extends CommandBase {
     var trajectoryPath = path.getJSONPath();
 
     // Create the CommandGroup that executes the path following
-    SequentialCommandGroup pathFollowCommand = null;
+    // SequentialCommandGroup pathFollowCommand = null;
+    Trajectory trajectory = null;
     try {
       // Get the trajectory based on the file path (throws IOException if not found)
-      var trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryPath, ex.getStackTrace());
+    }
+    // this.pathFollowCommand = pathFollowCommand;
+    this.trajectory = trajectory;
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    // Start the pathFollowCommand
+    if (trajectory != null) {
+      // Shift the trajectory to be relative to the robot's current position
+      var currentPose = drivetrain.getPose();
+      var shiftedTrajectory = trajectory.relativeTo(currentPose);
 
       // Create the RamseteCommand based on the drivetrain's constants
-      var ramseteCommand = new RamseteCommand(trajectory, drivetrain::getPose,
+      var ramseteCommand = new RamseteCommand(shiftedTrajectory, drivetrain::getPose,
           new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
           new SimpleMotorFeedforward(DrivetrainConstants.KS_VOLTS, DrivetrainConstants.KV_VOLT_SECONDS_PER_METER,
               DrivetrainConstants.KA_VOLT_SECONDS_PER_SQUARED_METER),
@@ -57,17 +76,9 @@ public class RamseteCommandWrapper extends CommandBase {
           drivetrain::tankLRVolts, drivetrain);
       // Run path following command, then stop at the end
       pathFollowCommand = ramseteCommand.andThen(drivetrain::stop);
-    } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + trajectoryPath, ex.getStackTrace());
-    }
-    this.pathFollowCommand = pathFollowCommand;
-  }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    // Start the pathFollowCommand
-    pathFollowCommand.schedule();
+      pathFollowCommand.schedule();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -79,18 +90,24 @@ public class RamseteCommandWrapper extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     // Stop the drivetrain and path following command just in case
-    pathFollowCommand.cancel();
+    if (pathFollowCommand != null) {
+      pathFollowCommand.cancel();
+    }
     drivetrain.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pathFollowCommand.isFinished();
+    if (pathFollowCommand != null) {
+      return pathFollowCommand.isFinished();
+    } else {
+      return true;
+    }
   }
 
   public enum AutoPaths {
-    RightToEnergyPort;
+    RightStartToPowerPort;
 
     /**
      * Get the path to the corresponding path JSON file (generated with PathWeaver)
@@ -102,8 +119,8 @@ public class RamseteCommandWrapper extends CommandBase {
     public Path getJSONPath() {
       var path = "paths/";
       switch (this) {
-      case RightToEnergyPort:
-        path += "RightToEnergyPort.wpilib.json";
+      case RightStartToPowerPort:
+        path += "Right Start to Power Port.wpilib.json";
         break;
       }
 
