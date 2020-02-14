@@ -12,7 +12,8 @@
     "**/.settings": true,
     "**/.factorypath": true
   },
-  "cSpell.words": [
-    "Smartdashboard"
-  ]
+  "code-runner.customCommand": "cd \"$workspaceRoot\" && ./gradlew build",
+  "code-runner.executorMap": {
+    "java": "cd \"$workspaceRoot\" && ./gradlew deploy"
+  }
 }
