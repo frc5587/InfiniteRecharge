@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.AlternateEncoderType;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants.DrivetrainConstants;
 
@@ -28,8 +30,10 @@ public class Drivetrain extends PIDSubsystem {
   private final CANSparkMax rightLeader = new CANSparkMax(DrivetrainConstants.RIGHT_LEADER, MotorType.kBrushless);
   private final CANSparkMax rightFollower = new CANSparkMax(DrivetrainConstants.RIGHT_FOLLOWER, MotorType.kBrushless);
 
-  private final CANEncoder leftEncoder = leftLeader.getEncoder();
-  private final CANEncoder rightEncoder = rightLeader.getEncoder();
+  private final CANEncoder leftEncoder = leftLeader.getAlternateEncoder(AlternateEncoderType.kQuadrature,
+      DrivetrainConstants.TICKS_PER_REV);
+  private final CANEncoder rightEncoder = rightLeader.getAlternateEncoder(AlternateEncoderType.kQuadrature,
+      DrivetrainConstants.TICKS_PER_REV);
   private final AHRS ahrs = new AHRS();
 
   private final DifferentialDrive differentialDrive;
@@ -52,13 +56,17 @@ public class Drivetrain extends PIDSubsystem {
     var leftGroup = new SpeedControllerGroup(leftLeader, leftFollower);
     var rightGroup = new SpeedControllerGroup(rightLeader, rightFollower);
 
-    leftGroup.setInverted(true);
-    rightGroup.setInverted(true);
+    leftGroup.setInverted(DrivetrainConstants.LEFT_SIDE_INVERTED);
+    rightGroup.setInverted(DrivetrainConstants.RIGHT_SIDE_INVERTED);
+    leftEncoder.setInverted(DrivetrainConstants.LEFT_ENCODER_INVERTED);
+    rightEncoder.setInverted(DrivetrainConstants.RIGHT_ENCODER_INVERTED);
 
     this.differentialDrive = new DifferentialDrive(leftGroup, rightGroup);
 
     var currentAngle = Rotation2d.fromDegrees(getHeading());
     this.odometry = new DifferentialDriveOdometry(currentAngle);
+    // TODO: Allow for selecting of several initial positions with odometry, instead
+    // of assuming x=0, y=0
 
     // Configure turn PID
     this.disable();
@@ -85,29 +93,68 @@ public class Drivetrain extends PIDSubsystem {
     differentialDrive.stopMotor();
   }
 
-  public double getLeftPosition() {
+  public double getLeftPositionRotations() {
     return leftEncoder.getPosition();
   }
 
-  public double getRightPosition() {
+  public double getRightPositionRotations() {
     return rightEncoder.getPosition();
   }
 
-  public double getLeftVelocity() {
-    // TODO: convert to m/s
-    return leftEncoder.getVelocity();
+  private double rotationsToMeters(double rotations) {
+    // number of rotations * circumfrence of wheel
+    return rotations * DrivetrainConstants.WHEEL_DIAMETER_METERS * Math.PI;
   }
 
-  public double getRightVelocity() {
-    // TODO: convert to m/s
+  public double getLeftPositionMeters() {
+    return rotationsToMeters(getLeftPositionRotations());
+  }
+
+  public double getRightPositionMeters() {
+    return rotationsToMeters(getRightPositionRotations());
+  }
+
+  public double getRightVelocityRotationsPerMinute() {
     return rightEncoder.getVelocity();
   }
 
+  public double getLeftVelocityRotationsPerMinute() {
+    return leftEncoder.getVelocity();
+  }
+
+  private double rotationsPerMinuteToMetersPerSecond(double rotationsPerMinute) {
+    var radiansPerSecond = Units.rotationsPerMinuteToRadiansPerSecond(rotationsPerMinute);
+    var linearMetersPerSecond = radiansPerSecond * DrivetrainConstants.WHEEL_RADIUS_METERS;
+    return linearMetersPerSecond;
+  }
+
+  public double getLeftVelocityMetersPerSecond() {
+    return rotationsPerMinuteToMetersPerSecond(getLeftVelocityRotationsPerMinute());
+  }
+
+  public double getRightVelocityMetersPerSecond() {
+    return rotationsPerMinuteToMetersPerSecond(getRightVelocityRotationsPerMinute());
+  }
+
+  /**
+   * Get the raw, unbounded heading of the drivetrain's gyroscope in degrees. To
+   * get the bounded gyro scope heading between -180 and +180, use
+   * {@link #getHeading180()} instead.
+   * 
+   * @return the raw, unbounded heading of the drivetrain gyro in degrees
+   */
   public double getHeading() {
     return ahrs.getAngle() * (DrivetrainConstants.GYRO_POSITIVE_COUNTERCLOCKWISE ? 1 : -1);
   }
 
-  public double getHeading(double wrapValue) {
+  /**
+   * Get the heading of the drivetrain's gyroscope, wrapped to be within -180 to
+   * +180. With these bounds, 0 degrees is still the angle that the drivetrain
+   * started with when the robot was turned on.
+   * 
+   * @returns the heading in degrees, where -180 < heading < +180
+   */
+  public double getHeading180() {
     var heading = getHeading() % 360;
     if (heading > 180) {
       return heading - 360;
@@ -135,13 +182,13 @@ public class Drivetrain extends PIDSubsystem {
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity());
+    return new DifferentialDriveWheelSpeeds(getLeftVelocityMetersPerSecond(), getRightVelocityMetersPerSecond());
   }
 
   @Override
   public void periodic() {
     // Update the pose
     var gyroAngle = Rotation2d.fromDegrees(getHeading());
-    odometry.update(gyroAngle, getLeftPosition(), getRightPosition());
+    odometry.update(gyroAngle, getLeftPositionMeters(), getRightPositionMeters());
   }
 }

@@ -12,8 +12,6 @@ import java.util.List;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -23,10 +21,10 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.RamseteCommandWrapper;
 import frc.robot.subsystems.Drivetrain;
 
 /**
@@ -42,7 +40,6 @@ public class RobotContainer {
 
   private final Joystick joystick = new Joystick(0);
 
-  
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -92,17 +89,6 @@ public class RobotContainer {
         // Pass config
         config);
 
-    var ramseteCommand = new RamseteCommand(exampleTrajectory, drivetrain::getPose,
-        new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-        new SimpleMotorFeedforward(DrivetrainConstants.KS_VOLTS, DrivetrainConstants.KV_VOLT_SECONDS_PER_METER,
-            DrivetrainConstants.KA_VOLT_SECONDS_PER_SQUARED_METER),
-        DrivetrainConstants.DRIVETRAIN_KINEMATICS, drivetrain::getWheelSpeeds,
-        new PIDController(DrivetrainConstants.RAMSETTE_KP_DRIVE_VEL, 0, 0),
-        new PIDController(DrivetrainConstants.RAMSETTE_KP_DRIVE_VEL, 0, 0),
-        // RamseteCommand passes volts to the callback
-        drivetrain::tankLR, drivetrain);
-
-    // Run path following command, then stop at the end.
-    return ramseteCommand.andThen(drivetrain::stop);
+    return new RamseteCommandWrapper(drivetrain, exampleTrajectory);
   }
 }

@@ -34,7 +34,6 @@ public class RamseteCommandWrapper extends CommandBase {
    * Creates a new RamseteCommandWrapper.
    */
   public RamseteCommandWrapper(Drivetrain drivetrain, AutoPaths path) {
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
 
     this.drivetrain = drivetrain;
@@ -42,16 +41,21 @@ public class RamseteCommandWrapper extends CommandBase {
     // Get the path to the trajectory on the RoboRIO's filesystem
     var trajectoryPath = path.getJSONPath();
 
-    // Create the CommandGroup that executes the path following
-    // SequentialCommandGroup pathFollowCommand = null;
+    // Get the trajectory based on the file path (throws IOException if not found)
     Trajectory trajectory = null;
     try {
-      // Get the trajectory based on the file path (throws IOException if not found)
       trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
     } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + trajectoryPath, ex.getStackTrace());
+      DriverStation.reportError("Unable to open " + path + " trajectory: " + trajectoryPath, ex.getStackTrace());
     }
-    // this.pathFollowCommand = pathFollowCommand;
+    // Now set trajectory (or null, if not found)
+    this.trajectory = trajectory;
+  }
+
+  public RamseteCommandWrapper(Drivetrain drivetrain, Trajectory trajectory) {
+    addRequirements(drivetrain);
+
+    this.drivetrain = drivetrain;
     this.trajectory = trajectory;
   }
 
@@ -66,12 +70,12 @@ public class RamseteCommandWrapper extends CommandBase {
 
       // Create the RamseteCommand based on the drivetrain's constants
       var ramseteCommand = new RamseteCommand(shiftedTrajectory, drivetrain::getPose,
-          new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+          new RamseteController(AutoConstants.RAMSETE_B, AutoConstants.RAMSETE_ZETA),
           new SimpleMotorFeedforward(DrivetrainConstants.KS_VOLTS, DrivetrainConstants.KV_VOLT_SECONDS_PER_METER,
               DrivetrainConstants.KA_VOLT_SECONDS_PER_SQUARED_METER),
           DrivetrainConstants.DRIVETRAIN_KINEMATICS, drivetrain::getWheelSpeeds,
-          new PIDController(DrivetrainConstants.RAMSETTE_KP_DRIVE_VEL, 0, 0),
-          new PIDController(DrivetrainConstants.RAMSETTE_KP_DRIVE_VEL, 0, 0),
+          new PIDController(DrivetrainConstants.RAMSETE_KP_DRIVE_VEL, 0, 0),
+          new PIDController(DrivetrainConstants.RAMSETE_KP_DRIVE_VEL, 0, 0),
           // RamseteCommand passes volts to the callback
           drivetrain::tankLRVolts, drivetrain);
       // Run path following command, then stop at the end

@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -17,6 +18,7 @@ public class LimelightCentering extends CommandBase {
   private final Drivetrain drivetrain;
   private final Limelight limelight;
   private final Notifier notifier;
+  private long lastLoopTime;
 
   /**
    * Creates a new LimelightCentring.
@@ -38,6 +40,7 @@ public class LimelightCentering extends CommandBase {
   public void initialize() {
     // Run the update method based on the given period
     notifier.startPeriodic(Constants.DrivetrainConstants.TURN_PID_UPDATE_PERIOD_SEC);
+    lastLoopTime = System.currentTimeMillis();
 
     // Stop drivetrain and enable PID controller
     drivetrain.stop();
@@ -80,12 +83,19 @@ public class LimelightCentering extends CommandBase {
    * @see Drivetrain#enable()
    */
   private void updatePID() {
+    var currentTime = System.currentTimeMillis();
+    System.out.println("Centring loop time: " + (lastLoopTime - currentTime));
+    lastLoopTime = currentTime;
+
     // Get the difference between centre and vision target (error)
-    var newError = limelight.getHorizontalAngleOffset();
+    var angleError = limelight.getHorizontalAngleOffset();
+    SmartDashboard.putNumber("Angle Error", angleError);
 
     // Calculate the desired angle using the error and current angle
-    var currentHeading = drivetrain.getHeading(180.0);
-    double desiredAngle = currentHeading + newError;
+    var currentHeading = drivetrain.getHeading180();
+    double desiredAngle = currentHeading + angleError;
+    SmartDashboard.putNumber("Current Angle", currentHeading);
+    SmartDashboard.putNumber("Desired Error", desiredAngle);
 
     // Set the angle PID controller to the desired angle
     drivetrain.setSetpoint(desiredAngle);
