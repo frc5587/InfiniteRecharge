@@ -26,7 +26,7 @@ import frc.robot.Constants.ControlPanelConstants;
 public class ColorSensor extends SubsystemBase {
   private ColorSensorV3 colorSensor = new ColorSensorV3(ControlPanelConstants.i2cPort);
   private ColorMatch colorMatcher = new ColorMatch();
-  private CANSparkMax colorRotator = new CANSparkMax(ControlPanelConstants.CONTROL_PANEL_MOTOR, MotorType.kBrushless);
+  private TalonSRX colorRotator = new TalonSRX(ControlPanelConstants.CONTROL_PANEL_MOTOR);
 
   public ColorSensor() {
     colorMatcher.addColorMatch(ControlPanelConstants.BLUE_TARGET);
@@ -80,7 +80,7 @@ public class ColorSensor extends SubsystemBase {
    * @param percent percent to set the motor to
    */
   public void set(double percent) {
-    colorRotator.set(percent);
+    colorRotator.set(ControlMode.PercentOutput, percent);
   }
 
   /**
