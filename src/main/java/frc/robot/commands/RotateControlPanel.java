@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ColorSensor;
 
@@ -36,10 +37,12 @@ public class RotateControlPanel extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (previousColor != null && !colorSensor.getClosestColorMatchToString().equals(previousColor)) {
+    String color = colorSensor.getClosestColorMatchToString();
+    if (previousColor != null && !color.equals(previousColor)) {
       rotations += (1.0 / 8);
+      SmartDashboard.putNumber("number_of_Rotations", rotations); 
     }
-    previousColor = colorSensor.getClosestColorMatchToString();
+    previousColor = color;
   }
 
   // Called once the command ends or is interrupted.

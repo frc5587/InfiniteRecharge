@@ -28,7 +28,7 @@ public final class Constants {
      */
     public static final class ControlPanelConstants {
         public static final I2C.Port i2cPort = I2C.Port.kOnboard;
-        public static final int CONTROL_PANEL_MOTOR = 11;
+        public static final int CONTROL_PANEL_MOTOR = 2;
 
         public static final Color BLUE_TARGET = ColorMatch.makeColor(0.143, 0.427, 0.429);
         public static final Color GREEN_TARGET = ColorMatch.makeColor(0.197, 0.561, 0.240);
