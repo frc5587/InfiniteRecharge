@@ -8,6 +8,7 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -16,6 +17,7 @@ public class Arm extends SubsystemBase {
     private final CANSparkMax armSpark = new CANSparkMax(Constants.ArmConstants.ARM_MOTOR, MotorType.kBrushless);
     private final CANPIDController armPIDController = armSpark.getPIDController();
     private final CANEncoder armEncoder = armSpark.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
+    private final DigitalInput armLimitSwitch = new DigitalInput(Constants.ArmConstants.ARM_LIMIT_SWITCH);
 
     public Arm() {
         configSpark();
@@ -149,4 +151,13 @@ public class Arm extends SubsystemBase {
     public double ticksToDegrees(double ticks) {
         return ticks * 180;
     }
+
+    /**
+     * Returns the limit switch for the arm
+     * 
+     * @return arm limit switch
+     */
+     public DigitalInput getArmLimitSwitch() {
+         return armLimitSwitch;
+     }
 }

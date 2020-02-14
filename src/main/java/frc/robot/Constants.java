@@ -33,6 +33,8 @@ public final class Constants {
     public static final class ArmConstants {
         public static final int ARM_MOTOR = 30;
 
+        public static final int ARM_LIMIT_SWITCH = 0;
+
         public static final ArmFeedforward FF = new ArmFeedforward (
             .219, //kS 
             .439, //kCos
