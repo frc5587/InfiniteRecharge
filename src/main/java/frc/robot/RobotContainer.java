@@ -44,9 +44,6 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
 
-  //buttons configurations
-  private final Trigger rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -62,25 +59,18 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
+    var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
     var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
-    xButton.whenPressed(() -> intake.set(1), intake).whenReleased(() -> intake.set(0), intake);
-
     var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
-    yButton.whenPressed(() -> intake.set(-1), intake).whenReleased(() -> intake.set(0), intake);
-
     var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
-    leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
-
     var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
+    var rightTrigger = new Trigger(() -> xb.getTriggerAxis(Hand.kRight) != 0);
+
+    xButton.whenPressed(() -> intake.set(1), intake).whenReleased(() -> intake.set(0), intake);
+    yButton.whenPressed(() -> intake.set(-1), intake).whenReleased(() -> intake.set(0), intake);
+    leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
     rightBumper.whenPressed(conveyor::moveForward).whenReleased(conveyor::stopMovement);
-
-    var startButton = new JoystickButton(xb, XboxController.Button.kStart.value);
-    startButton.whenPressed(() -> shooter.setVelocity(3000)).whenReleased(() -> shooter.setVelocity(0));
-
-    // rightJoy.whileActiveContinuous(() -> {
-    //   m_arm.setArm(xb.getY(Hand.kRight));
-    // }, m_arm);
+    rightTrigger.whileActiveContinuous(() -> shooter.setVelocity(xb.getTriggerAxis(Hand.kRight)));
   }
 
   /**
