@@ -21,7 +21,7 @@ public class ColorSense extends SubsystemBase {
   //make variables for checking rotations
   private static int colorID = 1;
   private static int colorChecker = colorID;
-  public int rotations;
+  private int rotations;
   //make a variable to check the fms for various data
   private String FMSData;
 
