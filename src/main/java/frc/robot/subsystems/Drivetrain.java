@@ -61,6 +61,16 @@ public class Drivetrain extends PIDSubsystem {
     leftEncoder.setInverted(DrivetrainConstants.LEFT_ENCODER_INVERTED);
     rightEncoder.setInverted(DrivetrainConstants.RIGHT_ENCODER_INVERTED);
 
+    leftLeader.setSmartCurrentLimit(DrivetrainConstants.SMART_CURRENT_LIMIT);
+    leftFollower.setSmartCurrentLimit(DrivetrainConstants.SMART_CURRENT_LIMIT);
+    rightLeader.setSmartCurrentLimit(DrivetrainConstants.SMART_CURRENT_LIMIT);
+    rightFollower.setSmartCurrentLimit(DrivetrainConstants.SMART_CURRENT_LIMIT);
+
+    leftLeader.setSecondaryCurrentLimit(DrivetrainConstants.HARD_CURRENT_LIMIT);
+    leftFollower.setSecondaryCurrentLimit(DrivetrainConstants.HARD_CURRENT_LIMIT);
+    rightLeader.setSecondaryCurrentLimit(DrivetrainConstants.HARD_CURRENT_LIMIT);
+    rightFollower.setSecondaryCurrentLimit(DrivetrainConstants.HARD_CURRENT_LIMIT);
+
     this.differentialDrive = new DifferentialDrive(leftGroup, rightGroup);
 
     var currentAngle = Rotation2d.fromDegrees(getHeading());

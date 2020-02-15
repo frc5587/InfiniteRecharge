@@ -21,11 +21,14 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.LimelightCentering;
 import frc.robot.commands.RamseteCommandWrapper;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Limelight;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -37,14 +40,17 @@ import frc.robot.subsystems.Drivetrain;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain drivetrain = new Drivetrain();
+  private final Limelight limelight = new Limelight();
 
   private final Joystick joystick = new Joystick(0);
+
+  private final LimelightCentering centeringCommand = new LimelightCentering(drivetrain, limelight);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joystick::getY, joystick::getX));
+    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joystick::getY, () -> -joystick.getX()));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -57,6 +63,8 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    var buttonTwelve = new JoystickButton(joystick, 12);
+    buttonTwelve.whenPressed(centeringCommand).whenReleased(() -> centeringCommand.cancel());
   }
 
   /**

@@ -55,6 +55,9 @@ public final class Constants {
         public static final boolean LEFT_ENCODER_INVERTED = true;
         public static final boolean RIGHT_ENCODER_INVERTED = true;
 
+        public static final int SMART_CURRENT_LIMIT = 30;
+        public static final int HARD_CURRENT_LIMIT = 40;
+
         // TODO: Figure out real values
         // Make sure that paths with Pathfinder/WPILib respect the following as well:
         // Gyro angle value should be positive when turning counterclockwise

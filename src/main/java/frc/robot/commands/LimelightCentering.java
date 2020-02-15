@@ -18,7 +18,6 @@ public class LimelightCentering extends CommandBase {
   private final Drivetrain drivetrain;
   private final Limelight limelight;
   private final Notifier notifier;
-  private long lastLoopTime;
 
   /**
    * Creates a new LimelightCentring.
@@ -40,7 +39,6 @@ public class LimelightCentering extends CommandBase {
   public void initialize() {
     // Run the update method based on the given period
     notifier.startPeriodic(Constants.DrivetrainConstants.TURN_PID_UPDATE_PERIOD_SEC);
-    lastLoopTime = System.currentTimeMillis();
 
     // Stop drivetrain and enable PID controller
     drivetrain.stop();
@@ -83,10 +81,6 @@ public class LimelightCentering extends CommandBase {
    * @see Drivetrain#enable()
    */
   private void updatePID() {
-    var currentTime = System.currentTimeMillis();
-    System.out.println("Centring loop time: " + (lastLoopTime - currentTime));
-    lastLoopTime = currentTime;
-
     // Get the difference between centre and vision target (error)
     var angleError = limelight.getHorizontalAngleOffset();
     SmartDashboard.putNumber("Angle Error", angleError);
