@@ -7,21 +7,20 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+
 import frc.robot.subsystems.ColorSensor;
 
-/**
- * Detects whatever desired match is closest to the color currently being
- * detected.
- */
-public class DetectColor extends CommandBase {
+public class SpinToColor extends CommandBase {
   private ColorSensor colorSensor;
+  private char desiredColor;
 
   /**
-   * Creates a new DetectColor.
+   * Creates a new SpinToColor.
    */
-  public DetectColor(ColorSensor colorSensor) {
+  public SpinToColor(ColorSensor colorSensor) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.colorSensor = colorSensor;
     addRequirements(colorSensor);
@@ -30,25 +29,32 @@ public class DetectColor extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    String fmsData = DriverStation.getInstance().getGameSpecificMessage();
+    if (fmsData.length() > 0) {
+      desiredColor = fmsData.charAt(0);
+      colorSensor.set(0.5);
+    } else {
+      desiredColor = '0';
+      DriverStation.reportError("No game data detected", false);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
     SmartDashboard.putNumber("Confidence", colorSensor.getConfidence());
     SmartDashboard.putString("Detected Color", Character.toString(colorSensor.getClosestColorMatchToChar()));
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    colorSensor.set(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return desiredColor == '0' || desiredColor == colorSensor.getClosestColorMatchToChar();
   }
 }

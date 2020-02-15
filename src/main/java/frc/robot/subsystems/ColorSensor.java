@@ -9,11 +9,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANSparkMax;
+
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,7 +25,7 @@ import frc.robot.Constants.ControlPanelConstants;
 public class ColorSensor extends SubsystemBase {
   private ColorSensorV3 colorSensor = new ColorSensorV3(ControlPanelConstants.i2cPort);
   private ColorMatch colorMatcher = new ColorMatch();
-  private CANSparkMax colorRotator = new CANSparkMax(ControlPanelConstants.CONTROL_PANEL_MOTOR, MotorType.kBrushless);
+  private TalonSRX colorRotator = new TalonSRX(ControlPanelConstants.CONTROL_PANEL_MOTOR);
 
   public ColorSensor() {
     colorMatcher.addColorMatch(ControlPanelConstants.BLUE_TARGET);
@@ -60,17 +59,17 @@ public class ColorSensor extends SubsystemBase {
    * 
    * @return the Color that matches as a String
    */
-  public String getClosestColorMatchToString() {
+  public char getClosestColorMatchToChar() {
     if (getClosestColorMatch().color == ControlPanelConstants.BLUE_TARGET) {
-      return "Blue";
+      return 'B';
     } else if (getClosestColorMatch().color == ControlPanelConstants.GREEN_TARGET) {
-      return "Green";
+      return 'G';
     } else if (getClosestColorMatch().color == ControlPanelConstants.RED_TARGET) {
-      return "Red";
+      return 'R';
     } else if (getClosestColorMatch().color == ControlPanelConstants.YELLOW_TARGET) {
-      return "Yellow";
+      return 'Y';
     } else {
-      return "Unknown";
+      return 'U';
     }
   }
 
@@ -80,7 +79,7 @@ public class ColorSensor extends SubsystemBase {
    * @param percent percent to set the motor to
    */
   public void set(double percent) {
-    colorRotator.set(percent);
+    colorRotator.set(ControlMode.PercentOutput, percent);
   }
 
   /**

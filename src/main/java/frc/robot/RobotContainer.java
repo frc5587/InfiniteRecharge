@@ -11,10 +11,13 @@ import org.frc5587.lib.control.DeadbandXboxController;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DetectColor;
 import frc.robot.commands.RotateControlPanel;
+import frc.robot.commands.SpinToColor;
 import frc.robot.subsystems.ColorSensor;
 
 /**
@@ -49,6 +52,8 @@ public class RobotContainer {
     var backButton = new JoystickButton(xb, XboxController.Button.kBack.value);
     backButton.whenPressed(new RotateControlPanel(colorSensor));
 
+    var leftTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
+    leftTrigger.and(backButton).whenActive(new SpinToColor(colorSensor));
   }
 
   /**

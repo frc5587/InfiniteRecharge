@@ -16,7 +16,7 @@ import frc.robot.subsystems.ColorSensor;
  */
 public class RotateControlPanel extends CommandBase {
   private ColorSensor colorSensor;
-  private String previousColor;
+  private char previousColor = '0';
   private double rotations = 0;
 
   /**
@@ -37,12 +37,14 @@ public class RotateControlPanel extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    String color = colorSensor.getClosestColorMatchToString();
-    if (previousColor != null && !color.equals(previousColor)) {
+    SmartDashboard.putNumber("Confidence", colorSensor.getConfidence());
+    SmartDashboard.putString("Detected Color", Character.toString(colorSensor.getClosestColorMatchToChar()));
+    var currentColor = colorSensor.getClosestColorMatchToChar();
+    if (previousColor != '0' && currentColor != previousColor) {
       rotations += (1.0 / 8);
-      SmartDashboard.putNumber("number_of_Rotations", rotations); 
+      SmartDashboard.putNumber("Number of Rotations", rotations); 
     }
-    previousColor = color;
+    previousColor = currentColor;
   }
 
   // Called once the command ends or is interrupted.
@@ -54,6 +56,6 @@ public class RotateControlPanel extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return rotations > 4;
+    return rotations >= 4;
   }
 }
