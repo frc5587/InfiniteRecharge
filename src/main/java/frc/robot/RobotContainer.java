@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import java.util.function.DoubleSupplier;
+
 import org.frc5587.lib.control.DeadbandXboxController;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -14,6 +16,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 
 import frc.robot.subsystems.Conveyor;
+import frc.robot.subsystems.LED;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -21,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Arm;
 
 import frc.robot.subsystems.Shooter;
+import frc.robot.commands.ControlLED;
 import frc.robot.commands.Shoot;
 
 /**
@@ -42,7 +46,10 @@ public class RobotContainer {
   // private final Shooter shooter = new Shooter();
   // private final Shoot shoot = new Shoot(shooter, joy::getY);
   private final Arm m_arm = new Arm();
+  private final DoubleSupplier armAngle = m_arm::getAngle;
   private final Conveyor conveyor = new Conveyor();
+  private final LED leds = new LED();
+  private final ControlLED controlLED = new ControlLED(m_arm, armAngle);
 
   //buttons configurations
   private final Trigger rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
@@ -53,6 +60,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     // shooter.setDefaultCommand(shoot);
+    leds.setDefaultCommand(controlLED);
     configureButtonBindings();
   }
 
