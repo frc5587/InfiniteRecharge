@@ -111,7 +111,7 @@ public class RamseteCommandWrapper extends CommandBase {
   }
 
   public enum AutoPaths {
-    RightStartToPowerPort;
+    RightStartToPowerPort, BackwardsRightStartToPowerPort, FarSideOfTrenchToLoading, SuperCoolPath;
 
     /**
      * Get the path to the corresponding path JSON file (generated with PathWeaver)
@@ -126,7 +126,17 @@ public class RamseteCommandWrapper extends CommandBase {
       case RightStartToPowerPort:
         path += "Right Start to Power Port.wpilib.json";
         break;
-      }
+
+      case BackwardsRightStartToPowerPort:
+          path += "Backwards Right Start to Power Port.wpilib.json";
+          break;
+      case FarSideOfTrenchToLoading:
+        path += "Far Side of Trench to Loading.wpilib.json";
+        break;
+      case SuperCoolPath:
+        path += "Super Cool Path.wpilib.json";
+        break;
+      } 
 
       // Join the path with where the code is deployed to on the roborIO, in order to
       // get the complete path
