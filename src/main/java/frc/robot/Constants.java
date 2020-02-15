@@ -29,11 +29,14 @@ public final class Constants {
      * Constants used by the intake
      */
     public static final class IntakeConstants {
-        public static final int INTAKE_MOTOR = 41;
-        public static final int CENTERING_MOTOR = 42;
+        public static final int INTAKE_MOTOR = 1;
+        public static final int CENTERING_MOTOR = 2;
       
     }
 
+    /**
+     * Constants used by the conveyor
+     */
   public static final class ConveyorConstants {
     public static final int CONVEYOR_MOTOR = 10;
   }

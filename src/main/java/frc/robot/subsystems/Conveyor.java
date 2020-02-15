@@ -24,21 +24,21 @@ public class Conveyor extends SubsystemBase {
   }
 
   /**
-   * Moves the conveyer forward
+   * Moves the conveyor forward
    */
   public void moveForward() {
     conveyorBeltMotor.set(ControlMode.PercentOutput, 0.30);
   }
 
   /**
-   * Moves the conveyer backwards
+   * Moves the conveyor backwards
    */
   public void moveBackward() {
     conveyorBeltMotor.set(ControlMode.PercentOutput, -0.30);
   }
 
   /**
-   * Stops all movement of the conveyer
+   * Stops all movement of the conveyor
    */
   public void stopMovement() {
     conveyorBeltMotor.set(ControlMode.PercentOutput, 0);
