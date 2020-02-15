@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ControlPanelConstants;
+import frc.robot.Constants.ControlPanelConstants.TargetColor;
 
 /**
  * The subsystem for the color sensor.
@@ -55,21 +56,21 @@ public class ColorSensor extends SubsystemBase {
   }
 
   /**
-   * Convert the closest matching Color to a String
+   * Convert the closest matching Color to a TargetColor
    * 
-   * @return the Color that matches as a String
+   * @return the Color that matches as a TargetColor
    */
-  public char getClosestColorMatchToChar() {
+  public TargetColor getTargetColor() {
     if (getClosestColorMatch().color == ControlPanelConstants.BLUE_TARGET) {
-      return 'B';
+      return TargetColor.BLUE;
     } else if (getClosestColorMatch().color == ControlPanelConstants.GREEN_TARGET) {
-      return 'G';
+      return TargetColor.GREEN;
     } else if (getClosestColorMatch().color == ControlPanelConstants.RED_TARGET) {
-      return 'R';
+      return TargetColor.RED;
     } else if (getClosestColorMatch().color == ControlPanelConstants.YELLOW_TARGET) {
-      return 'Y';
+      return TargetColor.YELLOW;
     } else {
-      return 'U';
+      return TargetColor.UNKNOWN;
     }
   }
 

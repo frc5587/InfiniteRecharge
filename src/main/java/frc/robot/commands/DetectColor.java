@@ -37,7 +37,7 @@ public class DetectColor extends CommandBase {
   public void execute() {
 
     SmartDashboard.putNumber("Confidence", colorSensor.getConfidence());
-    SmartDashboard.putString("Detected Color", Character.toString(colorSensor.getClosestColorMatchToChar()));
+    SmartDashboard.putString("Detected Color", colorSensor.getTargetColor().toString());
 
   }
 

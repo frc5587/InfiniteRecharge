@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.ControlPanelConstants.TargetColor;
 import frc.robot.subsystems.ColorSensor;
 
 /**
@@ -16,7 +17,7 @@ import frc.robot.subsystems.ColorSensor;
  */
 public class RotateControlPanel extends CommandBase {
   private ColorSensor colorSensor;
-  private char previousColor = '0';
+  private TargetColor previousColor;
   private double rotations = 0;
 
   /**
@@ -38,11 +39,11 @@ public class RotateControlPanel extends CommandBase {
   @Override
   public void execute() {
     SmartDashboard.putNumber("Confidence", colorSensor.getConfidence());
-    SmartDashboard.putString("Detected Color", Character.toString(colorSensor.getClosestColorMatchToChar()));
-    var currentColor = colorSensor.getClosestColorMatchToChar();
-    if (previousColor != '0' && currentColor != previousColor) {
+    SmartDashboard.putString("Detected Color", colorSensor.getTargetColor().toString());
+    var currentColor = colorSensor.getTargetColor();
+    if (previousColor != null && currentColor != previousColor) {
       rotations += (1.0 / 8);
-      SmartDashboard.putNumber("Number of Rotations", rotations); 
+      SmartDashboard.putNumber("Rotations", rotations); 
     }
     previousColor = currentColor;
   }
@@ -56,6 +57,6 @@ public class RotateControlPanel extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return rotations >= 4;
+    return rotations >= 3.5;
   }
 }

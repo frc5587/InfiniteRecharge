@@ -43,7 +43,7 @@ public class SpinToColor extends CommandBase {
   @Override
   public void execute() {
     SmartDashboard.putNumber("Confidence", colorSensor.getConfidence());
-    SmartDashboard.putString("Detected Color", Character.toString(colorSensor.getClosestColorMatchToChar()));
+    SmartDashboard.putString("Detected Color", colorSensor.getTargetColor().toString());
   }
 
   // Called once the command ends or is interrupted.
@@ -55,6 +55,6 @@ public class SpinToColor extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return desiredColor == '0' || desiredColor == colorSensor.getClosestColorMatchToChar();
+    return desiredColor == '0' || desiredColor == colorSensor.getTargetColor().toString().charAt(0);
   }
 }

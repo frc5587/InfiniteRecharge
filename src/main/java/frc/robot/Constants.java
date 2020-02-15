@@ -34,5 +34,16 @@ public final class Constants {
         public static final Color GREEN_TARGET = ColorMatch.makeColor(0.197, 0.561, 0.240);
         public static final Color RED_TARGET = ColorMatch.makeColor(0.561, 0.232, 0.114);
         public static final Color YELLOW_TARGET = ColorMatch.makeColor(0.361, 0.524, 0.113);
+
+        /**
+         * Possible colors in the control panel
+         */
+        public static enum TargetColor {
+            BLUE,
+            GREEN,
+            RED,
+            YELLOW,
+            UNKNOWN
+        }
     }
 }
