@@ -91,4 +91,15 @@ public final class Constants {
         // Lag compensation
         public static final int HISTORY_LIMIT = 32;
     }
+
+    public static class MLConstants {
+        // TODO: Replace with actual values
+        // Distance from floor to the centre of the camera in meters
+        public static final double CENTER_CAMERA_HEIGHT_METERS = 0.05;
+        public static final double CAMERA_FOCAL_LENGTH_PIXELS = 500;
+        public static final double CAMERA_WIDTH_PIXELS = 320;
+        public static final double CAMERA_HEIGHT_PIXELS = 240;
+
+        public static final double POWER_CELL_RADIUS_METERS = 0.1778 / 2;
+    }
 }
