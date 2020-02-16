@@ -87,5 +87,8 @@ public final class Constants {
 
         // Ramsete constants
         public static final double RAMSETE_KP_DRIVE_VEL = 8.5;
+
+        // Lag compensation
+        public static final int HISTORY_LIMIT = 32;
     }
 }

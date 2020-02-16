@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import frc.robot.LimitedPoseMap;
 import frc.robot.Constants.DrivetrainConstants;
 
 public class Drivetrain extends PIDSubsystem {
@@ -38,6 +40,7 @@ public class Drivetrain extends PIDSubsystem {
 
   private final DifferentialDrive differentialDrive;
   private final DifferentialDriveOdometry odometry;
+  private final LimitedPoseMap poseHistory = new LimitedPoseMap(DrivetrainConstants.HISTORY_LIMIT);
 
   /**
    * Creates a new Drive.
@@ -200,5 +203,8 @@ public class Drivetrain extends PIDSubsystem {
     // Update the pose
     var gyroAngle = Rotation2d.fromDegrees(getHeading());
     odometry.update(gyroAngle, getLeftPositionMeters(), getRightPositionMeters());
+
+    // Log the pose
+    poseHistory.put(Timer.getFPGATimestamp(), getPose());
   }
 }
