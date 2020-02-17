@@ -20,15 +20,35 @@ import frc.robot.Constants.LimelightConstants.Target;
  */
 public class Limelight extends SubsystemBase {
   private NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
+  private NetworkTableEntry tv = limelightTable.getEntry("tv");
+  private NetworkTableEntry tx = limelightTable.getEntry("tx");
   private NetworkTableEntry ty = limelightTable.getEntry("ty");
 
   /**
-   * Get ty
+   * Get whether the target is being detected by the Limelight
    * 
-   * @return ty, in degrees
+   * @return whether the target is being detected
    */
-  public double getTY() {
-    return ty.getDouble(0.0);
+  public boolean isTargetDetected() {
+    return tv.getDouble(0) == 1;
+  }
+
+  /**
+   * Get the horizontal angle between the Limelight and the target
+   *
+   * @return the horizontal angle between the Limelight and the target in degrees
+   */
+  public double getHorizontalAngleOffset() {
+    return tx.getDouble(0);
+  }
+
+  /**
+   * Get the vertical angle between the Limelight and the target
+   *
+   * @return the vertical angle between the Limelight and the target in degrees
+   */
+  public double getVerticalAngleOffset() {
+    return ty.getDouble(0);
   }
 
   /**
@@ -83,7 +103,7 @@ public class Limelight extends SubsystemBase {
    */
   private double getShooterFrontGoalAngle(double currentArmAngle) {
     return (Math.PI / 2.0) - Math.asin((getLimelightDistance(currentArmAngle) / getShooterDistance(currentArmAngle))
-        * Math.sin((Math.PI / 2.0) + Math.toRadians(getTY())));
+        * Math.sin((Math.PI / 2.0) + Math.toRadians(getVerticalAngleOffset())));
   }
 
   /**
@@ -145,9 +165,9 @@ public class Limelight extends SubsystemBase {
    * @return the angle that the arm should be at, in radians
    */
   public double getAdjustedAngle(double currentArmAngle, Target t) {
-    var unadjusted = getUnadjustedAngle(currentArmAngle, t);
-    return Math.atan((LimelightConstants.GOAL_HEIGHT_INCHES - getShooterHeight(unadjusted) + getDropHeight(unadjusted, t))
-        / getShooterGoalHorizontalDifference(unadjusted, t));
+    var unadjustedAngle = getUnadjustedAngle(currentArmAngle, t);
+    return Math.atan((LimelightConstants.GOAL_HEIGHT_INCHES - getShooterHeight(unadjustedAngle) + getDropHeight(unadjustedAngle, t))
+        / getShooterGoalHorizontalDifference(unadjustedAngle, t));
   }
 
   @Override
