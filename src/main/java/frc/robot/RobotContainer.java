@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.ManualArmControl;
 import frc.robot.subsystems.Arm;
 
 /**
@@ -56,29 +57,24 @@ public class RobotContainer {
   private void configureButtonBindings() {
     var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
     var leftTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
-    var aButton = new JoystickButton(xb, XboxController.Button.kA.value);
     var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
     var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
-    var armLimitSwitch = new Trigger(m_arm.getArmLimitSwitch()::get);
+    var armLimitSwitch = new Trigger(() -> m_arm.getLimitSwitchVal());
 
     // arm
-    //determines whether the arm should be manually controlled
-    leftTrigger.and(rightJoy).whileActiveContinuous(() -> {
-      m_arm.setArm(xb.getY(Hand.kRight));
-    }, m_arm);
-    //TODO: fire all command binding
-    // aButton.whileActiveContinuous(m_arm::/*fire all command*/, m_arm);
-    //moves arm to the lowest position
+    // determines whether the arm should be manually controlled
+    leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(m_arm, () -> xb.getY(Hand.kRight)));
+
     xButton.whenPressed(() -> {
-      m_arm.setArmAngleDegrees(14);
+    m_arm.setArmAngleDegrees(14);
     }, m_arm);
 
-    //moves arm to the highest position
+    // moves arm to the highest position
     yButton.whenPressed(() -> {
-      m_arm.setArmAngleDegrees(55);
+    m_arm.setArmAngleDegrees(55);
     }, m_arm);
 
-    //reset encoder
+    // reset encoder
     armLimitSwitch.whenActive(m_arm::resetEncoder);
   }
 
@@ -87,7 +83,6 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return null;

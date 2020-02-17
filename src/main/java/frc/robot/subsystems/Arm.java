@@ -122,7 +122,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Encoder Val", getPositionTicks());
         SmartDashboard.putNumber("FF", calcFeedForward());
         SmartDashboard.putNumber("Vel", getVelocityDegreesPerSecond());
-        setArmAngleDegrees(SmartDashboard.getNumber("Goto Position", 14));
+        // setArmAngleDegrees(SmartDashboard.getNumber("Goto Position", 14));
     }
 
     @Override
@@ -159,5 +159,13 @@ public class Arm extends SubsystemBase {
      */
      public DigitalInput getArmLimitSwitch() {
          return armLimitSwitch;
+     }
+
+     /**
+      * gets the value for the limit switch and switches it
+      * @return limit switch value
+      */
+     public boolean getLimitSwitchVal() {
+         return !(armLimitSwitch.get());
      }
 }
