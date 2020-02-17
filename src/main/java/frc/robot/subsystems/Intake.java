@@ -34,21 +34,22 @@ public class Intake extends SubsystemBase {
    * Creates a new Conveyor.
    */
   public Intake() {
-
+    intakeTalon.setInverted(true);
+    conveyorBeltMotor.setInverted(true);  
   }
 
   /**
    * Moves the conveyer forward
    */
   public void moveForward() {
-    conveyorBeltMotor.set(ControlMode.PercentOutput, 0.30);
+    conveyorBeltMotor.set(ControlMode.PercentOutput, 0.75);
   }
 
   /**
    * Moves the conveyer backwards
    */
   public void moveBackward() {
-    conveyorBeltMotor.set(ControlMode.PercentOutput, -0.30);
+    conveyorBeltMotor.set(ControlMode.PercentOutput, -0.75);
   }
 
   /**
@@ -67,7 +68,7 @@ public class Intake extends SubsystemBase {
     intakeTalon.set(ControlMode.PercentOutput, -throttle);
     centeringTalon.set(ControlMode.PercentOutput, -throttle);
   }
-
+  
   /**
    * Method that returns a value of current amount of balls.
    * 
