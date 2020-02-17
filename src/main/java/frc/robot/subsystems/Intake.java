@@ -20,6 +20,10 @@ public class Intake extends SubsystemBase {
   private TalonSRX intakeTalon = new TalonSRX(IntakeConstants.INTAKE_MOTOR);
   private TalonSRX centeringTalon = new TalonSRX(IntakeConstants.CENTERING_MOTOR);
 
+  public Intake() {
+    intakeTalon.setInverted(true);
+  }
+
   /**
    * Set the intake to a particular speed
    * 
@@ -27,6 +31,6 @@ public class Intake extends SubsystemBase {
    */
   public void set(double throttle) {
     intakeTalon.set(ControlMode.PercentOutput, throttle);
-    centeringTalon.set(ControlMode.PercentOutput, throttle);
+    centeringTalon.set(ControlMode.PercentOutput, throttle / 2);
   }
 }

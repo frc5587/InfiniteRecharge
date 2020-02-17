@@ -7,12 +7,10 @@
 
 package frc.robot;
 
-
 import org.frc5587.lib.pid.PID;
 import org.frc5587.lib.pid.FPID;
 
 import edu.wpi.first.wpilibj.controller.ArmFeedforward;
-
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -29,35 +27,33 @@ public final class Constants {
      * Constants used by the intake
      */
     public static final class IntakeConstants {
-        public static final int INTAKE_MOTOR = 1;
-        public static final int CENTERING_MOTOR = 2;
-      
+        public static final int INTAKE_MOTOR = 41;
+        public static final int CENTERING_MOTOR = 42;
+
     }
 
     /**
      * Constants used by the conveyor
      */
-  public static final class ConveyorConstants {
-    public static final int CONVEYOR_MOTOR = 10;
-  }
+    public static final class ConveyorConstants {
+        public static final int CONVEYOR_MOTOR = 50;
+    }
 
     public static final class ArmConstants {
         public static final int ARM_MOTOR = 21;
 
-        public static final ArmFeedforward FF = new ArmFeedforward (
-            .219, //kS 
-            .439, //kCos
-            .169, //kV
-            .0125 //kA
-            );
+        public static final ArmFeedforward FF = new ArmFeedforward(.219, // kS
+                .439, // kCos
+                .169, // kV
+                .0125 // kA
+        );
 
-        public static final PID ARM_PID = new PID(
-            .273, //kP
-            0.0, //kI
-            125.//0 //kD
-            );
+        public static final PID ARM_PID = new PID(.273, // kP
+                0.0, // kI
+                125.// 0 //kD
+        );
     }
-      
+
     public static final class ShooterConstants {
         public static final int SHOOTER_MOTOR_ONE = 31; // top
         public static final int SHOOTER_MOTOR_TWO = 32; // bottom
@@ -74,16 +70,14 @@ public final class Constants {
         public static final double MAX_VELOCITY_ONE = 5074;
         public static final double MAX_VELOCITY_TWO = 5080;
 
-        public static final FPID SHOOTER_ONE_FPID = new FPID(
-                (1 / MAX_VELOCITY_ONE), // kF
+        public static final FPID SHOOTER_ONE_FPID = new FPID((1 / MAX_VELOCITY_ONE), // kF
                 ((.065 / (3000 - 2954)) * 1.5), // kP
                 0, // kI
                 .1 * 6 // kD
         );
 
-        public static final FPID SHOOTER_TWO_FPID = new FPID(
-                (1 / MAX_VELOCITY_TWO), // kF
-                ((.057 / (3040 - 3000)) * 1.5), // kP
+        public static final FPID SHOOTER_TWO_FPID = new FPID((1 / MAX_VELOCITY_TWO), // kF
+                ((.057 / (3040 - 3000)) * 1.5), // kPig
                 0, // kI
                 (8.5 * (.05 / (3040 - 3000)) * 12.5) // kD
         );

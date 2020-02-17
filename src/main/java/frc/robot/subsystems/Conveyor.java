@@ -9,17 +9,17 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 
 public class Conveyor extends SubsystemBase {
   private final TalonSRX conveyorBeltMotor = new TalonSRX(Constants.ConveyorConstants.CONVEYOR_MOTOR);
+  private final TalonSRX intakeTalon = new TalonSRX(IntakeConstants.INTAKE_MOTOR);
 
-  /**
-   * Creates a new Conveyor.
-   */
   public Conveyor() {
+    intakeTalon.setInverted(true);
+    conveyorBeltMotor.setInverted(true);
 
   }
 
@@ -27,14 +27,14 @@ public class Conveyor extends SubsystemBase {
    * Moves the conveyor forward
    */
   public void moveForward() {
-    conveyorBeltMotor.set(ControlMode.PercentOutput, 0.30);
+    conveyorBeltMotor.set(ControlMode.PercentOutput, 0.75);
   }
 
   /**
    * Moves the conveyor backwards
    */
   public void moveBackward() {
-    conveyorBeltMotor.set(ControlMode.PercentOutput, -0.30);
+    conveyorBeltMotor.set(ControlMode.PercentOutput, -0.75);
   }
 
   /**
@@ -42,5 +42,10 @@ public class Conveyor extends SubsystemBase {
    */
   public void stopMovement() {
     conveyorBeltMotor.set(ControlMode.PercentOutput, 0);
+  }
+
+  @Override
+  public void periodic() {
+
   }
 }
