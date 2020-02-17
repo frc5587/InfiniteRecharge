@@ -11,6 +11,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.AlternateEncoderType;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -58,6 +59,11 @@ public class Drivetrain extends PIDSubsystem {
 
     var leftGroup = new SpeedControllerGroup(leftLeader, leftFollower);
     var rightGroup = new SpeedControllerGroup(rightLeader, rightFollower);
+
+    leftLeader.setIdleMode(IdleMode.kCoast);
+    leftFollower.setIdleMode(IdleMode.kCoast);
+    rightLeader.setIdleMode(IdleMode.kCoast);
+    rightFollower.setIdleMode(IdleMode.kCoast);
 
     leftGroup.setInverted(DrivetrainConstants.LEFT_SIDE_INVERTED);
     rightGroup.setInverted(DrivetrainConstants.RIGHT_SIDE_INVERTED);
@@ -157,7 +163,7 @@ public class Drivetrain extends PIDSubsystem {
    * @return the raw, unbounded heading of the drivetrain gyro in degrees
    */
   public double getHeading() {
-    return ahrs.getAngle() * (DrivetrainConstants.GYRO_POSITIVE_COUNTERCLOCKWISE ? 1 : -1);
+    return ahrs.getAngle() * (DrivetrainConstants.INVERT_GYRO_DIRECTION ? 1 : -1);
   }
 
   /**
@@ -179,15 +185,16 @@ public class Drivetrain extends PIDSubsystem {
   }
 
   @Override
-  public void useOutput(double output, double setpoint) {
+  protected void useOutput(double output, double setpoint) {
     // Use the output and add the turn PID feed forward constant
-    arcadeDrive(DrivetrainConstants.TURN_PID_FORWARD_THROTTLE, output + DrivetrainConstants.TURN_FPID.kF);
+    arcadeDrive(DrivetrainConstants.TURN_PID_FORWARD_THROTTLE,
+        output + Math.copySign(DrivetrainConstants.TURN_FPID.kF, output));
   }
 
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
-    return ahrs.getAngle();
+    return getHeading();
   }
 
   public Pose2d getPose() {
@@ -198,8 +205,15 @@ public class Drivetrain extends PIDSubsystem {
     return new DifferentialDriveWheelSpeeds(getLeftVelocityMetersPerSecond(), getRightVelocityMetersPerSecond());
   }
 
+  public Pose2d getClosetsPoseAtTime(double time) {
+    return poseHistory.getClosest(time);
+  }
+
   @Override
   public void periodic() {
+    // Call periodic of PIDSubsystem to ensure PID controller runs
+    super.periodic();
+
     // Update the pose
     var gyroAngle = Rotation2d.fromDegrees(getHeading());
     odometry.update(gyroAngle, getLeftPositionMeters(), getRightPositionMeters());

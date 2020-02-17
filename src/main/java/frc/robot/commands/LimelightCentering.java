@@ -64,7 +64,6 @@ public class LimelightCentering extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // Shouldn't ever return true, but just in case of an error:
     return false;
   }
 
@@ -87,9 +86,9 @@ public class LimelightCentering extends CommandBase {
 
     // Calculate the desired angle using the error and current angle
     var currentHeading = drivetrain.getHeading180();
-    double desiredAngle = currentHeading + angleError;
+    double desiredAngle = currentHeading - angleError;
     SmartDashboard.putNumber("Current Angle", currentHeading);
-    SmartDashboard.putNumber("Desired Error", desiredAngle);
+    SmartDashboard.putNumber("Desired Angle", desiredAngle);
 
     // Set the angle PID controller to the desired angle
     drivetrain.setSetpoint(desiredAngle);
