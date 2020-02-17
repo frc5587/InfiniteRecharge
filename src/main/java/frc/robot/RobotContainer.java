@@ -39,9 +39,9 @@ public class RobotContainer {
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
   
   // private final Conveyor conveyor = new Conveyor();
-  private final Arm m_arm = new Arm();
-  private final Conveyor conveyor = new Conveyor();
-  private final Intake intake = new Intake();
+  // private final Arm m_arm = new Arm();
+  // private final Conveyor conveyor = new Conveyor();
+  // private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
 
   /**
@@ -64,13 +64,13 @@ public class RobotContainer {
     var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
     var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
     var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
-    var rightTrigger = new Trigger(() -> xb.getTriggerAxis(Hand.kRight) != 0);
+    var rightTrigger = new Trigger(() -> xb.getTriggerAxis(Hand.kRight) > .2);
 
-    xButton.whenPressed(() -> intake.set(1), intake).whenReleased(() -> intake.set(0), intake);
-    yButton.whenPressed(() -> intake.set(-1), intake).whenReleased(() -> intake.set(0), intake);
-    leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
-    rightBumper.whenPressed(conveyor::moveForward).whenReleased(conveyor::stopMovement);
-    rightTrigger.whileActiveContinuous(() -> shooter.setVelocity(xb.getTriggerAxis(Hand.kRight)));
+    // xButton.whenPressed(() -> intake.set(1), intake).whenReleased(() -> intake.set(0), intake);
+    // yButton.whenPressed(() -> intake.set(-1), intake).whenReleased(() -> intake.set(0), intake);
+    // leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
+    // rightBumper.whenPressed(conveyor::moveForward).whenReleased(conveyor::stopMovement);
+    rightTrigger.whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight))).whenInactive(() -> shooter.setThrottle(0));
   }
 
   /**

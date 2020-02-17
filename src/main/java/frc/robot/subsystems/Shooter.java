@@ -11,6 +11,7 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,8 +48,11 @@ public class Shooter extends SubsystemBase {
     motorOne.restoreFactoryDefaults();
     motorTwo.restoreFactoryDefaults();
 
-    motorOne.setInverted(false);
-    motorTwo.setInverted(false);
+    motorOne.setInverted(true);
+    motorTwo.setInverted(true);
+
+    motorOne.setIdleMode(IdleMode.kCoast);
+    motorTwo.setIdleMode(IdleMode.kCoast);
 
     sparkPIDControllerOne.setFeedbackDevice(sparkEncoderOne);
     sparkPIDControllerTwo.setFeedbackDevice(sparkEncoderTwo);
@@ -90,5 +94,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    System.out.println("One: " + sparkEncoderOne.getVelocity());
+    System.out.println("Two: " + sparkEncoderTwo.getVelocity());
   }
 }
