@@ -39,35 +39,37 @@ public class Intake extends SubsystemBase {
   }
 
   /**
-   * Moves the conveyer forward
+   * Moves the conveyer and intake forward
    */
-  public void moveForward() {
+  public void moveConveyorForward( ){
     conveyorBeltMotor.set(ControlMode.PercentOutput, 0.75);
   }
+  public void moveIntakeForward(){
+    intakeTalon.set(ControlMode.PercentOutput, 1.00);
+    centeringTalon.set(ControlMode.PercentOutput, 0.5);
+  }
 
   /**
-   * Moves the conveyer backwards
+   * Moves the conveyer and intake backwards
    */
-  public void moveBackward() {
+  public void moveConveyorBackward() {
     conveyorBeltMotor.set(ControlMode.PercentOutput, -0.75);
   }
-
+  public void moveIntakeBackward(){
+    intakeTalon.set(ControlMode.PercentOutput, -1.00);
+    centeringTalon.set(ControlMode.PercentOutput, -0.5);
+    }
   /**
-   * Stops all movement of the conveyer
+   * Stops all movement of the conveyer and intake 
    */
-  public void stopMovement() {
+  public void stopConveyorMovement() {
     conveyorBeltMotor.set(ControlMode.PercentOutput, 0);
   }
-
-  /**
-   * Sets the motors on the intake to a value.
-   * 
-   * @param throttle sets the motor to this value
-   */
-  public void set(double throttle) {
-    intakeTalon.set(ControlMode.PercentOutput, -throttle);
-    centeringTalon.set(ControlMode.PercentOutput, -throttle);
+  public void stopIntakeMovement(){
+    intakeTalon.set(ControlMode.PercentOutput, 0);
+    centeringTalon.set(ControlMode.PercentOutput, 0);
   }
+ 
   
   /**
    * Method that returns a value of current amount of balls.
@@ -109,4 +111,7 @@ public class Intake extends SubsystemBase {
     previousSettingOfTopSwitch = topLimit.get();
     SmartDashboard.putNumber("number_of_balls", currentNumberOfBalls);
   }
+
+public void set(int i) {
+}
 }

@@ -52,18 +52,26 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
-    var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
-    xButton.whenPressed(() -> intake.set(1), intake).whenReleased(() -> intake.set(0), intake);
-
-    var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
-    yButton.whenPressed(() -> intake.set(-1), intake).whenReleased(() -> intake.set(0), intake);
+    /**
+     * Binds the ability to move the intake and conveyor to the right and left bumpers
+     */
+    var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
+    rightBumper.whileHeld(() -> {
+      intake.moveIntakeForward();
+      intake.moveConveyorForward();
+    }, intake).whenReleased(() -> {
+      intake.stopConveyorMovement();
+      intake.stopIntakeMovement();
+    });
 
     var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
-    leftBumper.whenPressed(intake::moveBackward).whenReleased(intake::stopMovement);
-
-    var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
-    rightBumper.whenPressed(intake::moveForward).whenReleased(intake::stopMovement);
+    leftBumper.whileHeld(() -> {
+      intake.moveConveyorBackward();
+      intake.moveIntakeBackward();
+    }).whenReleased(() -> {
+      intake.stopConveyorMovement();
+      intake.stopIntakeMovement();
+    });
 
     SmartDashboard.putData("Ball Reset", new InstantCommand(intake::reset));
 

@@ -32,7 +32,7 @@ public class BallCollection extends CommandBase {
     // We can only hold 5 balls, therefore when the sensors detect more than that
     // the robot disables the intake motors.
     if (intake.getCurrentNumberOfBalls() >= 5) {
-      intake.set(0);
+      intake.stopIntakeMovement();
     }
   }
 

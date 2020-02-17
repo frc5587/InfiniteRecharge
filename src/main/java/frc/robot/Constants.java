@@ -9,8 +9,6 @@ package frc.robot;
 
 import org.frc5587.lib.pid.PID;
 import org.frc5587.lib.pid.FPID;
-
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.controller.ArmFeedforward;
 
 /**
@@ -30,7 +28,7 @@ public final class Constants {
     public static final class IntakeConstants {
         public static final int INTAKE_MOTOR = 41;
         public static final int CENTERING_MOTOR = 42;
-        public static final int CONVEYOR_MOTOR = 10;
+        public static final int CONVEYOR_MOTOR = 50;
         public static final int BOTTOM_LIMIT = 0;
         public static final int TOP_LIMIT = 1;
     }
