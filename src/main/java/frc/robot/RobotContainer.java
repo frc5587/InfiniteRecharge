@@ -12,18 +12,13 @@ import org.frc5587.lib.control.DeadbandXboxController;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-
-import frc.robot.subsystems.Conveyor;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
-import frc.robot.commands.Shoot;
-
+import frc.robot.commands.BallCollection;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -38,23 +33,15 @@ public class RobotContainer {
 
   private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
-  
-  // private final Conveyor conveyor = new Conveyor();
-  // private final Shooter shooter = new Shooter();
-  // private final Shoot shoot = new Shoot(shooter, joy::getY);
-  private final Arm m_arm = new Arm();
-  private final Conveyor conveyor = new Conveyor();
-  private final Intake intake = new Intake();
 
-  //buttons configurations
-  private final Trigger rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
+  private final Intake intake = new Intake();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
-    // shooter.setDefaultCommand(shoot);
+    intake.setDefaultCommand(new BallCollection(intake));
     configureButtonBindings();
   }
 
@@ -73,14 +60,13 @@ public class RobotContainer {
     yButton.whenPressed(() -> intake.set(-1), intake).whenReleased(() -> intake.set(0), intake);
 
     var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
-    leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
+    leftBumper.whenPressed(intake::moveBackward).whenReleased(intake::stopMovement);
 
     var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
-    rightBumper.whenPressed(conveyor::moveForward).whenReleased(conveyor::stopMovement);
+    rightBumper.whenPressed(intake::moveForward).whenReleased(intake::stopMovement);
 
-    // rightJoy.whileActiveContinuous(() -> {
-    //   m_arm.setArm(xb.getY(Hand.kRight));
-    // }, m_arm);
+    SmartDashboard.putData("Ball Reset", new InstantCommand(intake::reset));
+
   }
 
   /**
