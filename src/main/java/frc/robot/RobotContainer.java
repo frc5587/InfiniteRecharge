@@ -8,22 +8,11 @@
 package frc.robot;
 
 import org.frc5587.lib.control.DeadbandXboxController;
-
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-
-import frc.robot.subsystems.Conveyor;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
-import frc.robot.commands.Shoot;
-
+import frc.robot.subsystems.Climber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -34,27 +23,20 @@ import frc.robot.commands.Shoot;
  */
 public class RobotContainer {
 
-  // The robot's subsystems and commands are defined here...
+ public final Climber climber = new Climber();
 
-  private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
-  
-  // private final Conveyor conveyor = new Conveyor();
-  // private final Shooter shooter = new Shooter();
-  // private final Shoot shoot = new Shoot(shooter, joy::getY);
-  private final Arm m_arm = new Arm();
-  private final Conveyor conveyor = new Conveyor();
-  private final Intake intake = new Intake();
 
-  //buttons configurations
-  private final Trigger rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
+  // buttons configurations
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Configure the button bindings
-    // shooter.setDefaultCommand(shoot);
+  
+   
+
+  
     configureButtonBindings();
   }
 
@@ -65,22 +47,10 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    Trigger trigger = new Trigger(() -> xb.getPOV() == 0);
+    
+    trigger.whenActive(() -> climber.set(.5), climber).whenInactive(() -> climber.set(0), climber);
 
-    var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
-    xButton.whenPressed(() -> intake.set(1), intake).whenReleased(() -> intake.set(0), intake);
-
-    var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
-    yButton.whenPressed(() -> intake.set(-1), intake).whenReleased(() -> intake.set(0), intake);
-
-    var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
-    leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
-
-    var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
-    rightBumper.whenPressed(conveyor::moveForward).whenReleased(conveyor::stopMovement);
-
-    // rightJoy.whileActiveContinuous(() -> {
-    //   m_arm.setArm(xb.getY(Hand.kRight));
-    // }, m_arm);
   }
 
   /**
