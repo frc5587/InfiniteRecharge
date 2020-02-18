@@ -31,6 +31,8 @@ public final class Constants {
         public static final int CONVEYOR_MOTOR = 50;
         public static final int BOTTOM_LIMIT = 0;
         public static final int TOP_LIMIT = 1;
+        public static final double THROTTLE = 1.0;
+        public static final double CONVEYOR_THROTTLE = 0.75;
     }
 
     public static final class ArmConstants {

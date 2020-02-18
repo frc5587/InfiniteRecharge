@@ -9,7 +9,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,8 +26,8 @@ public class Intake extends SubsystemBase {
   private boolean previousSettingOfBottomSwitch = bottomLimit.get();
   private boolean previousSettingOfTopSwitch = topLimit.get();
   private boolean shoot = false;
-  private final TalonSRX intakeTalon = new TalonSRX(IntakeConstants.INTAKE_MOTOR);
-  private final TalonSRX centeringTalon = new TalonSRX(IntakeConstants.CENTERING_MOTOR);
+  private final TalonSRX intakeTalon = new TalonSRX(Constants.IntakeConstants.INTAKE_MOTOR);
+  private final TalonSRX centeringTalon = new TalonSRX(Constants.IntakeConstants.CENTERING_MOTOR);
 
   /**
    * Creates a new Conveyor.
@@ -39,32 +38,41 @@ public class Intake extends SubsystemBase {
   }
 
   /**
-   * Moves the conveyer and intake forward
+   * Moves the conveyer forward
    */
   public void moveConveyorForward( ){
-    conveyorBeltMotor.set(ControlMode.PercentOutput, 0.75);
+    conveyorBeltMotor.set(ControlMode.PercentOutput, Constants.IntakeConstants.CONVEYOR_THROTTLE);
   }
+  /**
+   * Moves the intake forward
+   */
   public void moveIntakeForward(){
-    intakeTalon.set(ControlMode.PercentOutput, 1.00);
-    centeringTalon.set(ControlMode.PercentOutput, 0.5);
+    intakeTalon.set(ControlMode.PercentOutput, Constants.IntakeConstants.THROTTLE);
+    centeringTalon.set(ControlMode.PercentOutput,  Constants.IntakeConstants.THROTTLE/2);
   }
 
   /**
-   * Moves the conveyer and intake backwards
+   * Moves the conveyer backward 
    */
   public void moveConveyorBackward() {
-    conveyorBeltMotor.set(ControlMode.PercentOutput, -0.75);
+    conveyorBeltMotor.set(ControlMode.PercentOutput, -Constants.IntakeConstants.CONVEYOR_THROTTLE));
   }
+  /**
+   * Moves the intake backward
+   */
   public void moveIntakeBackward(){
-    intakeTalon.set(ControlMode.PercentOutput, -1.00);
-    centeringTalon.set(ControlMode.PercentOutput, -0.5);
+    intakeTalon.set(ControlMode.PercentOutput, -Constants.IntakeConstants.THROTTLE);
+    centeringTalon.set(ControlMode.PercentOutput, -Constants.IntakeConstants.THROTTLE/2);
     }
   /**
-   * Stops all movement of the conveyer and intake 
+   * Stops all movement of the conveyer 
    */
   public void stopConveyorMovement() {
     conveyorBeltMotor.set(ControlMode.PercentOutput, 0);
   }
+  /**
+   * Stops all movement of the intake
+   */
   public void stopIntakeMovement(){
     intakeTalon.set(ControlMode.PercentOutput, 0);
     centeringTalon.set(ControlMode.PercentOutput, 0);
@@ -91,7 +99,7 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // updates the number of balls. Only works if limit switch was not previously
     // enabled.
-    if (bottomLimit.get() && bottomLimit.get() != previousSettingOfBottomSwitch) {
+    if (bottomLimit.get() && bottomLimit.get() != previousSettingOfBottomSwitch && currentNumberOfBalls <= 5) {
       currentNumberOfBalls += 1;
     }
     if (topLimit.get() && topLimit.get() != previousSettingOfTopSwitch && currentNumberOfBalls > 0) {
@@ -111,7 +119,4 @@ public class Intake extends SubsystemBase {
     previousSettingOfTopSwitch = topLimit.get();
     SmartDashboard.putNumber("number_of_balls", currentNumberOfBalls);
   }
-
-public void set(int i) {
-}
 }

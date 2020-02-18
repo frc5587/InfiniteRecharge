@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.subsystems.Intake;
-import frc.robot.commands.BallCollection;
+import frc.robot.commands.IntakeStopper;;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -41,7 +41,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    intake.setDefaultCommand(new BallCollection(intake));
+    intake.setDefaultCommand(new IntakeStopper(intake));
     configureButtonBindings();
   }
 

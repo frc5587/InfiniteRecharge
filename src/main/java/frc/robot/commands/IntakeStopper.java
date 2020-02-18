@@ -9,12 +9,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
-
-public class BallCollection extends CommandBase {
+/**
+ * This class records current amount of balls and issues a command in order to stop it when it gets to 5.
+ */
+public class IntakeStopper extends CommandBase {
 
   private final Intake intake;
 
-  public BallCollection(Intake intake) {
+  public IntakeStopper(Intake intake) {
     addRequirements(intake);
 
     this.intake = intake;
