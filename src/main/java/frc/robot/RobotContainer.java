@@ -18,9 +18,16 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import frc.robot.commands.ManualArmControl;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Conveyor;
+import frc.robot.subsystems.Shooter;
+import frc.robot.commands.Shoot;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -40,6 +47,11 @@ public class RobotContainer {
   // private final Shooter shooter = new Shooter();
   // private final Shoot shoot = new Shoot(shooter, joy::getY);
   private final Arm m_arm = new Arm();
+  private final Conveyor conveyor = new Conveyor();
+  private final Intake intake = new Intake();
+
+  //buttons configurations
+  private final Trigger rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -63,6 +75,9 @@ public class RobotContainer {
     var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
     var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
     var armLimitSwitch = new Trigger(() -> m_arm.getLimitSwitchVal());
+    var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
+    var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
+
 
     // arm
     // determines whether the arm should be manually controlled
@@ -71,6 +86,12 @@ public class RobotContainer {
     xButton.whenPressed(() -> {
     m_arm.setArmAngleDegrees(14);
     }, m_arm);
+    
+    // xButton.whenPressed(() -> intake.set(1), intake).whenReleased(() -> intake.set(0), intake);
+    yButton.whenPressed(() -> intake.set(-1), intake).whenReleased(() -> intake.set(0), intake);
+    leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
+    rightBumper.whenPressed(conveyor::moveForward).whenReleased(conveyor::stopMovement);
+
 
     // moves arm to the highest position
     yButton.whenPressed(() -> {

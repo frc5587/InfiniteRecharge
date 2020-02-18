@@ -25,6 +25,18 @@ import edu.wpi.first.wpilibj.controller.ArmFeedforward;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    /**
+     * Constants used by the intake
+     */
+    public static final class IntakeConstants {
+        public static final int INTAKE_MOTOR = 41;
+        public static final int CENTERING_MOTOR = 42;
+      
+    }
+
+  public static final class ConveyorConstants {
+    public static final int CONVEYOR_MOTOR = 10;
+  }
 
   public static final class ConveyorConstants {
     public static final int CONVEYOR_MOTOR = 10;
@@ -34,6 +46,7 @@ public final class Constants {
         public static final int ARM_MOTOR = 30;
 
         public static final int ARM_LIMIT_SWITCH = 9;
+
 
         public static final ArmFeedforward FF = new ArmFeedforward (
             .219, //kS 
@@ -54,6 +67,7 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int SHOOTER_MOTOR_ONE = 20; // top
         public static final int SHOOTER_MOTOR_TWO = 21; // bottom
+
 
         public static final float MIN_OUTPUT = 1;
         public static final float MAX_OUTPUT = 1;
@@ -80,5 +94,6 @@ public final class Constants {
                 0, // kI
                 (8.5 * (.05 / (3040 - 3000)) * 12.5) // kD
         );
+
     }
 }

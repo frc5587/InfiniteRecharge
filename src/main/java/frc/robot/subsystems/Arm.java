@@ -60,6 +60,7 @@ public class Arm extends SubsystemBase {
      */
     public void setArmAngleDegrees(double angle) {
         armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
+
     }
 
     /**
