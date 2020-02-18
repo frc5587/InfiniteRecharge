@@ -70,7 +70,8 @@ public class RobotContainer {
     // yButton.whenPressed(() -> intake.set(-1), intake).whenReleased(() -> intake.set(0), intake);
     // leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
     // rightBumper.whenPressed(conveyor::moveForward).whenReleased(conveyor::stopMovement);
-    rightTrigger.whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight))).whenInactive(() -> shooter.setThrottle(0));
+    // rightTrigger.whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight))).whenInactive(() -> shooter.setThrottle(0));
+    xButton.whenActive(() -> shooter.setVelocity(shooter.calculateShooterSpeed(3.658, 30))).whenInactive(() -> shooter.setVelocity(0));
   }
 
   /**

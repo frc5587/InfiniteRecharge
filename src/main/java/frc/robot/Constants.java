@@ -75,7 +75,7 @@ public final class Constants {
                 (1 / MAX_VELOCITY_ONE), // kF
                 ((.065 / (3000 - 2954)) * 1.5), // kP
                 0, // kI
-                .1 * 6 // kD
+                8 // kD
         );
 
         public static final FPID SHOOTER_TWO_FPID = new FPID(
