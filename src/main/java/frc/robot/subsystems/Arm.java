@@ -160,4 +160,12 @@ public class Arm extends SubsystemBase {
      public DigitalInput getArmLimitSwitch() {
          return armLimitSwitch;
      }
+
+     /**
+      * gets the value for the limit switch and switches it
+      * @return limit switch value
+      */
+     public boolean getLimitSwitchVal() {
+         return !(armLimitSwitch.get());
+     }
 }

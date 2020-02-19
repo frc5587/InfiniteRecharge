@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import java.util.function.DoubleSupplier;
+
 import org.frc5587.lib.control.DeadbandXboxController;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -20,8 +22,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+import frc.robot.commands.ManualArmControl;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Shooter;
 
 
@@ -39,7 +43,16 @@ public class RobotContainer {
   private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
 
+  // private final Conveyor conveyor = new Conveyor();
+  // private final Shooter shooter = new Shooter();
+  // private final Shoot shoot = new Shoot(shooter, joy::getY);
   private final Arm m_arm = new Arm();
+  private final Conveyor conveyor = new Conveyor();
+  private final Intake intake = new Intake();
+
+  //buttons configurations
+  private final Trigger rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
+
   private final Shooter shooter = new Shooter();
 
   /**
@@ -48,6 +61,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     // shooter.setDefaultCommand(shoot);
+    // controlLED;
     configureButtonBindings();
   }
 
@@ -58,16 +72,24 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
-    var aButton = new JoystickButton(xb, XboxController.Button.kA.value);
+
     var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
     var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
     var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
     var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
+    var aButton = new JoystickButton(xb, XboxController.Button.kA.value);
 
     var rightTrigger = new Trigger(() -> xb.getTriggerAxis(Hand.kRight) > .2);
     var armLimitSwitch = new Trigger(m_arm.getArmLimitSwitch()::get);
+    var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
     var leftTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
+
+
+    // arm
+    // determines whether the arm should be manually controlled
+    leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(m_arm, () -> xb.getY(Hand.kRight)));
+
+
 
     // arm
     //determines whether the arm should be manually controlled
@@ -79,15 +101,21 @@ public class RobotContainer {
     // aButton.whileActiveContinuous(m_arm::/*fire all command*/, m_arm);
     //moves arm to the lowest position
     xButton.whenPressed(() -> {
-      m_arm.setArmAngleDegrees(14);
+    m_arm.setArmAngleDegrees(14);
     }, m_arm);
+    
+    // xButton.whenPressed(() -> intake.set(1), intake).whenReleased(() -> intake.set(0), intake);
+    yButton.whenPressed(() -> intake.set(-1), intake).whenReleased(() -> intake.set(0), intake);
+    leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
+    rightBumper.whenPressed(conveyor::moveForward).whenReleased(conveyor::stopMovement);
 
-    //moves arm to the highest position
+
+    // moves arm to the highest position
     yButton.whenPressed(() -> {
-      m_arm.setArmAngleDegrees(55);
+    m_arm.setArmAngleDegrees(55);
     }, m_arm);
 
-    //reset encoder
+    // reset encoder
     armLimitSwitch.whenActive(m_arm::resetEncoder);
 
     xButton.whenActive(() -> shooter.setVelocity(shooter.calculateShooterSpeed(3.658, 30))).whenInactive(() -> shooter.setVelocity(0));
@@ -98,7 +126,6 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return null;

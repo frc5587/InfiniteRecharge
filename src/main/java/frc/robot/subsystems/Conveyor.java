@@ -23,20 +23,24 @@ public class Conveyor extends SubsystemBase {
 
   }
 
+  /**
+   * Moves the conveyer forward
+   */
   public void moveForward() {
     conveyorBeltMotor.set(ControlMode.PercentOutput, 0.30);
   }
 
+  /**
+   * Moves the conveyer backwards
+   */
   public void moveBackward() {
     conveyorBeltMotor.set(ControlMode.PercentOutput, -0.30);
   }
 
+  /**
+   * Stops all movement of the conveyer
+   */
   public void stopMovement() {
     conveyorBeltMotor.set(ControlMode.PercentOutput, 0);
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
   }
 }
