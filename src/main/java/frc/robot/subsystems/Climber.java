@@ -18,13 +18,13 @@ import frc.robot.Constants;
  * The subsystem for the climber
  */
 public class Climber extends SubsystemBase {
-  private final TalonFX climberSparkMax = new TalonFX(Constants.ClimberConstants.CLIMBER_MOTOR);
+  private final TalonFX climberMotor = new TalonFX(Constants.ClimberConstants.CLIMBER_MOTOR);
 
   /**
    * Inverts the motors
    */
   public Climber() {
-    climberSparkMax.setInverted(true);
+    climberMotor.setInverted(true);
   }
 
   /**
@@ -33,7 +33,7 @@ public class Climber extends SubsystemBase {
    * @param percent percent to set the motor to
    */
   public void set(double percent) {
-    climberSparkMax.set(ControlMode.PercentOutput, percent);
+    climberMotor.set(ControlMode.PercentOutput, percent);
   }
 
   @Override

@@ -8,10 +8,12 @@
 package frc.robot;
 
 import org.frc5587.lib.control.DeadbandXboxController;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+
 import frc.robot.subsystems.Climber;
 
 /**
@@ -47,10 +49,9 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    Trigger trigger = new Trigger(() -> xb.getPOV() == 0);
-    
-    trigger.whenActive(() -> climber.set(.5), climber).whenInactive(() -> climber.set(0), climber);
+    var climberDPad = new POVButton(xb, 0);
 
+    climberDPad.whenActive(() -> climber.set(0.5), climber).whenInactive(() -> climber.set(0), climber);
   }
 
   /**
