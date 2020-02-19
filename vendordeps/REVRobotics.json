@@ -21,6 +21,7 @@
             "version": "1.5.1",
             "skipInvalidPlatforms": true,
             "isJar": false,
+
             "validPlatforms": []
         }
     ],
@@ -29,12 +30,14 @@
         {
             "artifactId": "SparkMax-cpp",
             "binaryPlatforms": [
+
                 "windowsx86-64",
                 "windowsx86",
                 "linuxaarch64bionic",
                 "linuxx86-64",
                 "linuxathena",
                 "linuxraspbian"
+
             ],
             "groupId": "com.revrobotics.frc",
             "headerClassifier": "headers",
@@ -45,6 +48,7 @@
         },
         {
             "artifactId": "SparkMax-driver",
+
             "binaryPlatforms": [
                 "windowsx86-64",
                 "windowsx86",
@@ -52,6 +56,7 @@
                 "linuxx86-64",
                 "linuxathena",
                 "linuxraspbian"
+
             ],
             "groupId": "com.revrobotics.frc",
             "headerClassifier": "headers",
@@ -76,12 +81,14 @@
             "isJar": false,
             "skipInvalidPlatforms": true,
             "validPlatforms": [
+
                 "windowsx86-64",
                 "windowsx86",
                 "linuxaarch64bionic",
                 "linuxx86-64",
                 "linuxathena",
                 "linuxraspbian"
+
             ],
             "version": "1.5.1"
         }

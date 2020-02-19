@@ -13,11 +13,17 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 
+import frc.robot.subsystems.Conveyor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -33,10 +39,8 @@ public class RobotContainer {
   private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
 
-  // private final Conveyor conveyor = new Conveyor();
-  // private final Shooter shooter = new Shooter();
-  // private final Shoot shoot = new Shoot(shooter, joy::getY);
   private final Arm m_arm = new Arm();
+  private final Shooter shooter = new Shooter();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -55,17 +59,22 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
-    var leftTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
     var aButton = new JoystickButton(xb, XboxController.Button.kA.value);
     var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
     var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
+    var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
+    var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
+
+    var rightTrigger = new Trigger(() -> xb.getTriggerAxis(Hand.kRight) > .2);
     var armLimitSwitch = new Trigger(m_arm.getArmLimitSwitch()::get);
+    var leftTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
 
     // arm
     //determines whether the arm should be manually controlled
     leftTrigger.and(rightJoy).whileActiveContinuous(() -> {
       m_arm.setArm(xb.getY(Hand.kRight));
     }, m_arm);
+    
     //TODO: fire all command binding
     // aButton.whileActiveContinuous(m_arm::/*fire all command*/, m_arm);
     //moves arm to the lowest position
@@ -80,6 +89,8 @@ public class RobotContainer {
 
     //reset encoder
     armLimitSwitch.whenActive(m_arm::resetEncoder);
+
+    xButton.whenActive(() -> shooter.setVelocity(shooter.calculateShooterSpeed(3.658, 30))).whenInactive(() -> shooter.setVelocity(0));
   }
 
   /**

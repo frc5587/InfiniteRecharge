@@ -11,6 +11,7 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,6 +32,8 @@ public class Shooter extends SubsystemBase {
 
   public Shooter() {
     configureSpark();
+    SmartDashboard.putNumber("desired velocity", 0.0);
+    SmartDashboard.putNumber("d value", .6);
   }
 
   public void setThrottle(double throttle) {
@@ -48,7 +51,10 @@ public class Shooter extends SubsystemBase {
     motorTwo.restoreFactoryDefaults();
 
     motorOne.setInverted(true);
-    motorTwo.setInverted(false);
+    motorTwo.setInverted(true);
+
+    motorOne.setIdleMode(IdleMode.kCoast);
+    motorTwo.setIdleMode(IdleMode.kCoast);
 
     sparkPIDControllerOne.setFeedbackDevice(sparkEncoderOne);
     sparkPIDControllerTwo.setFeedbackDevice(sparkEncoderTwo);
@@ -78,8 +84,22 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("velocity two", sparkEncoderTwo.getVelocity());
   }
 
+  public double getBallExitVelocity() {
+    return (sparkEncoderOne.getVelocity() * Constants.ShooterConstants.FLYWHEEL_RADIUS * Constants.ShooterConstants.CONVERSION_FACTOR); // tangential velocity = angular velocity * radius
+  }
+
+  // returns RPM 
+  public double calculateShooterSpeed(double distanceFromTarget, double armAngle) {
+    return -(((1 / (Math.sqrt((Constants.ShooterConstants.GOAL_HEIGHT - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * Constants.ShooterConstants.G))))) * (distanceFromTarget / Math.cos(armAngle)) * (Constants.ShooterConstants.CONVERSION_FACTOR / Constants.ShooterConstants.FLYWHEEL_RADIUS)));
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    System.out.println("One: " + sparkEncoderOne.getVelocity());
+    System.out.println("Two: " + sparkEncoderTwo.getVelocity());
+    log();
+    // setVelocity(SmartDashboard.getNumber("desired velocity", 0));
+    // sparkPIDControllerOne.setD(SmartDashboard.getNumber("d value", 0));
   }
 }

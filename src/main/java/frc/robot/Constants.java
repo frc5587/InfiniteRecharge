@@ -25,10 +25,18 @@ import edu.wpi.first.wpilibj.controller.ArmFeedforward;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    /**
+     * Constants used by the intake
+     */
+    public static final class IntakeConstants {
+        public static final int INTAKE_MOTOR = 41;
+        public static final int CENTERING_MOTOR = 42;
+      
+    }
 
-  public static final class ConveyorConstants {
-    public static final int CONVEYOR_MOTOR = 10;
-  }
+    public static final class ConveyorConstants {
+        public static final int CONVEYOR_MOTOR = 10;
+    }
 
     public static final class ArmConstants {
         public static final int ARM_MOTOR = 30;
@@ -70,7 +78,7 @@ public final class Constants {
                 (1 / MAX_VELOCITY_ONE), // kF
                 ((.065 / (3000 - 2954)) * 1.5), // kP
                 0, // kI
-                .1 * 6 // kD
+                8 // kD
         );
 
         public static final FPID SHOOTER_TWO_FPID = new FPID(
@@ -79,5 +87,14 @@ public final class Constants {
                 0, // kI
                 (8.5 * (.05 / (3040 - 3000)) * 12.5) // kD
         );
+
+        public static final double FLYWHEEL_RADIUS = 0.0508; // radius in meters (2")
+
+        public static final double CONVERSION_FACTOR = 30 / Math.PI; // RPM --> radians/second
+
+        public static final double GOAL_HEIGHT = 2.495; // height in meters
+
+        public static final double G = 9.8; // gravitational acceleration
+
     }
 }
