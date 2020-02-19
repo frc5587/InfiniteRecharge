@@ -7,19 +7,15 @@
 
 package frc.robot;
 
-import java.util.function.DoubleSupplier;
-
 import org.frc5587.lib.control.DeadbandXboxController;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 
-import frc.robot.subsystems.Conveyor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.commands.ManualArmControl;
