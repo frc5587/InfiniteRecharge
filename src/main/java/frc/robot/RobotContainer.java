@@ -16,17 +16,20 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LimelightCentering;
 import frc.robot.commands.RamseteCommandWrapper;
+import frc.robot.commands.RamseteCommandWrapper.AutoPaths;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
 
@@ -65,6 +68,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     var buttonTwelve = new JoystickButton(joystick, 12);
     buttonTwelve.whenPressed(centeringCommand).whenReleased(() -> centeringCommand.cancel());
+
+    SmartDashboard.putData("Reset Drivetrain Encoders", new InstantCommand(drivetrain::resetEncoders));    
   }
 
   /**
@@ -73,30 +78,30 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-        new SimpleMotorFeedforward(DrivetrainConstants.KS_VOLTS, DrivetrainConstants.KV_VOLT_SECONDS_PER_METER,
-            DrivetrainConstants.KA_VOLT_SECONDS_PER_SQUARED_METER),
-        DrivetrainConstants.DRIVETRAIN_KINEMATICS, 10);
+    // var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
+    //     new SimpleMotorFeedforward(DrivetrainConstants.KS_VOLTS, DrivetrainConstants.KV_VOLT_SECONDS_PER_METER,
+    //         DrivetrainConstants.KA_VOLT_SECONDS_PER_SQUARED_METER),
+    //     DrivetrainConstants.DRIVETRAIN_KINEMATICS, 10);
 
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(AutoConstants.MAX_VELOCITY_METERS_PER_SECOND,
-        AutoConstants.MAX_ACCEL_METERS_PER_SECOND_SQUARED)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DrivetrainConstants.DRIVETRAIN_KINEMATICS)
-            // Apply the voltage constraint
-            .addConstraint(autoVoltageConstraint);
+    // // Create config for trajectory
+    // TrajectoryConfig config = new TrajectoryConfig(AutoConstants.MAX_VELOCITY_METERS_PER_SECOND,
+    //     AutoConstants.MAX_ACCEL_METERS_PER_SECOND_SQUARED)
+    //         // Add kinematics to ensure max speed is actually obeyed
+    //         .setKinematics(DrivetrainConstants.DRIVETRAIN_KINEMATICS)
+    //         // Apply the voltage constraint
+    //         .addConstraint(autoVoltageConstraint);
 
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        // Pass config
-        config);
+    // // An example trajectory to follow. All units in meters.
+    // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+    //     // Start at the origin facing the +X direction
+    //     new Pose2d(0, 0, new Rotation2d(0)),
+    //     // Pass through these two interior waypoints, making an 's' curve path
+    //     List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+    //     // End 3 meters straight ahead of where we started, facing forward
+    //     new Pose2d(3, 0, new Rotation2d(0)),
+    //     // Pass config
+    //     config);
 
-    return new RamseteCommandWrapper(drivetrain, exampleTrajectory);
+    return new RamseteCommandWrapper(drivetrain, AutoPaths.ForwardStop);
   }
 }

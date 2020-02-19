@@ -10,6 +10,10 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Transform2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.MLConstants;
 
@@ -17,12 +21,21 @@ public class MachineLearning extends SubsystemBase {
   private final NetworkTable mlTable = NetworkTableInstance.getDefault().getTable("ML");
   private final NetworkTableEntry numberObjectsEntry = mlTable.getEntry("nb_objects");
   private final NetworkTableEntry boxesEntry = mlTable.getEntry("boxes");
+  private final NetworkTableEntry captureTimeEntry = mlTable.getEntry("pre_time");
+  private final NetworkTableEntry postAnalysisTimeEntry = mlTable.getEntry("post_time");
 
   /**
    * Creates a new MachineLearning.
    */
   public MachineLearning() {
 
+  }
+
+  public double getImageCaptureFPGATime() {
+    // Get the difference b/t now on the RPi and when the picture was taken
+    var timeDelta = postAnalysisTimeEntry.getDouble(0.0) - captureTimeEntry.getDouble(0.0);
+    // Adjust the FPGA time by that difference
+    return Timer.getFPGATimestamp() - timeDelta;
   }
 
   public Box getClosestBox() {
@@ -50,25 +63,8 @@ public class MachineLearning extends SubsystemBase {
     return null;
   }
 
-  public double getDistanceClosestBox() {
-    var closestBox = getClosestBox();
-    if (closestBox != null) {
-      var verticalDifferencePixels = closestBox.getCenterY() - (MLConstants.CAMERA_HEIGHT_PIXELS / 2);
-      var tanVerticalAngle = verticalDifferencePixels / MLConstants.CAMERA_FOCAL_LENGTH_PIXELS;
-
-      var heightDifference = MLConstants.CENTER_CAMERA_HEIGHT_METERS - MLConstants.POWER_CELL_RADIUS_METERS;
-      return heightDifference / tanVerticalAngle;
-    }
-    return Double.NaN;
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
   public static class Box {
-    public final double topLeftX, topLeftY, bottomRightX, bottomRightY;
+    private final double topLeftX, topLeftY, bottomRightX, bottomRightY;
 
     public Box(double... boxPoints) {
       this.topLeftX = boxPoints[0];
@@ -81,22 +77,45 @@ public class MachineLearning extends SubsystemBase {
       return (topLeftX - bottomRightX) * (topLeftY - bottomRightY);
     }
 
-    public double getCenterY() {
+    private double getCenterY() {
       return (topLeftY + bottomRightY) / 2;
     }
 
-    public double getCenterX() {
+    private double getCenterX() {
       return (topLeftX + bottomRightX) / 2;
     }
 
-    public double getVerticalAngleRadians() {
+    public Rotation2d getVerticalAngleDelta() {
       var yDifference = getCenterY() - (MLConstants.CAMERA_HEIGHT_PIXELS / 2);
-      return Math.atan2(yDifference, MLConstants.CAMERA_FOCAL_LENGTH_PIXELS);
+      var rawAngle = Math.atan2(yDifference, MLConstants.CAMERA_FOCAL_LENGTH_PIXELS);
+      return new Rotation2d(rawAngle);
     }
 
-    public double getHorizontalAngleRadians() {
+    public Rotation2d getHorizontalAngleDelta() {
       var xDifference = getCenterX() - (MLConstants.CAMERA_HEIGHT_PIXELS / 2);
-      return Math.atan2(xDifference, MLConstants.CAMERA_FOCAL_LENGTH_PIXELS);
+      var rawAngle = Math.atan2(xDifference, MLConstants.CAMERA_FOCAL_LENGTH_PIXELS);
+      return new Rotation2d(rawAngle);
+    }
+
+    private double getDistance() {
+      var verticalDifferencePixels = getCenterY() - (MLConstants.CAMERA_HEIGHT_PIXELS / 2);
+      var tanVerticalAngle = verticalDifferencePixels / MLConstants.CAMERA_FOCAL_LENGTH_PIXELS;
+
+      var heightDifference = getHeightDifference();
+      return heightDifference / tanVerticalAngle;
+    }
+
+    public Transform2d getTransform() {
+      var distance = getDistance();
+      var horizontalAngle = getHorizontalAngleDelta();
+      var xOffset = distance * horizontalAngle.getCos();
+      var yOffset = distance * horizontalAngle.getSin();
+      var translation = new Translation2d(xOffset, yOffset);
+      return new Transform2d(translation, horizontalAngle);
+    }
+
+    private static double getHeightDifference() {
+      return MLConstants.CENTER_CAMERA_HEIGHT_METERS - MLConstants.POWER_CELL_RADIUS_METERS;
     }
   }
 }

@@ -10,6 +10,8 @@ package frc.robot.commands;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -82,6 +84,7 @@ public class RamseteCommandWrapper extends CommandBase {
       pathFollowCommand = ramseteCommand.andThen(drivetrain::stop);
 
       pathFollowCommand.schedule();
+      drivetrain.setIdleMode(IdleMode.kBrake);
     }
   }
 
@@ -98,6 +101,7 @@ public class RamseteCommandWrapper extends CommandBase {
       pathFollowCommand.cancel();
     }
     drivetrain.stop();
+    drivetrain.setIdleMode(IdleMode.kCoast);
   }
 
   // Returns true when the command should end.
@@ -111,7 +115,7 @@ public class RamseteCommandWrapper extends CommandBase {
   }
 
   public enum AutoPaths {
-    RightStartToPowerPort, BackwardsRightStartToPowerPort, FarSideOfTrenchToLoading, SuperCoolPath;
+    RightStartToPowerPort, BackwardsRightStartToPowerPort, FarSideOfTrenchToLoading, SuperCoolPath, ForwardStop;
 
     /**
      * Get the path to the corresponding path JSON file (generated with PathWeaver)
@@ -135,6 +139,9 @@ public class RamseteCommandWrapper extends CommandBase {
         break;
       case SuperCoolPath:
         path += "Super Cool Path.wpilib.json";
+        break;
+      case ForwardStop:
+        path += "Forward Stop.wpilib.json";
         break;
       } 
 
