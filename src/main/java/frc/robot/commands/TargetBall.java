@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.MachineLearning;
@@ -41,6 +42,13 @@ public class TargetBall extends CommandBase {
     // Adjsut the desired pose
     var adjustedPose = capturePose.plus(transform);
     System.out.println(adjustedPose);
+
+    // Log data to SmartDashboard for testing
+    SmartDashboard.putString("Delta", transform.toString());
+    SmartDashboard.putString("Current", drivetrain.getPose().toString());
+    SmartDashboard.putString("Adjusted", adjustedPose.toString());
+
+    // TODO: Generate and follow path
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -51,11 +59,13 @@ public class TargetBall extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    // TODO: cancel path following and stop motors
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    // TODO: detect if path is finisehd
+    return true;
   }
 }
