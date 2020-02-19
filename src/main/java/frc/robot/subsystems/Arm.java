@@ -60,7 +60,6 @@ public class Arm extends SubsystemBase {
      */
     public void setArmAngleDegrees(double angle) {
         armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
-
     }
 
     /**
@@ -123,7 +122,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Encoder Val", getPositionTicks());
         SmartDashboard.putNumber("FF", calcFeedForward());
         SmartDashboard.putNumber("Vel", getVelocityDegreesPerSecond());
-        // setArmAngleDegrees(SmartDashboard.getNumber("Goto Position", 14));
+        setArmAngleDegrees(SmartDashboard.getNumber("Goto Position", 14));
     }
 
     @Override
