@@ -54,6 +54,10 @@ public class Shooter extends SubsystemBase {
         sparkPIDControllerTwo.setReference(velocityRPM, ControlType.kVelocity);
     }
 
+    public static double calcArmAngleDegrees(double distanceMeters) {
+        return Math.toDegrees(Math.atan(2 * Constants.ShooterConstants.GOAL_HEIGHT / distanceMeters));
+    }
+
     /**
      * Fully configures all sparkMaxs
      *    - sets factory defaults
@@ -107,8 +111,8 @@ public class Shooter extends SubsystemBase {
     }
 
     // returns RPM 
-    public double calculateShooterSpeed(double distanceFromTarget, double armAngle) {
-        return -(((1 / (Math.sqrt((Constants.ShooterConstants.GOAL_HEIGHT - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * Constants.ShooterConstants.G))))) * (distanceFromTarget / Math.cos(armAngle)) * (Constants.ShooterConstants.CONVERSION_FACTOR / Constants.ShooterConstants.FLYWHEEL_RADIUS)));
+    public double calculateShooterSpeed(double distanceFromTargetMeters, double armAngleDegrees) {
+        return -(((1 / (Math.sqrt((Constants.ShooterConstants.GOAL_HEIGHT - (distanceFromTargetMeters * Math.tan(Math.toRadians(armAngleDegrees)) / (-.5 * Constants.ShooterConstants.G))))) * (distanceFromTargetMeters / Math.cos(armAngleDegrees)) * (Constants.ShooterConstants.CONVERSION_FACTOR / Constants.ShooterConstants.FLYWHEEL_RADIUS))));
     }
 
     @Override

@@ -19,15 +19,26 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class Shoot extends CommandBase {
     private Shooter shooter;
     private DoubleSupplier yAxis;
+    private boolean velocityControl;
 
     /**
      * Creates a new Shoot command
      *
      * @param subsystem The subsystem used by this command.
      */
+    public Shoot(Shooter shooter, DoubleSupplier y, boolean velocityControl) {
+        this.shooter = shooter;
+        yAxis = y;
+        this.velocityControl = velocityControl;
+
+        // Use addRequirements() here to declare subsystem dependencies.
+        addRequirements(shooter);
+    }
+
     public Shoot(Shooter shooter, DoubleSupplier y) {
         this.shooter = shooter;
         yAxis = y;
+        this.velocityControl = false;
 
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(shooter);
@@ -42,8 +53,20 @@ public class Shoot extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        shooter.setThrottle(yAxis.getAsDouble());
+        if (velocityControl) {
+            shooter.setVelocity(yAxis.getAsDouble());
+        } else {
+            shooter.setThrottle(yAxis.getAsDouble());
+        }
         // shooter.setVelocity(SmartDashboard.getNumber("Setpoint", 0.0));
         shooter.log();
+    }
+
+    /**
+     * Stops the shooter from spinning
+     */
+    @Override
+    public void end(boolean interrupted) {
+        shooter.setThrottle(0);
     }
 }

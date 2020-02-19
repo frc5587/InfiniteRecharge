@@ -27,6 +27,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Shooter;
+import frc.robot.commandGroups.setArmThenShoot;
 
 
 /**
@@ -78,6 +79,7 @@ public class RobotContainer {
         var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
         var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
         var aButton = new JoystickButton(xb, XboxController.Button.kA.value);
+        var leftStickButton = new JoystickButton(xb, XboxController.Button.kStickLeft.value);
 
         var rightTrigger = new Trigger(() -> xb.getTriggerAxis(Hand.kRight) > .2);
         var armLimitSwitch = new Trigger(m_arm.getArmLimitSwitch()::get);
@@ -119,6 +121,8 @@ public class RobotContainer {
         armLimitSwitch.whenActive(m_arm::resetEncoder);
 
         xButton.whenActive(() -> shooter.setVelocity(shooter.calculateShooterSpeed(3.658, 30))).whenInactive(() -> shooter.setVelocity(0));
+    
+        leftStickButton.whenActive(new setArmThenShoot(shooter, m_arm));
     }
 
     /**
