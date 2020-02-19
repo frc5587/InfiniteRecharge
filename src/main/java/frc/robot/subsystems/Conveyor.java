@@ -14,33 +14,33 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Conveyor extends SubsystemBase {
-  private final TalonSRX conveyorBeltMotor = new TalonSRX(Constants.ConveyorConstants.CONVEYOR_MOTOR);
+    private final TalonSRX conveyorBeltMotor = new TalonSRX(Constants.ConveyorConstants.CONVEYOR_MOTOR);
 
-  /**
-   * Creates a new Conveyor.
-   */
-  public Conveyor() {
+    /**
+     * Creates a new Conveyor.
+     */
+    public Conveyor() {
 
-  }
+    }
 
-  /**
-   * Moves the conveyer forward
-   */
-  public void moveForward() {
-    conveyorBeltMotor.set(ControlMode.PercentOutput, 0.30);
-  }
+    /**
+     * Moves the conveyer forward
+     */
+    public void moveForward() {
+        conveyorBeltMotor.set(ControlMode.PercentOutput, 0.30);
+    }
 
-  /**
-   * Moves the conveyer backwards
-   */
-  public void moveBackward() {
-    conveyorBeltMotor.set(ControlMode.PercentOutput, -0.30);
-  }
+    /**
+     * Moves the conveyer backwards
+     */
+    public void moveBackward() {
+        conveyorBeltMotor.set(ControlMode.PercentOutput, -0.30);
+    }
 
-  /**
-   * Stops all movement of the conveyer
-   */
-  public void stopMovement() {
-    conveyorBeltMotor.set(ControlMode.PercentOutput, 0);
-  }
+    /**
+     * Stops all movement of the conveyer
+     */
+    public void stopMovement() {
+        conveyorBeltMotor.set(ControlMode.PercentOutput, 0);
+    }
 }

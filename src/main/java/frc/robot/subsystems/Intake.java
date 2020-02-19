@@ -17,16 +17,16 @@ import frc.robot.Constants.IntakeConstants;
  * The subsystem for the intake
  */
 public class Intake extends SubsystemBase {
-  private final TalonSRX intakeTalon = new TalonSRX(IntakeConstants.INTAKE_MOTOR);
-  private final TalonSRX centeringTalon = new TalonSRX(IntakeConstants.CENTERING_MOTOR);
+    private final TalonSRX intakeTalon = new TalonSRX(IntakeConstants.INTAKE_MOTOR);
+    private final TalonSRX centeringTalon = new TalonSRX(IntakeConstants.CENTERING_MOTOR);
 
-  /**
-   * Set the intake to a particular speed
-   * 
-   * @param throttle the speed at which the intake takes in or removes power cells
-   */
-  public void set(double throttle) {
-    intakeTalon.set(ControlMode.Velocity, -throttle);
-    centeringTalon.set(ControlMode.Velocity, -throttle);
-  }
+    /**
+     * Set the intake to a particular speed
+     * 
+     * @param throttle the speed at which the intake takes in or removes power cells
+     */
+    public void set(double throttle) {
+        intakeTalon.set(ControlMode.Velocity, -throttle);
+        centeringTalon.set(ControlMode.Velocity, -throttle);
+    }
 }
