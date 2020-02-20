@@ -76,6 +76,8 @@ public class RobotContainer {
     buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));
 
     SmartDashboard.putData("Reset Drivetrain Encoders", new InstantCommand(drivetrain::resetEncoders));
+    SmartDashboard.putData("Reset Drivetrain Heading", new InstantCommand(drivetrain::resetHeading));
+    SmartDashboard.putData("Reset Drivetrain Odometry", new InstantCommand(drivetrain::resetOdometry));
   }
 
   /**
@@ -84,32 +86,31 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-    // new SimpleMotorFeedforward(DrivetrainConstants.KS_VOLTS,
-    // DrivetrainConstants.KV_VOLT_SECONDS_PER_METER,
-    // DrivetrainConstants.KA_VOLT_SECONDS_PER_SQUARED_METER),
-    // DrivetrainConstants.DRIVETRAIN_KINEMATICS, 10);
+    var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
+        new SimpleMotorFeedforward(DrivetrainConstants.KS_VOLTS, DrivetrainConstants.KV_VOLT_SECONDS_PER_METER,
+            DrivetrainConstants.KA_VOLT_SECONDS_SQUARED_PER_METER),
+        DrivetrainConstants.DRIVETRAIN_KINEMATICS, 10);
 
-    // // Create config for trajectory
-    // TrajectoryConfig config = new
-    // TrajectoryConfig(AutoConstants.MAX_VELOCITY_METERS_PER_SECOND,
-    // AutoConstants.MAX_ACCEL_METERS_PER_SECOND_SQUARED)
-    // // Add kinematics to ensure max speed is actually obeyed
-    // .setKinematics(DrivetrainConstants.DRIVETRAIN_KINEMATICS)
-    // // Apply the voltage constraint
-    // .addConstraint(autoVoltageConstraint);
+    // Create config for trajectory
+    TrajectoryConfig config = new TrajectoryConfig(AutoConstants.MAX_VELOCITY_METERS_PER_SECOND,
+        AutoConstants.MAX_ACCEL_METERS_PER_SECOND_SQUARED)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(DrivetrainConstants.DRIVETRAIN_KINEMATICS)
+            // Apply the voltage constraint
+            .addConstraint(autoVoltageConstraint);
 
-    // // An example trajectory to follow. All units in meters.
-    // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-    // // Start at the origin facing the +X direction
-    // new Pose2d(0, 0, new Rotation2d(0)),
-    // // Pass through these two interior waypoints, making an 's' curve path
-    // List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-    // // End 3 meters straight ahead of where we started, facing forward
-    // new Pose2d(3, 0, new Rotation2d(0)),
-    // // Pass config
-    // config);
+    // An example trajectory to follow. All units in meters.
+    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(3, 0, new Rotation2d(0)),
+        // Pass config
+        config);
 
-    return new RamseteCommandWrapper(drivetrain, AutoPaths.ForwardStop);
+    return new RamseteCommandWrapper(drivetrain, exampleTrajectory);
+    // return new RamseteCommandWrapper(drivetrain, AutoPaths.SuperCoolPath);
   }
 }

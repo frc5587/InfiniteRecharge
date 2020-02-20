@@ -35,8 +35,8 @@ public final class Constants {
     }
 
     public static class AutoConstants {
-        public static final double MAX_VELOCITY_METERS_PER_SECOND = 0.1;
-        public static final double MAX_ACCEL_METERS_PER_SECOND_SQUARED = 0.01;
+        public static final double MAX_VELOCITY_METERS_PER_SECOND = 3;
+        public static final double MAX_ACCEL_METERS_PER_SECOND_SQUARED = 3;
 
         // Reasonable values from WPILib docs (values are robot-agnostic)
         public static final double RAMSETE_B = 2;
@@ -52,7 +52,7 @@ public final class Constants {
 
         public static final boolean LEFT_SIDE_INVERTED = true;
         public static final boolean RIGHT_SIDE_INVERTED = true;
-        public static final boolean LEFT_ENCODER_INVERTED = true;
+        public static final boolean LEFT_ENCODER_INVERTED = false;
         public static final boolean RIGHT_ENCODER_INVERTED = true;
 
         public static final int SMART_CURRENT_LIMIT = 30;
@@ -69,13 +69,11 @@ public final class Constants {
         public static final double TURN_PID_UPDATE_PERIOD_SEC = 0.010;
 
         // Values from characterisation
-        public static final double KS_VOLTS = 0.208;
-        public static final double KV_VOLT_SECONDS_PER_METER = 0.532;
-        public static final double KA_VOLT_SECONDS_PER_SQUARED_METER = 0.112;
-        public static final double TRACK_WIDTH_METERS = 2.748596; // Empirically determined
-        // public static final double TRACK_WIDTH_METERS = 0.5266055254; // Physical
-        // public static final double RAMSETE_KP_DRIVE_VEL = 2.42; // Raw from charact.
-        public static final double RAMSETE_KP_DRIVE_VEL = 0.242; // Reduced by 10
+        public static final double KS_VOLTS = 0.153;
+        public static final double KV_VOLT_SECONDS_PER_METER = 2.2;
+        public static final double KA_VOLT_SECONDS_SQUARED_PER_METER = 0.394;
+        public static final double TRACK_WIDTH_METERS = 0.686863135; // Empirically determined fixed
+        public static final double RAMSETE_KP_DRIVE_VEL = 14.4; // Raw from charact. fixed
 
         // Basic differential drivetrain kinematics constants
         public static final int TICKS_PER_REV = 8192;

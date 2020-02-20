@@ -19,9 +19,9 @@ import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -30,7 +30,7 @@ public class RamseteCommandWrapper extends CommandBase {
   private final Drivetrain drivetrain;
   private final Trajectory trajectory;
 
-  private SequentialCommandGroup pathFollowCommand;
+  private Command pathFollowCommand;
 
   /**
    * Creates a new RamseteCommandWrapper.
@@ -64,6 +64,8 @@ public class RamseteCommandWrapper extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    drivetrain.setIdleMode(IdleMode.kBrake);
+
     // Start the pathFollowCommand
     if (trajectory != null) {
       // Shift the trajectory to be relative to the robot's current position
@@ -71,20 +73,20 @@ public class RamseteCommandWrapper extends CommandBase {
       var shiftedTrajectory = trajectory.relativeTo(currentPose);
 
       // Create the RamseteCommand based on the drivetrain's constants
-      var ramseteCommand = new RamseteCommand(shiftedTrajectory, drivetrain::getPose,
+      var ramsete = new RamseteCommand(shiftedTrajectory, drivetrain::getPose,
           new RamseteController(AutoConstants.RAMSETE_B, AutoConstants.RAMSETE_ZETA),
           new SimpleMotorFeedforward(DrivetrainConstants.KS_VOLTS, DrivetrainConstants.KV_VOLT_SECONDS_PER_METER,
-              DrivetrainConstants.KA_VOLT_SECONDS_PER_SQUARED_METER),
+              DrivetrainConstants.KA_VOLT_SECONDS_SQUARED_PER_METER),
           DrivetrainConstants.DRIVETRAIN_KINEMATICS, drivetrain::getWheelSpeeds,
           new PIDController(DrivetrainConstants.RAMSETE_KP_DRIVE_VEL, 0, 0),
           new PIDController(DrivetrainConstants.RAMSETE_KP_DRIVE_VEL, 0, 0),
           // RamseteCommand passes volts to the callback
           drivetrain::tankLRVolts, drivetrain);
+
       // Run path following command, then stop at the end
-      pathFollowCommand = ramseteCommand.andThen(drivetrain::stop);
+      pathFollowCommand = ramsete.andThen(drivetrain::stop, drivetrain);
 
       pathFollowCommand.schedule();
-      drivetrain.setIdleMode(IdleMode.kBrake);
     }
   }
 
@@ -100,22 +102,20 @@ public class RamseteCommandWrapper extends CommandBase {
     if (pathFollowCommand != null) {
       pathFollowCommand.cancel();
     }
-    drivetrain.stop();
-    drivetrain.setIdleMode(IdleMode.kCoast);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     if (pathFollowCommand != null) {
-      return pathFollowCommand.isFinished();
+      return !pathFollowCommand.isScheduled();
     } else {
       return true;
     }
   }
 
   public enum AutoPaths {
-    RightStartToPowerPort, BackwardsRightStartToPowerPort, FarSideOfTrenchToLoading, SuperCoolPath, ForwardStop;
+    RightStartToPowerPort, BackwardsRightStartToPowerPort, FarSideOfTrenchToLoading, SuperCoolPath, ForwardStop, SCurve;
 
     /**
      * Get the path to the corresponding path JSON file (generated with PathWeaver)
@@ -127,23 +127,25 @@ public class RamseteCommandWrapper extends CommandBase {
     public Path getJSONPath() {
       var path = "paths/";
       switch (this) {
-      case RightStartToPowerPort:
-        path += "Right Start to Power Port.wpilib.json";
-        break;
-
-      case BackwardsRightStartToPowerPort:
+        case RightStartToPowerPort:
+          path += "Right Start to Power Port.wpilib.json";
+          break;
+        case BackwardsRightStartToPowerPort:
           path += "Backwards Right Start to Power Port.wpilib.json";
           break;
-      case FarSideOfTrenchToLoading:
-        path += "Far Side of Trench to Loading.wpilib.json";
-        break;
-      case SuperCoolPath:
-        path += "Super Cool Path.wpilib.json";
-        break;
-      case ForwardStop:
-        path += "Forward Stop.wpilib.json";
-        break;
-      } 
+        case FarSideOfTrenchToLoading:
+          path += "Far Side of Trench to Loading.wpilib.json";
+          break;
+        case SuperCoolPath:
+          path += "Super Cool Path.wpilib.json";
+          break;
+        case ForwardStop:
+          path += "Forward Stop.wpilib.json";
+          break;
+        case SCurve:
+          path += "S Curve.wpilib.json";
+          break;
+      }
 
       // Join the path with where the code is deployed to on the roborIO, in order to
       // get the complete path

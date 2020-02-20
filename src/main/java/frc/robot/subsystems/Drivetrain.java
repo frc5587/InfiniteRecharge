@@ -25,8 +25,8 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
-import frc.robot.LimitedPoseMap;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.LimitedPoseMap;
 
 public class Drivetrain extends PIDSubsystem {
   private final CANSparkMax leftLeader = new CANSparkMax(DrivetrainConstants.LEFT_LEADER, MotorType.kBrushless);
@@ -43,7 +43,7 @@ public class Drivetrain extends PIDSubsystem {
       DrivetrainConstants.TICKS_PER_REV);
   private final AHRS ahrs = new AHRS();
 
-  private final DifferentialDrive differentialDrive;
+  private final DifferentialDrive differentialDrive = new DifferentialDrive(leftGroup, rightGroup);
   private final DifferentialDriveOdometry odometry;
   private final LimitedPoseMap poseHistory = new LimitedPoseMap(DrivetrainConstants.HISTORY_LIMIT);
 
@@ -81,9 +81,7 @@ public class Drivetrain extends PIDSubsystem {
     rightLeader.setSecondaryCurrentLimit(DrivetrainConstants.HARD_CURRENT_LIMIT);
     rightFollower.setSecondaryCurrentLimit(DrivetrainConstants.HARD_CURRENT_LIMIT);
 
-    this.differentialDrive = new DifferentialDrive(leftGroup, rightGroup);
-
-    var currentAngle = Rotation2d.fromDegrees(getHeading());
+    var currentAngle = Rotation2d.fromDegrees(getHeading360());
     this.odometry = new DifferentialDriveOdometry(currentAngle);
     // TODO: Allow for selecting of several initial positions with odometry, instead
     // of assuming x=0, y=0
@@ -138,11 +136,11 @@ public class Drivetrain extends PIDSubsystem {
   }
 
   public double getRightVelocityRotationsPerMinute() {
-    return rightEncoder.getVelocity();
+    return rightEncoder.getVelocity() / 2;
   }
 
   public double getLeftVelocityRotationsPerMinute() {
-    return leftEncoder.getVelocity();
+    return leftEncoder.getVelocity() / 2;
   }
 
   private double rotationsPerMinuteToMetersPerSecond(double rotationsPerMinute) {
@@ -168,6 +166,12 @@ public class Drivetrain extends PIDSubsystem {
    */
   public double getHeading() {
     return ahrs.getAngle() * (DrivetrainConstants.INVERT_GYRO_DIRECTION ? -1 : 1);
+    // return gyro.getAngle();
+  }
+
+  public double getHeading360() {
+    return Math.IEEEremainder(getHeading(), 360.0);
+    // return gyro.getAngle();
   }
 
   /**
@@ -218,6 +222,16 @@ public class Drivetrain extends PIDSubsystem {
     rightEncoder.setPosition(0);
   }
 
+  public void resetHeading() {
+    ahrs.reset();
+  }
+
+  public void resetOdometry() {
+    resetHeading();
+    resetEncoders();
+    odometry.resetPosition(new Pose2d(), new Rotation2d());
+  }
+
   public void setIdleMode(IdleMode idleMode) {
     leftLeader.setIdleMode(idleMode);
     leftFollower.setIdleMode(idleMode);
@@ -231,7 +245,7 @@ public class Drivetrain extends PIDSubsystem {
     super.periodic();
 
     // Update the pose
-    var gyroAngle = Rotation2d.fromDegrees(getHeading());
+    var gyroAngle = Rotation2d.fromDegrees(getHeading360());
     odometry.update(gyroAngle, getLeftPositionMeters(), getRightPositionMeters());
 
     // Log the pose
@@ -240,9 +254,12 @@ public class Drivetrain extends PIDSubsystem {
     // Log debug data
     SmartDashboard.putNumber("L Distance Feet", Units.metersToFeet(getLeftPositionMeters()));
     SmartDashboard.putNumber("R Distance Feet", Units.metersToFeet(getRightPositionMeters()));
-    SmartDashboard.putNumber("L Distance Rot", getLeftPositionRotations());
-    SmartDashboard.putNumber("R Distance Rot", getRightPositionRotations());
-    SmartDashboard.putNumber("L Velocity Feet", getLeftVelocityMetersPerSecond());
-    SmartDashboard.putNumber("R Velocity Feet", getRightVelocityMetersPerSecond());
+    SmartDashboard.putNumber("L Distance Meters", getLeftPositionMeters());
+    SmartDashboard.putNumber("R Distance Meters", getRightPositionMeters());
+    SmartDashboard.putNumber("L Velocity Meters", getLeftVelocityMetersPerSecond());
+    SmartDashboard.putNumber("R Velocity Meters", getRightVelocityMetersPerSecond());
+    SmartDashboard.putNumber("Heading", getHeading360());
+    SmartDashboard.putString("Pose", getPose().toString());
+    SmartDashboard.putString("Wheel Speed", getWheelSpeeds().toString());
   }
 }
