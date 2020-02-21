@@ -26,6 +26,13 @@ import edu.wpi.first.wpilibj.controller.ArmFeedforward;
  */
 public final class Constants {
     /**
+     * Constants used by the climber
+     */
+    public static final class ClimberConstants {
+        public static final int CLIMBER_MOTOR = 1;
+    }
+
+    /**
      * Constants used by the intake
      */
     public static final class IntakeConstants {
