@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.geometry.Transform2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -68,9 +69,10 @@ public class RamseteCommandWrapper extends CommandBase {
 
     // Start the pathFollowCommand
     if (trajectory != null) {
-      // Shift the trajectory to be relative to the robot's current position
+      // Shift the trajectory to start at to the robot's current position
       var currentPose = drivetrain.getPose();
-      var shiftedTrajectory = trajectory.relativeTo(currentPose);
+      var transform = new Transform2d(currentPose.getTranslation(), currentPose.getRotation());
+      var shiftedTrajectory = trajectory.transformBy(transform);
 
       // Create the RamseteCommand based on the drivetrain's constants
       var ramsete = new RamseteCommand(shiftedTrajectory, drivetrain::getPose,
