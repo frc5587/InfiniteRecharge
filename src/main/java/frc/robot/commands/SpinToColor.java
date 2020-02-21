@@ -8,7 +8,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.ColorSensor;
@@ -42,8 +41,6 @@ public class SpinToColor extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("Confidence", colorSensor.getConfidence());
-    SmartDashboard.putString("Detected Color", colorSensor.getTargetColor().toString());
   }
 
   // Called once the command ends or is interrupted.

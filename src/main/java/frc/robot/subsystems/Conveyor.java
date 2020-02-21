@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Conveyor extends SubsystemBase {
-  private final TalonSRX conveyorBeltMotor = new TalonSRX(Constants.ConveyorConstants.CONVEYOR_MOTOR);
+  private final TalonSRX conveyorBeltMotor = new TalonSRX(Constants.IntakeConstants.CONVEYOR_MOTOR);
 
   /**
    * Creates a new Conveyor.

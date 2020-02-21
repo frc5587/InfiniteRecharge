@@ -14,11 +14,11 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ControlPanelConstants;
-import frc.robot.Constants.ControlPanelConstants.TargetColor;
 
 /**
  * The subsystem for the color sensor.
@@ -94,8 +94,17 @@ public class ColorSensor extends SubsystemBase {
     return getClosestColorMatch().confidence;
   }
 
+  /**
+   * Possible colors in the control panel
+   */
+  public static enum TargetColor {
+    BLUE, GREEN, RED, YELLOW, UNKNOWN
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Confidence", getConfidence());
+    SmartDashboard.putString("Detected Color", getTargetColor().toString());
   }
 }

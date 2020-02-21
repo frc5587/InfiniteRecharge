@@ -8,13 +8,13 @@
 package frc.robot;
 
 import org.frc5587.lib.pid.PID;
-import org.frc5587.lib.pid.FPID;
-
-import edu.wpi.first.wpilibj.controller.ArmFeedforward;
 
 import com.revrobotics.ColorMatch;
 
+import org.frc5587.lib.pid.FPID;
+
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.util.Color;
 
 /**
@@ -28,13 +28,30 @@ import edu.wpi.first.wpilibj.util.Color;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    /**
+     * Constants used by the climber
+     */
+    public static final class ClimberConstants {
+        public static final int CLIMBER_MOTOR = 1;
+    }
 
-    public static final class ConveyorConstants {
-        public static final int CONVEYOR_MOTOR = 10;
+    /**
+     * Constants used by the intake
+     */
+    public static final class IntakeConstants {
+        public static final int INTAKE_MOTOR = 41;
+        public static final int CENTERING_MOTOR = 42;
+        public static final int CONVEYOR_MOTOR = 50;
+        public static final int BOTTOM_LIMIT = 0;
+        public static final int TOP_LIMIT = 1;
+        public static final double THROTTLE = 1.0;
+        public static final double CONVEYOR_THROTTLE = 0.75;
     }
 
     public static final class ArmConstants {
-        public static final int ARM_MOTOR = 10;
+        public static final int ARM_MOTOR = 30;
+
+        public static final int ARM_LIMIT_SWITCH = 9;
 
         public static final ArmFeedforward FF = new ArmFeedforward(.219, // kS
                 .439, // kCos
@@ -42,15 +59,16 @@ public final class Constants {
                 .0125 // kA
         );
 
-        public static final PID ARM_PID = new PID(.273, // kP
+        public static final PID ARM_PID = new PID(23, // kP
                 0.0, // kI
-                125.// 0 //kD
-        );
+                // 127.//0 //kD
+                0);
+
     }
 
     public static final class ShooterConstants {
-        public static final int SHOOTER_MOTOR_ONE = 31; // top
-        public static final int SHOOTER_MOTOR_TWO = 32; // bottom
+        public static final int SHOOTER_MOTOR_ONE = 20; // top
+        public static final int SHOOTER_MOTOR_TWO = 21; // bottom
 
         public static final float MIN_OUTPUT = 1;
         public static final float MAX_OUTPUT = 1;
@@ -75,10 +93,11 @@ public final class Constants {
                 0, // kI
                 (8.5 * (.05 / (3040 - 3000)) * 12.5) // kD
         );
+
     }
 
     /**
-     * Constants used by the control panel.
+     * Constants used by the control panel
      */
     public static final class ControlPanelConstants {
         public static final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -88,12 +107,5 @@ public final class Constants {
         public static final Color GREEN_TARGET = ColorMatch.makeColor(0.197, 0.561, 0.240);
         public static final Color RED_TARGET = ColorMatch.makeColor(0.561, 0.232, 0.114);
         public static final Color YELLOW_TARGET = ColorMatch.makeColor(0.361, 0.524, 0.113);
-
-        /**
-         * Possible colors in the control panel
-         */
-        public static enum TargetColor {
-            BLUE, GREEN, RED, YELLOW, UNKNOWN
-        }
     }
 }

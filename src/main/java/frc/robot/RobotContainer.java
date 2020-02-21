@@ -22,7 +22,6 @@ import frc.robot.subsystems.Arm;
 
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.Shoot;
-import frc.robot.commands.DetectColor;
 import frc.robot.commands.RotateControlPanel;
 import frc.robot.commands.SpinToColor;
 import frc.robot.subsystems.ColorSensor;
@@ -59,7 +58,6 @@ public class RobotContainer {
     // Configure the button bindings
     // shooter.setDefaultCommand(shoot);
     configureButtonBindings();
-    colorSensor.setDefaultCommand(new DetectColor(colorSensor));
   }
 
   /**
