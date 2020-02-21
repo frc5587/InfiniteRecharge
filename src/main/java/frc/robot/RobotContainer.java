@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.XboxController;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -25,7 +26,6 @@ import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commandGroups.setArmThenShoot;
 
-
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -35,99 +35,101 @@ import frc.robot.commandGroups.setArmThenShoot;
  */
 public class RobotContainer {
 
-    // The robot's subsystems and commands are defined here...
+  // The robot's subsystems and commands are defined here...
 
-    private final Joystick joy = new Joystick(0);
-    private final DeadbandXboxController xb = new DeadbandXboxController(1);
+  private final Joystick joy = new Joystick(0);
+  private final DeadbandXboxController xb = new DeadbandXboxController(1);
 
-    // private final Conveyor conveyor = new Conveyor();
-    // private final Shooter shooter = new Shooter();
-    // private final Shoot shoot = new Shoot(shooter, joy::getY);
-    private final Arm m_arm = new Arm();
-    private final Conveyor conveyor = new Conveyor();
-    private final Intake intake = new Intake();
+  // private final Conveyor conveyor = new Conveyor();
+  // private final Shooter shooter = new Shooter();
+  // private final Shoot shoot = new Shoot(shooter, joy::getY);
+  private final Arm m_arm = new Arm();
+  private final Conveyor conveyor = new Conveyor();
+  private final Intake intake = new Intake();
 
-    //buttons configurations
-    private final Trigger rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
+  // buttons configurations
+  private final Trigger rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
 
-    private final Shooter shooter = new Shooter();
+  private final Shooter shooter = new Shooter();
 
-    /**
-     * The container for the robot. Contains subsystems, OI devices, and commands.
-     */
-    public RobotContainer() {
-        // Configure the button bindings
-        // shooter.setDefaultCommand(shoot);
-        // controlLED;
-        configureButtonBindings();
-    }
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
+  public RobotContainer() {
+    // Configure the button bindings
+    // shooter.setDefaultCommand(shoot);
+    // controlLED;
+    configureButtonBindings();
+    SmartDashboard.putNumber("distance", 3);
+  }
 
-    /**
-     * Use this method to define your button->command mappings. Buttons can be
-     * created by instantiating a {@link GenericHID} or one of its subclasses
-     * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
-     * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-     */
-    private void configureButtonBindings() {
+  /**
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by instantiating a {@link GenericHID} or one of its subclasses
+   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
+   * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   */
+  private void configureButtonBindings() {
 
-        var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
-        var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
-        var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
-        var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
-        var aButton = new JoystickButton(xb, XboxController.Button.kA.value);
-        var leftStickButton = new JoystickButton(xb, XboxController.Button.kStickLeft.value);
+    var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
+    var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
+    var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
+    var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
+    var aButton = new JoystickButton(xb, XboxController.Button.kA.value);
+    var leftStickButton = new JoystickButton(xb, XboxController.Button.kStickLeft.value);
 
-        var rightTrigger = new Trigger(() -> xb.getTriggerAxis(Hand.kRight) > .2);
-        var armLimitSwitch = new Trigger(m_arm.getArmLimitSwitch()::get);
-        var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
-        var leftTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
+    var rightTrigger = new Trigger(() -> xb.getTriggerAxis(Hand.kRight) > .2);
+    var armLimitSwitch = new Trigger(m_arm.getArmLimitSwitch()::get);
+    var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
+    var leftTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
 
+    // arm
+    // determines whether the arm should be manually controlled
+    // leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(m_arm,
+    // () -> xb.getY(Hand.kRight)));
 
-        // arm
-        // determines whether the arm should be manually controlled
-        leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(m_arm, () -> xb.getY(Hand.kRight)));
+    // arm
+    // determines whether the arm should be manually controlled
+    leftTrigger.and(rightJoy).whileActiveContinuous(() -> {
+      m_arm.setArm(xb.getY(Hand.kRight));
+    }, m_arm);
 
+    // TODO: fire all command binding
+    // aButton.whileActiveContinuous(m_arm::/*fire all command*/, m_arm);
+    // moves arm to the lowest position
+    // xButton.whenPressed(() -> {
+    // m_arm.setArmAngleDegrees(14);
+    // }, m_arm);
 
+    // xButton.whenPressed(() -> intake.set(1), intake).whenReleased(() ->
+    // intake.set(0), intake);
+    // yButton.whenPressed(() -> intake.set(-1), intake).whenReleased(() ->
+    // intake.set(0), intake);
+    leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
+    rightBumper.whenPressed(conveyor::moveForward).whenReleased(conveyor::stopMovement);
 
-        // arm
-        //determines whether the arm should be manually controlled
-        leftTrigger.and(rightJoy).whileActiveContinuous(() -> {
-            m_arm.setArm(xb.getY(Hand.kRight));
-        }, m_arm);
-        
-        //TODO: fire all command binding
-        // aButton.whileActiveContinuous(m_arm::/*fire all command*/, m_arm);
-        //moves arm to the lowest position
-        xButton.whenPressed(() -> {
-        m_arm.setArmAngleDegrees(14);
-        }, m_arm);
-        
-        // xButton.whenPressed(() -> intake.set(1), intake).whenReleased(() -> intake.set(0), intake);
-        yButton.whenPressed(() -> intake.set(-1), intake).whenReleased(() -> intake.set(0), intake);
-        leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
-        rightBumper.whenPressed(conveyor::moveForward).whenReleased(conveyor::stopMovement);
+    // moves arm to the highest position
+    yButton.whenPressed(() -> {
+      m_arm.setArmAngleDegrees(55);
+    }, m_arm);
 
+    // reset encoder
+    armLimitSwitch.whenActive(m_arm::resetEncoder);
 
-        // moves arm to the highest position
-        yButton.whenPressed(() -> {
-        m_arm.setArmAngleDegrees(55);
-        }, m_arm);
+    // xButton.whenActive(() ->
+    // shooter.setVelocity(shooter.calculateShooterSpeed(3.658,
+    // 30))).whenInactive(() -> shooter.setVelocity(0));
 
-        // reset encoder
-        armLimitSwitch.whenActive(m_arm::resetEncoder);
+    leftStickButton.whenActive(new setArmThenShoot(shooter, m_arm)).whenInactive(() -> shooter.setThrottle(0), shooter);
+  }
 
-        xButton.whenActive(() -> shooter.setVelocity(shooter.calculateShooterSpeed(3.658, 30))).whenInactive(() -> shooter.setVelocity(0));
-    
-        leftStickButton.whenActive(new setArmThenShoot(shooter, m_arm));
-    }
-
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
-        return null;
-    }
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    // An ExampleCommand will run in autonomous
+    return null;
+  }
 }

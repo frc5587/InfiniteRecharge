@@ -11,7 +11,7 @@ import frc.robot.commands.Shoot;
 
 public class setArmThenShoot extends SequentialCommandGroup {
     public setArmThenShoot(Shooter m_shooter, Arm m_arm) {
-        var distanceMeters = SmartDashboard.getNumber("distance", 5);
+        var distanceMeters = SmartDashboard.getNumber("distance", 2);
         var angleDegrees = Shooter.calcArmAngleDegrees(distanceMeters);
 
         addCommands(

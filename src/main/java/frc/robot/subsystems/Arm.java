@@ -59,6 +59,7 @@ public class Arm extends SubsystemBase {
      * @param angle angle wanted to set the arm - DEGREES
      */
     public void setArmAngleDegrees(double angle) {
+        System.out.println("setting to " + angle);
         armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
     }
 
@@ -118,17 +119,16 @@ public class Arm extends SubsystemBase {
      * SmartDashboard to update FeedForward
      */
     public void refreshPID() {
-        SmartDashboard.putNumber("Angle", getAngleDegrees());
-        SmartDashboard.putNumber("Encoder Val", getPositionTicks());
-        SmartDashboard.putNumber("FF", calcFeedForward());
-        SmartDashboard.putNumber("Vel", getVelocityDegreesPerSecond());
         setArmAngleDegrees(SmartDashboard.getNumber("Goto Position", 14));
     }
 
     @Override
     public void periodic() {
-        System.out.println(getAngleDegrees());
-        refreshPID();
+        SmartDashboard.putNumber("Angle", getAngleDegrees());
+        SmartDashboard.putNumber("Encoder Val", getPositionTicks());
+        SmartDashboard.putNumber("FF", calcFeedForward());
+        SmartDashboard.putNumber("Vel", getVelocityDegreesPerSecond());
+
         armPIDController.setFF(calcFeedForward());
     }
 

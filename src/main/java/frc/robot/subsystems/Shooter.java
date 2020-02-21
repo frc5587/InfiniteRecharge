@@ -118,8 +118,8 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        System.out.println("One: " + sparkEncoderOne.getVelocity());
-        System.out.println("Two: " + sparkEncoderTwo.getVelocity());
+        // System.out.println("One: " + sparkEncoderOne.getVelocity());
+        // System.out.println("Two: " + sparkEncoderTwo.getVelocity());
         log();
         // setVelocity(SmartDashboard.getNumber("desired velocity", 0));
         // sparkPIDControllerOne.setD(SmartDashboard.getNumber("d value", 0));
