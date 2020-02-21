@@ -22,61 +22,71 @@ import edu.wpi.first.wpilibj.controller.ArmFeedforward;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    /**
-     * Constants used by the intake
-     */
-    public static final class IntakeConstants {
-        public static final int INTAKE_MOTOR = 41;
-        public static final int CENTERING_MOTOR = 42;
-        public static final int CONVEYOR_MOTOR = 50;
-        public static final int BOTTOM_LIMIT = 0;
-        public static final int TOP_LIMIT = 1;
-        public static final double THROTTLE = 1.0;
-        public static final double CONVEYOR_THROTTLE = 0.75;
-    }
+  /**
+   * Constants used by the climber
+   */
+  public static final class ClimberConstants {
+    public static final int CLIMBER_MOTOR = 1;
+  }
 
-    public static final class ArmConstants {
-        public static final int ARM_MOTOR = 21;
+  /**
+   * Constants used by the intake
+   */
+  public static final class IntakeConstants {
+    public static final int INTAKE_MOTOR = 41;
+    public static final int CENTERING_MOTOR = 42;
+    public static final int CONVEYOR_MOTOR = 50;
+    public static final int BOTTOM_LIMIT = 0;
+    public static final int TOP_LIMIT = 1;
+    public static final double THROTTLE = 1.0;
+    public static final double CONVEYOR_THROTTLE = 0.75;
+  }
 
-        public static final ArmFeedforward FF = new ArmFeedforward(.219, // kS
-                .439, // kCos
-                .169, // kV
-                .0125 // kA
-        );
+  public static final class ArmConstants {
+    public static final int ARM_MOTOR = 30;
 
-        public static final PID ARM_PID = new PID(.273, // kP
-                0.0, // kI
-                125.// 0 //kD
-        );
-    }
+    public static final int ARM_LIMIT_SWITCH = 9;
 
-    public static final class ShooterConstants {
-        public static final int SHOOTER_MOTOR_ONE = 31; // top
-        public static final int SHOOTER_MOTOR_TWO = 32; // bottom
+    public static final ArmFeedforward FF = new ArmFeedforward(.219, // kS
+        .439, // kCos
+        .169, // kV
+        .0125 // kA
+    );
 
-        public static final float MIN_OUTPUT = 1;
-        public static final float MAX_OUTPUT = 1;
+    public static final PID ARM_PID = new PID(23, // kP
+        0.0, // kI
+        // 127.//0 //kD
+        0);
 
-        public static final double V_COMP_SATURATION = 12.0;
+  }
 
-        public static final int SMART_MOTION_SLOT = 0;
+  public static final class ShooterConstants {
+    public static final int SHOOTER_MOTOR_ONE = 20; // top
+    public static final int SHOOTER_MOTOR_TWO = 21; // bottom
 
-        public static final int K_TIMEOUT_MS = 10;
+    public static final float MIN_OUTPUT = 1;
+    public static final float MAX_OUTPUT = 1;
 
-        public static final double MAX_VELOCITY_ONE = 5074;
-        public static final double MAX_VELOCITY_TWO = 5080;
+    public static final double V_COMP_SATURATION = 12.0;
 
-        public static final FPID SHOOTER_ONE_FPID = new FPID((1 / MAX_VELOCITY_ONE), // kF
-                ((.065 / (3000 - 2954)) * 1.5), // kP
-                0, // kI
-                .1 * 6 // kD
-        );
+    public static final int SMART_MOTION_SLOT = 0;
 
-        public static final FPID SHOOTER_TWO_FPID = new FPID((1 / MAX_VELOCITY_TWO), // kF
-                ((.057 / (3040 - 3000)) * 1.5), // kP
-                0, // kI
-                (8.5 * (.05 / (3040 - 3000)) * 12.5) // kD
-        );
+    public static final int K_TIMEOUT_MS = 10;
 
-    }
+    public static final double MAX_VELOCITY_ONE = 5074;
+    public static final double MAX_VELOCITY_TWO = 5080;
+
+    public static final FPID SHOOTER_ONE_FPID = new FPID((1 / MAX_VELOCITY_ONE), // kF
+        ((.065 / (3000 - 2954)) * 1.5), // kP
+        0, // kI
+        .1 * 6 // kD
+    );
+
+    public static final FPID SHOOTER_TWO_FPID = new FPID((1 / MAX_VELOCITY_TWO), // kF
+        ((.057 / (3040 - 3000)) * 1.5), // kP
+        0, // kI
+        (8.5 * (.05 / (3040 - 3000)) * 12.5) // kD
+    );
+
+  }
 }
