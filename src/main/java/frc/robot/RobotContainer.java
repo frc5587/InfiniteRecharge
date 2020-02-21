@@ -9,7 +9,10 @@ package frc.robot;
 
 import java.util.List;
 
+import org.frc5587.lib.control.DeadbandXboxController;
+
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -24,16 +27,24 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.IntakeStopper;
 import frc.robot.commands.LimelightCentering;
+import frc.robot.commands.ManualArmControl;
 import frc.robot.commands.RamseteCommandWrapper;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.TargetBall;
-import frc.robot.commands.RamseteCommandWrapper.AutoPaths;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.MachineLearning;
+import frc.robot.subsystems.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -47,8 +58,13 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain();
   private final Limelight limelight = new Limelight();
   private final MachineLearning machineLearning = new MachineLearning();
+  private final Climber climber = new Climber();
+  private final Arm m_arm = new Arm();
+  private final Intake intake = new Intake();
+  private final Shooter shooter = new Shooter();
 
-  private final Joystick joystick = new Joystick(0);
+  private final Joystick joy = new Joystick(0);
+  private final DeadbandXboxController xb = new DeadbandXboxController(1);
 
   private final LimelightCentering centeringCommand = new LimelightCentering(drivetrain, limelight);
 
@@ -56,7 +72,9 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joystick::getY, () -> -joystick.getX()));
+    shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
+    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
+    intake.setDefaultCommand(new IntakeStopper(intake));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -69,11 +87,50 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    var buttonTwelve = new JoystickButton(joystick, 12);
-    buttonTwelve.whenPressed(centeringCommand).whenReleased(() -> centeringCommand.cancel());
+    var buttonEleven = new JoystickButton(joy, 11);
+    var buttonTwelve = new JoystickButton(joy, 12);
+    var upDPad = new POVButton(xb, 0);
+    var leftTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
+    var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
+    var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
+    var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
+    var armLimitSwitch = new Trigger(() -> m_arm.getLimitSwitchVal());
+    var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
+    var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
 
-    var buttonEleven = new JoystickButton(joystick, 11);
-    buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));
+    // Intake
+    rightBumper.whileHeld(() -> {
+      intake.moveIntakeForward();
+      intake.moveConveyorForward();
+    }, intake).whenReleased(() -> {
+      intake.stopConveyorMovement();
+      intake.stopIntakeMovement();
+    });
+    leftBumper.whileHeld(() -> {
+      intake.moveConveyorBackward();
+      intake.moveIntakeBackward();
+    }).whenReleased(() -> {
+      intake.stopConveyorMovement();
+      intake.stopIntakeMovement();
+    });
+    SmartDashboard.putData("Ball Count Reset", new InstantCommand(intake::reset));
+
+    // arm
+    // determines whether the arm should be manually controlled
+    leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(m_arm, () -> xb.getY(Hand.kRight)));
+
+    // moves arm to the lowest and highest positions
+    xButton.whenPressed(() -> m_arm.setArmAngleDegrees(14), m_arm);
+    yButton.whenPressed(() -> m_arm.setArmAngleDegrees(55), m_arm);
+
+    // reset elevator encoder
+    armLimitSwitch.whenActive(m_arm::resetEncoder);
+
+    // Run climber up
+    upDPad.whenActive(() -> climber.set(0.5), climber).whenInactive(() -> climber.set(0), climber);
+
+    buttonTwelve.whenPressed(centeringCommand).whenReleased(() -> centeringCommand.cancel());
+    buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));  
 
     SmartDashboard.putData("Reset Drivetrain Encoders", new InstantCommand(drivetrain::resetEncoders));
     SmartDashboard.putData("Reset Drivetrain Heading", new InstantCommand(drivetrain::resetHeading));

@@ -7,25 +7,19 @@
 
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
+/**
+ * This class records current amount of balls and issues a command in order to stop it when it gets to 5.
+ */
+public class IntakeStopper extends CommandBase {
 
-public class ArcadeDrive extends CommandBase {
-  private final Drivetrain drivetrain;
-  private final DoubleSupplier throttleSupplier, curveSupplier;
+  private final Intake intake;
 
-  /**
-   * Creates a new ArcadeDrive.
-   */
-  public ArcadeDrive(Drivetrain drivetrain, DoubleSupplier throttleSupplier, DoubleSupplier curveSupplier) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(drivetrain);
+  public IntakeStopper(Intake intake) {
+    addRequirements(intake);
 
-    this.drivetrain = drivetrain;
-    this.throttleSupplier = throttleSupplier;
-    this.curveSupplier = curveSupplier;
+    this.intake = intake;
   }
 
   // Called when the command is initially scheduled.
@@ -34,17 +28,19 @@ public class ArcadeDrive extends CommandBase {
   }
 
   // Called every time the scheduler runs while the command is scheduled.
+  // Sets the intake to zero if parameter is met.
   @Override
   public void execute() {
-    var throttle = throttleSupplier.getAsDouble();
-    var curve = curveSupplier.getAsDouble();
-    drivetrain.arcadeDrive(throttle, curve);
+    // We can only hold 5 balls, therefore when the sensors detect more than that
+    // the robot disables the intake motors.
+    if (intake.getCurrentNumberOfBalls() >= 5) {
+      intake.stopIntakeMovement();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.stop();
   }
 
   // Returns true when the command should end.
