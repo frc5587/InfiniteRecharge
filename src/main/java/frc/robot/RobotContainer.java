@@ -25,7 +25,7 @@ import frc.robot.subsystems.Climber;
  */
 public class RobotContainer {
 
- public final Climber climber = new Climber();
+  public final Climber climber = new Climber();
 
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
 
@@ -35,10 +35,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-  
-   
 
-  
     configureButtonBindings();
   }
 
