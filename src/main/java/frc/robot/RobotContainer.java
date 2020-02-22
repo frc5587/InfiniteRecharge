@@ -46,7 +46,6 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.MachineLearning;
 import frc.robot.subsystems.Shooter;
 
-
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -66,14 +65,14 @@ public class RobotContainer {
 
   private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
-  
+
   private final LimelightCentering centeringCommand = new LimelightCentering(drivetrain, limelight);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
+    // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
     intake.setDefaultCommand(new IntakeStopper(intake));
 
@@ -133,14 +132,17 @@ public class RobotContainer {
     upDPad.whenActive(() -> climber.set(0.5), climber).whenInactive(() -> climber.set(0), climber);
 
     buttonTwelve.whenPressed(centeringCommand).whenReleased(() -> centeringCommand.cancel());
-    buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));  
+    buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));
 
     SmartDashboard.putData("Reset Drivetrain Encoders", new InstantCommand(drivetrain::resetEncoders));
     SmartDashboard.putData("Reset Drivetrain Heading", new InstantCommand(drivetrain::resetHeading));
     SmartDashboard.putData("Reset Drivetrain Odometry", new InstantCommand(drivetrain::resetOdometry));
 
-    // rightTrigger.whenActive(() -> shooter.setVelocity(shooter.calculateShooterSpeed(3, Math.toRadians(46)))).whenInactive(() -> shooter.setThrottle(0));
-    rightTrigger.whenActive(() -> shooter.setVelocity(xb.getTriggerAxis(Hand.kRight))).whenInactive(() -> shooter.setThrottle(0));
+    // rightTrigger.whenActive(() ->
+    // shooter.setVelocity(shooter.calculateShooterSpeed(3,
+    // Math.toRadians(46)))).whenInactive(() -> shooter.setThrottle(0));
+    rightTrigger.whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight)))
+        .whenInactive(() -> shooter.setThrottle(0));
   }
 
   /**

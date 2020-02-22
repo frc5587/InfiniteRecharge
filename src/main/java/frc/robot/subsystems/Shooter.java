@@ -10,18 +10,19 @@ package frc.robot.subsystems;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
-  private final CANSparkMax motorOne = new CANSparkMax(Constants.ShooterConstants.SHOOTER_MOTOR_ONE, MotorType.kBrushless);
-  private final CANSparkMax motorTwo = new CANSparkMax(Constants.ShooterConstants.SHOOTER_MOTOR_TWO, MotorType.kBrushless);
+  private final CANSparkMax motorOne = new CANSparkMax(Constants.ShooterConstants.SHOOTER_MOTOR_ONE,
+      MotorType.kBrushless);
+  private final CANSparkMax motorTwo = new CANSparkMax(Constants.ShooterConstants.SHOOTER_MOTOR_TWO,
+      MotorType.kBrushless);
   private final CANPIDController sparkPIDControllerOne = motorOne.getPIDController();
   private final CANPIDController sparkPIDControllerTwo = motorTwo.getPIDController();
 
@@ -39,6 +40,7 @@ public class Shooter extends SubsystemBase {
 
   /**
    * For manual control of the shooter
+   * 
    * @param throttle (-1 to 1) voltage to set to shooter to
    */
   public void setThrottle(double throttle) {
@@ -55,11 +57,8 @@ public class Shooter extends SubsystemBase {
   }
 
   /**
-   * Fully configures all sparkMaxs
-   *    - sets factory defaults
-   *    - sets the feedback encoder
-   *    - sets current limits and output ranges
-   *    - sets the FPID constants
+   * Fully configures all sparkMaxs - sets factory defaults - sets the feedback
+   * encoder - sets current limits and output ranges - sets the FPID constants
    */
   private void configureSpark() {
     motorOne.restoreFactoryDefaults();
@@ -103,12 +102,16 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getBallExitVelocity() {
-    return (sparkEncoderOne.getVelocity() * Constants.ShooterConstants.FLYWHEEL_RADIUS * Constants.ShooterConstants.CONVERSION_FACTOR); // tangential velocity = angular velocity * radius
+    return (sparkEncoderOne.getVelocity() * Constants.ShooterConstants.FLYWHEEL_RADIUS
+        * Constants.ShooterConstants.CONVERSION_FACTOR); // tangential velocity = angular velocity * radius
   }
 
-  // returns RPM 
+  // returns RPM
   public double calculateShooterSpeed(double distanceFromTarget, double armAngle) {
-    return 600 + (((1 / (Math.sqrt((Constants.ShooterConstants.GOAL_HEIGHT - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * Constants.ShooterConstants.G))))) * (distanceFromTarget / Math.cos(armAngle)) * (Constants.ShooterConstants.CONVERSION_FACTOR / Constants.ShooterConstants.FLYWHEEL_RADIUS)));
+    return 600 + (((1 / (Math.sqrt((Constants.ShooterConstants.GOAL_HEIGHT
+        - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * Constants.ShooterConstants.G)))))
+        * (distanceFromTarget / Math.cos(armAngle))
+        * (Constants.ShooterConstants.CONVERSION_FACTOR / Constants.ShooterConstants.FLYWHEEL_RADIUS)));
   }
 
   @Override
