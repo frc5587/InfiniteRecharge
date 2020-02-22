@@ -47,6 +47,9 @@ public class Drivetrain extends PIDSubsystem {
   private final DifferentialDriveOdometry odometry;
   private final LimitedPoseMap poseHistory = new LimitedPoseMap(DrivetrainConstants.HISTORY_LIMIT);
 
+  private final PIDController turnController = getController();
+  private double lastAngleSetpoint = Double.NaN;
+
   /**
    * Creates a new Drive.
    */
@@ -234,6 +237,29 @@ public class Drivetrain extends PIDSubsystem {
     leftFollower.setIdleMode(idleMode);
     rightLeader.setIdleMode(idleMode);
     rightFollower.setIdleMode(idleMode);
+  }
+
+  @Override
+  public void setSetpoint(double setpoint) {
+    lastAngleSetpoint = setpoint;
+    super.setSetpoint(setpoint);
+  }
+
+  /**
+   * Whether the angle PID controller is currently at its last setpoint. This does
+   * not check whether the PID controller itself is enabled.
+   * 
+   * @return whether the angle PID controller is within the angle tolerance
+   */
+  public boolean atSetpoint() {
+    return turnController.atSetpoint();
+  }
+
+  /**
+   * @return the last angle setpoint for the turn PID controller
+   */
+  public double getLastAngleSetpoint() {
+    return lastAngleSetpoint;
   }
 
   @Override

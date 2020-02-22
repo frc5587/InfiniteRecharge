@@ -64,7 +64,9 @@ public class LimelightCentering extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    // Finish once the turn PID controller is at the setpoint, indicating that it is
+    // centred on the target
+    return drivetrain.atSetpoint();
   }
 
   /**
@@ -80,14 +82,24 @@ public class LimelightCentering extends CommandBase {
    * @see Drivetrain#enable()
    */
   private void updatePID() {
-    // Get the difference between centre and vision target (error)
-    var angleError = limelight.getHorizontalAngleOffset();
-    SmartDashboard.putNumber("Angle Error", angleError);
+    double desiredAngle;
 
-    // Calculate the desired angle using the error and current angle
-    var currentHeading = drivetrain.getHeading180();
-    double desiredAngle = currentHeading - angleError;
-    SmartDashboard.putNumber("Current Angle", currentHeading);
+    if (limelight.isTargetDetected()) {
+      // Get the difference between centre and vision target (error)
+      var angleError = limelight.getHorizontalAngleOffset();
+      SmartDashboard.putNumber("Angle Error", angleError);
+
+      // Calculate the desired angle using the error and current angle
+      var currentHeading = drivetrain.getHeading180();
+      desiredAngle = currentHeading - angleError;
+    } else if (drivetrain.getLastAngleSetpoint() != Double.NaN) {
+      // Default to the last registered setpoint and search for target along the way
+      // TODO: Check that this doesn't lead to early finishing of Command
+      desiredAngle = drivetrain.getLastAngleSetpoint();
+    } else {
+      desiredAngle = drivetrain.getHeading180();
+    }
+
     SmartDashboard.putNumber("Desired Angle", desiredAngle);
 
     // Set the angle PID controller to the desired angle
