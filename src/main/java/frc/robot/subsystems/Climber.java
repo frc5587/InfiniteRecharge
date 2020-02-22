@@ -8,31 +8,32 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants;
 
-public class Conveyor extends SubsystemBase {
-  private final TalonSRX conveyorBeltMotor = new TalonSRX(Constants.ConveyorConstants.CONVEYOR_MOTOR);
+/**
+ * The subsystem for the climber
+ */
+public class Climber extends SubsystemBase {
+  private final TalonFX climberMotor = new TalonFX(Constants.ClimberConstants.CLIMBER_MOTOR);
 
   /**
-   * Creates a new Conveyor.
+   * Inverts the motors
    */
-  public Conveyor() {
-
+  public Climber() {
+    climberMotor.setInverted(true);
   }
 
-  public void moveForward() {
-    conveyorBeltMotor.set(ControlMode.PercentOutput, 0.30);
-  }
-
-  public void moveBackward() {
-    conveyorBeltMotor.set(ControlMode.PercentOutput, -0.30);
-  }
-
-  public void stopMovement() {
-    conveyorBeltMotor.set(ControlMode.PercentOutput, 0);
+  /**
+   * Set the climber's motor to a certain speed
+   * 
+   * @param percent percent to set the motor to
+   */
+  public void set(double percent) {
+    climberMotor.set(ControlMode.PercentOutput, percent);
   }
 
   @Override
