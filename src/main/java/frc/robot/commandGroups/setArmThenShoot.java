@@ -14,9 +14,11 @@ public class setArmThenShoot extends SequentialCommandGroup {
         var distanceMeters = SmartDashboard.getNumber("distance", 2);
         var angleDegrees = Shooter.calcArmAngleDegrees(distanceMeters);
 
+        var shoot = new Shoot(m_shooter, (() -> m_shooter.calculateShooterSpeed(distanceMeters, angleDegrees)), true); 
+
         addCommands(
             new InstantCommand(() -> m_arm.setArmAngleDegrees(angleDegrees), m_arm),
-            new Shoot(m_shooter, (() -> m_shooter.calculateShooterSpeed(distanceMeters, angleDegrees)), true)
+            shoot
         );
     }
 }
