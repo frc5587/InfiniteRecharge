@@ -61,10 +61,7 @@ public class Drivetrain extends PIDSubsystem {
     rightLeader.restoreFactoryDefaults();
     rightFollower.restoreFactoryDefaults();
 
-    leftLeader.setIdleMode(IdleMode.kCoast);
-    leftFollower.setIdleMode(IdleMode.kCoast);
-    rightLeader.setIdleMode(IdleMode.kCoast);
-    rightFollower.setIdleMode(IdleMode.kCoast);
+    setIdleMode(IdleMode.kCoast);
 
     leftGroup.setInverted(DrivetrainConstants.LEFT_SIDE_INVERTED);
     rightGroup.setInverted(DrivetrainConstants.RIGHT_SIDE_INVERTED);
