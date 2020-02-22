@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ArmConstants;
 
 public class Arm extends SubsystemBase {
     private final CANSparkMax armSpark = new CANSparkMax(Constants.ArmConstants.ARM_MOTOR, MotorType.kBrushless);
@@ -22,8 +23,6 @@ public class Arm extends SubsystemBase {
     public Arm() {
         configSpark();
         resetEncoder();
-        startPID();
-        refreshPID();
     }
 
     /**
@@ -105,32 +104,10 @@ public class Arm extends SubsystemBase {
      * @return calculated FeedForward value
      */
     public double calcFeedForward() {
-        var ff = Constants.ArmConstants.FF.calculate(Math.toRadians(SmartDashboard.getNumber("Goto Position", 0)), 0) / 12;
-        // System.out.println("FF: " + ff);
-        return ff;
-    }
-
-    public void startPID() {
-        SmartDashboard.putNumber("Goto Position", 14);
-    }
-
-    /**
-     * Refresh the constants in SmartDashboard , as well as gets input from
-     * SmartDashboard to update FeedForward
-     */
-    public void refreshPID() {
-        SmartDashboard.putNumber("Angle", getAngleDegrees());
-        SmartDashboard.putNumber("Encoder Val", getPositionTicks());
-        SmartDashboard.putNumber("FF", calcFeedForward());
-        SmartDashboard.putNumber("Vel", getVelocityDegreesPerSecond());
-        // setArmAngleDegrees(SmartDashboard.getNumber("Goto Position", 14));
-    }
-
-    @Override
-    public void periodic() {
-        System.out.println(getAngleDegrees());
-        refreshPID();
-        armPIDController.setFF(calcFeedForward());
+        // return
+        // ArmConstants.FF.calculate(Math.toRadians(SmartDashboard.getNumber("Goto
+        // Position", 0)), 0) / 12;
+        return ArmConstants.FF.calculate(Math.toRadians(getAngleDegrees()), 0) / 12.0;
     }
 
     /**
@@ -158,15 +135,28 @@ public class Arm extends SubsystemBase {
      * 
      * @return arm limit switch
      */
-     public DigitalInput getArmLimitSwitch() {
-         return armLimitSwitch;
-     }
+    public DigitalInput getArmLimitSwitch() {
+        return armLimitSwitch;
+    }
 
-     /**
-      * gets the value for the limit switch and switches it
-      * @return limit switch value
-      */
-     public boolean getLimitSwitchVal() {
-         return !(armLimitSwitch.get());
-     }
+    /**
+     * gets the value for the limit switch and switches it
+     * 
+     * @return limit switch value
+     */
+    public boolean getLimitSwitchVal() {
+        return !(armLimitSwitch.get());
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Angle", getAngleDegrees());
+        SmartDashboard.putNumber("Encoder Val", getPositionTicks());
+        SmartDashboard.putNumber("FF", calcFeedForward());
+        SmartDashboard.putNumber("Vel", getVelocityDegreesPerSecond());
+
+        var ff = calcFeedForward();
+        SmartDashboard.putNumber("FF", ff);
+        armPIDController.setFF(ff);
+    }
 }

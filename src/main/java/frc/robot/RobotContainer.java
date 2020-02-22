@@ -61,18 +61,19 @@ public class RobotContainer {
   private final Climber climber = new Climber();
   private final Arm m_arm = new Arm();
   private final Intake intake = new Intake();
-  private final Shooter shooter = new Shooter();
+  // private final Shooter shooter = new Shooter();
 
   private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
 
   private final LimelightCentering centeringCommand = new LimelightCentering(drivetrain, limelight);
+  private final ManualArmControl manualArmControl = new ManualArmControl(m_arm, () -> xb.getY(Hand.kRight));
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
+    // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
     intake.setDefaultCommand(new IntakeStopper(intake));
 
@@ -117,11 +118,13 @@ public class RobotContainer {
 
     // arm
     // determines whether the arm should be manually controlled
-    leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(m_arm, () -> xb.getY(Hand.kRight)));
+    leftTrigger.and(rightJoy).whenActive(manualArmControl).whenInactive(() -> manualArmControl.cancel());
 
     // moves arm to the lowest and highest positions
-    xButton.whenPressed(() -> m_arm.setArmAngleDegrees(14), m_arm);
-    yButton.whenPressed(() -> m_arm.setArmAngleDegrees(55), m_arm);
+    xButton.whenPressed(() -> m_arm.setArmAngleDegrees(14), m_arm)
+        .whenReleased(() -> m_arm.setArmAngleDegrees(m_arm.getAngleDegrees()));
+    yButton.whenPressed(() -> m_arm.setArmAngleDegrees(55), m_arm)
+        .whenReleased(() -> m_arm.setArmAngleDegrees(m_arm.getAngleDegrees()));
 
     // reset elevator encoder
     armLimitSwitch.whenActive(m_arm::resetEncoder);
@@ -130,7 +133,7 @@ public class RobotContainer {
     upDPad.whenActive(() -> climber.set(0.5), climber).whenInactive(() -> climber.set(0), climber);
 
     buttonTwelve.whenPressed(centeringCommand).whenReleased(() -> centeringCommand.cancel());
-    buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));  
+    buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));
 
     SmartDashboard.putData("Reset Drivetrain Encoders", new InstantCommand(drivetrain::resetEncoders));
     SmartDashboard.putData("Reset Drivetrain Heading", new InstantCommand(drivetrain::resetHeading));
