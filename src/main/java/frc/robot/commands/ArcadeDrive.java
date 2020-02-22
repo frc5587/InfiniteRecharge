@@ -9,41 +9,47 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Drivetrain;
 
-/**
- * A Shoot command that operates the shooter
- */
-public class Shoot extends CommandBase {
-  private Shooter shooter;
-  private DoubleSupplier yAxis;
+public class ArcadeDrive extends CommandBase {
+  private final Drivetrain drivetrain;
+  private final DoubleSupplier throttleSupplier, curveSupplier;
 
   /**
-   * Creates a new Shoot command
-   *
-   * @param subsystem The subsystem used by this command.
+   * Creates a new ArcadeDrive.
    */
-  public Shoot(Shooter shooter, DoubleSupplier y) {
-    this.shooter = shooter;
-    yAxis = y;
-
+  public ArcadeDrive(Drivetrain drivetrain, DoubleSupplier throttleSupplier, DoubleSupplier curveSupplier) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter);
+    addRequirements(drivetrain);
+
+    this.drivetrain = drivetrain;
+    this.throttleSupplier = throttleSupplier;
+    this.curveSupplier = curveSupplier;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putNumber("Setpoint", 0.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.setThrottle(yAxis.getAsDouble());
-    // shooter.setVelocity(SmartDashboard.getNumber("Setpoint", 0.0));
-    shooter.log();
+    var throttle = throttleSupplier.getAsDouble();
+    var curve = curveSupplier.getAsDouble();
+    drivetrain.arcadeDrive(throttle, curve);
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    drivetrain.stop();
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
   }
 }

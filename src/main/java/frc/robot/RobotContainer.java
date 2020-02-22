@@ -7,23 +7,43 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import org.frc5587.lib.control.DeadbandXboxController;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.IntakeStopper;
+import frc.robot.commands.LimelightCentering;
 import frc.robot.commands.ManualArmControl;
+import frc.robot.commands.RamseteCommandWrapper;
+import frc.robot.commands.Shoot;
+import frc.robot.commands.TargetBall;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.MachineLearning;
 import frc.robot.subsystems.Shooter;
 
 /**
@@ -34,8 +54,11 @@ import frc.robot.subsystems.Shooter;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
-  public final Climber climber = new Climber();
+  // The robot's subsystems and commands are defined here...
+  private final Drivetrain drivetrain = new Drivetrain();
+  private final Limelight limelight = new Limelight();
+  private final MachineLearning machineLearning = new MachineLearning();
+  private final Climber climber = new Climber();
   private final Arm m_arm = new Arm();
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
@@ -43,11 +66,14 @@ public class RobotContainer {
   private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
 
+  private final LimelightCentering centeringCommand = new LimelightCentering(drivetrain, limelight);
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
+    shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
+    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
     intake.setDefaultCommand(new IntakeStopper(intake));
 
     // Configure the button bindings
@@ -61,6 +87,8 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    var buttonEleven = new JoystickButton(joy, 11);
+    var buttonTwelve = new JoystickButton(joy, 12);
     var upDPad = new POVButton(xb, 0);
     var leftTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
     var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
@@ -98,7 +126,15 @@ public class RobotContainer {
     // reset elevator encoder
     armLimitSwitch.whenActive(m_arm::resetEncoder);
 
+    // Run climber up
     upDPad.whenActive(() -> climber.set(0.5), climber).whenInactive(() -> climber.set(0), climber);
+
+    buttonTwelve.whenPressed(centeringCommand).whenReleased(() -> centeringCommand.cancel());
+    buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));  
+
+    SmartDashboard.putData("Reset Drivetrain Encoders", new InstantCommand(drivetrain::resetEncoders));
+    SmartDashboard.putData("Reset Drivetrain Heading", new InstantCommand(drivetrain::resetHeading));
+    SmartDashboard.putData("Reset Drivetrain Odometry", new InstantCommand(drivetrain::resetOdometry));
   }
 
   /**
@@ -107,7 +143,31 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return null;
+    var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
+        new SimpleMotorFeedforward(DrivetrainConstants.KS_VOLTS, DrivetrainConstants.KV_VOLT_SECONDS_PER_METER,
+            DrivetrainConstants.KA_VOLT_SECONDS_SQUARED_PER_METER),
+        DrivetrainConstants.DRIVETRAIN_KINEMATICS, 10);
+
+    // Create config for trajectory
+    TrajectoryConfig config = new TrajectoryConfig(AutoConstants.MAX_VELOCITY_METERS_PER_SECOND,
+        AutoConstants.MAX_ACCEL_METERS_PER_SECOND_SQUARED)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(DrivetrainConstants.DRIVETRAIN_KINEMATICS)
+            // Apply the voltage constraint
+            .addConstraint(autoVoltageConstraint);
+
+    // An example trajectory to follow. All units in meters.
+    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(3, 0, new Rotation2d(0)),
+        // Pass config
+        config);
+
+    return new RamseteCommandWrapper(drivetrain, exampleTrajectory);
+    // return new RamseteCommandWrapper(drivetrain, AutoPaths.SuperCoolPath);
   }
 }
