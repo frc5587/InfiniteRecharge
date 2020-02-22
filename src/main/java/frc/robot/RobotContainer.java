@@ -40,7 +40,7 @@ public class RobotContainer {
   
   // private final Conveyor conveyor = new Conveyor();
   // private final Arm m_arm = new Arm();
-  // private final Conveyor conveyor = new Conveyor();
+  private final Conveyor conveyor = new Conveyor();
   // private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
 
@@ -59,19 +59,23 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
+    // var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
     var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
     var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
-    var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
-    var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
-    var rightTrigger = new Trigger(() -> xb.getTriggerAxis(Hand.kRight) > .2);
+    // var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
+    // var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
+    // var rightTrigger = new Trigger(() -> xb.getTriggerAxis(Hand.kRight) > .2);
 
     // xButton.whenPressed(() -> intake.set(1), intake).whenReleased(() -> intake.set(0), intake);
     // yButton.whenPressed(() -> intake.set(-1), intake).whenReleased(() -> intake.set(0), intake);
     // leftBumper.whenPressed(conveyor::moveBackward).whenReleased(conveyor::stopMovement);
     // rightBumper.whenPressed(conveyor::moveForward).whenReleased(conveyor::stopMovement);
     // rightTrigger.whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight))).whenInactive(() -> shooter.setThrottle(0));
-    xButton.whenActive(() -> shooter.setVelocity(shooter.calculateShooterSpeed(3.658, 30))).whenInactive(() -> shooter.setVelocity(0));
+    // xButton.whenActive(() -> shooter.setVelocity(shooter.calculateShooterSpeed(3.658, Math.toRadians(30)))).whenInactive(() -> shooter.setVelocity(0));
+    // xButton.whenActive(() -> shooter.setVelocity(shooter.calculateShooterSpeed(5, Math.toRadians(27)))).whenInactive(() -> shooter.setVelocity(0));
+    yButton.whenActive(conveyor::moveBackward).whenInactive(conveyor::stopMovement);
+    // xButton.whenActive(() -> shooter.setVelocity(shooter.calculateShooterSpeed(2, Math.toRadians(43)))).whenInactive(() -> shooter.setVelocity(0));
+    xButton.whenActive(() -> shooter.setVelocity(shooter.calculateShooterSpeed(3, Math.toRadians(46)))).whenInactive(() -> shooter.setVelocity(0));
   }
 
   /**

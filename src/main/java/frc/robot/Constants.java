@@ -35,7 +35,7 @@ public final class Constants {
     }
 
   public static final class ConveyorConstants {
-    public static final int CONVEYOR_MOTOR = 10;
+    public static final int CONVEYOR_MOTOR = 50;
   }
 
     public static final class ArmConstants {
