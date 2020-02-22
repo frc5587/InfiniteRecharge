@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.util.Units;
 import org.frc5587.lib.pid.FPID;
 import org.frc5587.lib.pid.PID;
 
@@ -24,17 +25,6 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  /**
-   * Constants used by the Limelight.
-   */
-  public static class LimelightConstants {
-    public static final double ARM_HEIGHT_INCHES = 8.75;
-    public static final double STANDOFF_INCHES = 1.097;
-    public static final double GOAL_HEIGHT_INCHES = 98.25;
-    public static final double ARM_LENGTH_INCHES = 4404471.0 / 125000;
-    public static final double ARM_AXLE_HEIGHT_INCHES = 1739459.0 / 250000;
-  }
-
   public static class AutoConstants {
     public static final double MAX_VELOCITY_METERS_PER_SECOND = 3;
     public static final double MAX_ACCEL_METERS_PER_SECOND_SQUARED = 3;
@@ -171,6 +161,21 @@ public final class Constants {
     public static final double GOAL_HEIGHT = 2.495; // height in meters
 
     public static final double G = 9.8; // gravitational acceleration
+  }
 
+  /**
+   * Constants used by the Limelight
+   */
+  public static class LimelightConstants {
+    public static final double ARM_HEIGHT_METERS = Units.inchesToMeters(8.75);
+    public static final double ARM_LENGTH_METERS = Units.inchesToMeters(4404471.0 / 125000);
+    public static final double ARM_AXLE_HEIGHT_METERS = Units.inchesToMeters(1739459.0 / 250000);
+
+    public static final double STANDOFF_METERS = Units.inchesToMeters(1.097);
+
+    public static final double GOAL_HEIGHT_METERS = Units.inchesToMeters(98.25);
+    public static final double INNER_OUTER_GOAL_DISTANCE_METERS = Units.inchesToMeters(29.25);
+
+    public static final double G_METERS_PER_SECOND_SQUARED = 9.81;
   }
 }
