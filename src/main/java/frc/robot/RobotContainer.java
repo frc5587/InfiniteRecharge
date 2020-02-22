@@ -45,7 +45,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.MachineLearning;
 import frc.robot.subsystems.Shooter;
-import frc.robot.commandGroups.setArmThenShoot;
+import frc.robot.commands.setArmThenShoot;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
