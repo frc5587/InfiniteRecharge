@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.util.Units;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants.  This class should not be used for any other purpose.  All constants should be
@@ -21,24 +23,15 @@ public final class Constants {
      * Constants used by the Limelight
      */
     public static class LimelightConstants {
-        public static final double ARM_HEIGHT_INCHES = 8.75;
-        public static final double ARM_LENGTH_INCHES = 4404471.0 / 125000;
-        public static final double ARM_AXLE_HEIGHT_INCHES = 1739459.0 / 250000;
+        public static final double ARM_HEIGHT_METERS = Units.inchesToMeters(8.75);
+        public static final double ARM_LENGTH_METERS = Units.inchesToMeters(4404471.0 / 125000);
+        public static final double ARM_AXLE_HEIGHT_METERS = Units.inchesToMeters(1739459.0 / 250000);
 
-        public static final double STANDOFF_INCHES = 1.097;
+        public static final double STANDOFF_METERS = Units.inchesToMeters(1.097);
 
-        public static final double GOAL_HEIGHT_INCHES = 98.25;
-        public static final double INNER_OUTER_GOAL_DISTANCE_INCHES = 29.25;
+        public static final double GOAL_HEIGHT_METERS = Units.inchesToMeters(98.25);
+        public static final double INNER_OUTER_GOAL_DISTANCE_METERS = Units.inchesToMeters(29.25);
 
-        public static final double SHOOTER_VELOCITY_INCHES_PER_SECOND = 744;
-        public static final double G_INCHES_PER_SECOND_SQUARED = 386.220681;
-
-        /**
-         * Targets that the robot can shoot at
-         */
-        public static enum Target {
-            FRONT,
-            INNER
-        }
+        public static final double G_METERS_PER_SECOND_SQUARED = 9.81;
     }
 }
