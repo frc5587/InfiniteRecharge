@@ -91,8 +91,8 @@ public class Limelight extends SubsystemBase {
    * @param currentArmAngle the angle that the arm is currently at, in radians
    * @return the distance between the center of the shooter and the target, in inches
    */
-  private double getShooterDistance(double currentAmAngle) {
-    return (LimelightConstants.GOAL_HEIGHT_INCHES - getShooterHeight(currentAmAngle)) / Math.sin(currentAmAngle);
+  private double getShooterDistance(double currentArmAngle) {
+    return (LimelightConstants.GOAL_HEIGHT_INCHES - getShooterHeight(currentArmAngle)) / Math.sin(currentArmAngle);
   }
 
   /**
