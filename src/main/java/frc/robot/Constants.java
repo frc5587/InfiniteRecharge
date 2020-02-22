@@ -155,7 +155,7 @@ public final class Constants {
     public static final FPID SHOOTER_ONE_FPID = new FPID((1 / MAX_VELOCITY_ONE), // kF
         ((.065 / (3000 - 2954)) * 1.5), // kP
         0, // kI
-        .1 * 6 // kD
+        8 // kD
     );
 
     public static final FPID SHOOTER_TWO_FPID = new FPID((1 / MAX_VELOCITY_TWO), // kF
@@ -163,6 +163,14 @@ public final class Constants {
         0, // kI
         (8.5 * (.05 / (3040 - 3000)) * 12.5) // kD
     );
+
+    public static final double FLYWHEEL_RADIUS = 0.0508; // radius in meters (2")
+
+    public static final double CONVERSION_FACTOR = 30 / Math.PI; // RPM --> radians/second
+
+    public static final double GOAL_HEIGHT = 2.495; // height in meters
+
+    public static final double G = 9.8; // gravitational acceleration
 
   }
 }

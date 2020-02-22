@@ -72,7 +72,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
+    // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
     intake.setDefaultCommand(new IntakeStopper(intake));
 
@@ -87,10 +87,12 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
     var buttonEleven = new JoystickButton(joy, 11);
     var buttonTwelve = new JoystickButton(joy, 12);
     var upDPad = new POVButton(xb, 0);
     var leftTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
+    var rightTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
     var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
     var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
     var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
@@ -130,11 +132,17 @@ public class RobotContainer {
     upDPad.whenActive(() -> climber.set(0.5), climber).whenInactive(() -> climber.set(0), climber);
 
     buttonTwelve.whenPressed(centeringCommand).whenReleased(() -> centeringCommand.cancel());
-    buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));  
+    buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));
 
     SmartDashboard.putData("Reset Drivetrain Encoders", new InstantCommand(drivetrain::resetEncoders));
     SmartDashboard.putData("Reset Drivetrain Heading", new InstantCommand(drivetrain::resetHeading));
     SmartDashboard.putData("Reset Drivetrain Odometry", new InstantCommand(drivetrain::resetOdometry));
+
+    // rightTrigger.whenActive(() ->
+    // shooter.setVelocity(shooter.calculateShooterSpeed(3,
+    // Math.toRadians(46)))).whenInactive(() -> shooter.setThrottle(0));
+    rightTrigger.whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight)))
+        .whenInactive(() -> shooter.setThrottle(0));
   }
 
   /**

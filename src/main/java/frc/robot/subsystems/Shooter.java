@@ -10,17 +10,19 @@ package frc.robot.subsystems;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
-  private final CANSparkMax motorOne = new CANSparkMax(Constants.ShooterConstants.SHOOTER_MOTOR_ONE, MotorType.kBrushless);
-  private final CANSparkMax motorTwo = new CANSparkMax(Constants.ShooterConstants.SHOOTER_MOTOR_TWO, MotorType.kBrushless);
+  private final CANSparkMax motorOne = new CANSparkMax(Constants.ShooterConstants.SHOOTER_MOTOR_ONE,
+      MotorType.kBrushless);
+  private final CANSparkMax motorTwo = new CANSparkMax(Constants.ShooterConstants.SHOOTER_MOTOR_TWO,
+      MotorType.kBrushless);
   private final CANPIDController sparkPIDControllerOne = motorOne.getPIDController();
   private final CANPIDController sparkPIDControllerTwo = motorTwo.getPIDController();
 
@@ -32,10 +34,13 @@ public class Shooter extends SubsystemBase {
    */
   public Shooter() {
     configureSpark();
+    // SmartDashboard.putNumber("desired velocity", 0.0);
+    // SmartDashboard.putNumber("d value", .6);
   }
 
   /**
    * For manual control of the shooter
+   * 
    * @param throttle (-1 to 1) voltage to set to shooter to
    */
   public void setThrottle(double throttle) {
@@ -52,18 +57,18 @@ public class Shooter extends SubsystemBase {
   }
 
   /**
-   * Fully configures all sparkMaxs
-   *    - sets factory defaults
-   *    - sets the feedback encoder
-   *    - sets current limits and output ranges
-   *    - sets the FPID constants
+   * Fully configures all sparkMaxs - sets factory defaults - sets the feedback
+   * encoder - sets current limits and output ranges - sets the FPID constants
    */
   private void configureSpark() {
     motorOne.restoreFactoryDefaults();
     motorTwo.restoreFactoryDefaults();
 
-    motorOne.setInverted(false);
-    motorTwo.setInverted(false);
+    motorOne.setInverted(true);
+    motorTwo.setInverted(true);
+
+    motorOne.setIdleMode(IdleMode.kCoast);
+    motorTwo.setIdleMode(IdleMode.kCoast);
 
     sparkPIDControllerOne.setFeedbackDevice(sparkEncoderOne);
     sparkPIDControllerTwo.setFeedbackDevice(sparkEncoderTwo);
@@ -94,5 +99,28 @@ public class Shooter extends SubsystemBase {
   public void log() {
     SmartDashboard.putNumber("velocity one", sparkEncoderOne.getVelocity());
     SmartDashboard.putNumber("velocity two", sparkEncoderTwo.getVelocity());
+  }
+
+  public double getBallExitVelocity() {
+    return (sparkEncoderOne.getVelocity() * Constants.ShooterConstants.FLYWHEEL_RADIUS
+        * Constants.ShooterConstants.CONVERSION_FACTOR); // tangential velocity = angular velocity * radius
+  }
+
+  // returns RPM
+  public double calculateShooterSpeed(double distanceFromTarget, double armAngle) {
+    return 600 + (((1 / (Math.sqrt((Constants.ShooterConstants.GOAL_HEIGHT
+        - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * Constants.ShooterConstants.G)))))
+        * (distanceFromTarget / Math.cos(armAngle))
+        * (Constants.ShooterConstants.CONVERSION_FACTOR / Constants.ShooterConstants.FLYWHEEL_RADIUS)));
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    // System.out.println("One: " + sparkEncoderOne.getVelocity());
+    // System.out.println("Two: " + sparkEncoderTwo.getVelocity());
+    log();
+    // setVelocity(SmartDashboard.getNumber("desired velocity", 0));
+    // sparkPIDControllerOne.setD(SmartDashboard.getNumber("d value", 0));
   }
 }
