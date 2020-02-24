@@ -45,6 +45,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.MachineLearning;
 import frc.robot.subsystems.Shooter;
+import frc.robot.commands.LimelightThread;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -75,6 +76,7 @@ public class RobotContainer {
     // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
     intake.setDefaultCommand(new IntakeStopper(intake));
+    m_arm.setDefaultCommand(new LimelightThread(m_arm, limelight));
 
     // Configure the button bindings
     configureButtonBindings();

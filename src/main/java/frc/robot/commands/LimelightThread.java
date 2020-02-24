@@ -21,6 +21,7 @@ public class LimelightThread extends CommandBase {
   public LimelightThread(Arm arm, Limelight limelight) {
     this.limelight = limelight;
     this.arm = arm;
+    addRequirements(arm, limelight);
   }
   
   public void updateArm() {
