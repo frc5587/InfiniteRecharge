@@ -10,6 +10,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ColorSensor;
+import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.ColorSensor.TargetColor;
 
 /**
@@ -18,21 +19,25 @@ import frc.robot.subsystems.ColorSensor.TargetColor;
 public class RotateControlPanel extends CommandBase {
   private ColorSensor colorSensor;
   private TargetColor previousColor;
+  private Conveyor conveyor;
+
   private double rotations = 0;
 
   /**
    * Creates a new RotateControlPanel.
    */
-  public RotateControlPanel(ColorSensor colorSensor) {
+  public RotateControlPanel(ColorSensor colorSensor,  Conveyor conveyor ) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.colorSensor = colorSensor;
+    this.conveyor = conveyor;
     addRequirements(colorSensor);
+    addRequirements(conveyor);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    colorSensor.set(0.5);
+    conveyor.set();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -49,7 +54,7 @@ public class RotateControlPanel extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    colorSensor.set(0);
+    conveyor.stopSet();
   }
 
   // Returns true when the command should end.

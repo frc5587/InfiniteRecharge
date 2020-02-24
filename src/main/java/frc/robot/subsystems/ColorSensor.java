@@ -7,9 +7,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
@@ -17,7 +14,7 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.Constants;
 import frc.robot.Constants.ControlPanelConstants;
 
 /**
@@ -26,8 +23,6 @@ import frc.robot.Constants.ControlPanelConstants;
 public class ColorSensor extends SubsystemBase {
   private ColorSensorV3 colorSensor = new ColorSensorV3(ControlPanelConstants.i2cPort);
   private ColorMatch colorMatcher = new ColorMatch();
-  private TalonSRX colorRotator = new TalonSRX(ControlPanelConstants.CONTROL_PANEL_MOTOR);
-
   public ColorSensor() {
     colorMatcher.addColorMatch(ControlPanelConstants.BLUE_TARGET);
     colorMatcher.addColorMatch(ControlPanelConstants.GREEN_TARGET);
@@ -74,14 +69,6 @@ public class ColorSensor extends SubsystemBase {
     }
   }
 
-  /**
-   * Set the motor to a particular value
-   * 
-   * @param percent percent to set the motor to
-   */
-  public void set(double percent) {
-    colorRotator.set(ControlMode.PercentOutput, percent);
-  }
 
   /**
    * Get the confidence that the colormatcher feels that it has regarding the

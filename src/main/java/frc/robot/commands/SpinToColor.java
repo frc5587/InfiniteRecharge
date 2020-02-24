@@ -11,18 +11,21 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.ColorSensor;
+import frc.robot.subsystems.Conveyor;
 
 public class SpinToColor extends CommandBase {
   private ColorSensor colorSensor;
   private char desiredColor;
+  private Conveyor conveyor;
 
   /**
    * Creates a new SpinToColor.
    */
-  public SpinToColor(ColorSensor colorSensor) {
+  public SpinToColor(ColorSensor colorSensor ,Conveyor conveyor) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.colorSensor = colorSensor;
-    addRequirements(colorSensor);
+    this.conveyor = conveyor;
+    addRequirements(colorSensor, conveyor);
   }
 
   // Called when the command is initially scheduled.
@@ -31,7 +34,7 @@ public class SpinToColor extends CommandBase {
     String fmsData = DriverStation.getInstance().getGameSpecificMessage();
     if (fmsData.length() > 0) {
       desiredColor = fmsData.charAt(0);
-      colorSensor.set(0.5);
+      conveyor.set();
     } else {
       desiredColor = '0';
       DriverStation.reportError("No game data detected", false);
@@ -46,7 +49,7 @@ public class SpinToColor extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    colorSensor.set(0);
+    conveyor.stopSet();
   }
 
   // Returns true when the command should end.
