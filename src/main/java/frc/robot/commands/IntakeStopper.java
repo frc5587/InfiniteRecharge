@@ -9,43 +9,45 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
+
 /**
- * This class records current amount of balls and issues a command in order to stop it when it gets to 5.
+ * This class records current amount of balls and issues a command in order to
+ * stop it when it gets to 5.
  */
 public class IntakeStopper extends CommandBase {
 
-  private final Intake intake;
+    private final Intake intake;
 
-  public IntakeStopper(Intake intake) {
-    addRequirements(intake);
+    public IntakeStopper(Intake intake) {
+        addRequirements(intake);
 
-    this.intake = intake;
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  // Sets the intake to zero if parameter is met.
-  @Override
-  public void execute() {
-    // We can only hold 5 balls, therefore when the sensors detect more than that
-    // the robot disables the intake motors.
-    if (intake.getCurrentNumberOfBalls() >= 5) {
-      intake.stopIntakeMovement();
+        this.intake = intake;
     }
-  }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-  }
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {
+    }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+    // Called every time the scheduler runs while the command is scheduled.
+    // Sets the intake to zero if parameter is met.
+    @Override
+    public void execute() {
+        // We can only hold 5 balls, therefore when the sensors detect more than that
+        // the robot disables the intake motors.
+        if (intake.getCurrentNumberOfBalls() >= 5) {
+            intake.stopIntakeMovement();
+        }
+    }
+
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {
+    }
+
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }

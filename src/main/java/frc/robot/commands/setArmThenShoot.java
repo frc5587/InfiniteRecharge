@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Shooter;
 
-public class setArmThenShoot extends SequentialCommandGroup {
-    public setArmThenShoot(Shooter m_shooter, Arm m_arm) {
+public class SetArmThenShoot extends SequentialCommandGroup {
+    public SetArmThenShoot(Shooter m_shooter, Arm m_arm) {
         var distanceMeters = SmartDashboard.getNumber("distance", 2);
         var angleDegrees = Shooter.calcArmAngleDegrees(distanceMeters);
 

@@ -18,26 +18,26 @@ import frc.robot.Constants;
  * The subsystem for the climber
  */
 public class Climber extends SubsystemBase {
-  private final TalonFX climberMotor = new TalonFX(Constants.ClimberConstants.CLIMBER_MOTOR);
+    private final TalonFX climberMotor = new TalonFX(Constants.ClimberConstants.CLIMBER_MOTOR);
 
-  /**
-   * Inverts the motors
-   */
-  public Climber() {
-    climberMotor.setInverted(true);
-  }
+    /**
+     * Inverts the motors
+     */
+    public Climber() {
+        climberMotor.setInverted(true);
+    }
 
-  /**
-   * Set the climber's motor to a certain speed
-   * 
-   * @param percent percent to set the motor to
-   */
-  public void set(double percent) {
-    climberMotor.set(ControlMode.PercentOutput, percent);
-  }
+    /**
+     * Set the climber's motor to a certain speed
+     * 
+     * @param percent percent to set the motor to
+     */
+    public void set(double percent) {
+        climberMotor.set(ControlMode.PercentOutput, percent);
+    }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run
+    }
 }
