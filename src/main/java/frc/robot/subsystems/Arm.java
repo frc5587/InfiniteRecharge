@@ -99,6 +99,16 @@ public class Arm extends SubsystemBase {
     }
 
     /**
+     * Get the current angle of the arm relative to the down position
+     * 
+     * @return current position of the arm - DEGREES
+     */
+    public double getAngleRadians() {
+        // return Math.toRadians(armEncoder.getPosition() * 180 + 15);
+        return ticksToRadians(getPositionTicks());
+    }
+
+    /**
      * Calculate the FeedForward for the arm necessary in PID based on the value
      * given in {@link Constants.ArmConstants#FF}
      * 
@@ -150,6 +160,16 @@ public class Arm extends SubsystemBase {
      */
     public double ticksToDegrees(double ticks) {
         return ticks * 180;
+    }
+
+    /**
+     * Converts encoder ticks to radians of a circle 1 tick == pi radians
+     * 
+     * @param ticks angle to convert to radians
+     * @return angle in radians
+     */
+    public double ticksToRadians(double ticks) {
+        return ticks * Math.PI;
     }
 
     /**

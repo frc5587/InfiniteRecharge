@@ -149,8 +149,8 @@ public class RobotContainer {
         rightTrigger.whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight)))
                 .whenInactive(() -> shooter.setThrottle(0));
 
-        leftStickButton.whenActive(new SetArmThenShoot(shooter, m_arm)).whenInactive(() -> shooter.setThrottle(0),
-                shooter);
+        leftStickButton.whenActive(new SetArmThenShoot(shooter, m_arm, limelight));
+                // .whenInactive(() -> shooter.setThrottle(0), shooter);
     }
 
     /**
