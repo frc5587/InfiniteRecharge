@@ -177,5 +177,7 @@ public final class Constants {
     public static final double INNER_OUTER_GOAL_DISTANCE_METERS = Units.inchesToMeters(29.25);
 
     public static final double G_METERS_PER_SECOND_SQUARED = 9.81;
+
+    public static final double THREAD_PERIOD_TIME_SECONDS = 0.01;
   }
 }
