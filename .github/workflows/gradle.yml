@@ -15,6 +15,8 @@ jobs:
         java-version: 11
     - name: Updates submodules
       run: git submodule update
+    - name: lists files
+      run: ls src\main\java\org
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
