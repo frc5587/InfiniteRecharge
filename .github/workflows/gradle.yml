@@ -14,9 +14,10 @@ jobs:
       with:
         java-version: 11
     - name: Checkout submodules
-      uses: checkout/actions@v1
-      with:
-        submodules: true
+      run: |
+          auth_header="$(git config --local --get http.https://github.com/.extraheader)"
+          git submodule sync --recursive
+          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
       # with:
       #   args: git submodule update --init --recursive
     # - name: check files
