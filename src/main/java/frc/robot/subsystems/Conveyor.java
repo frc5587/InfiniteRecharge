@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Conveyor extends SubsystemBase {
-  private final TalonSRX controlPanelTalon = new TalonSRX(Constants.ConveyorConstants.CONTROL_PANEL_TALON);
+  private final TalonSRX controlPanelTalon = new TalonSRX(Constants.ConveyorConstants.CONTROL_PANEL_MOTOR);
   private final TalonSRX conveyorBeltMotor = new TalonSRX(Constants.ConveyorConstants.CONVEYOR_MOTOR);
   private final DigitalInput bottomLimit = new DigitalInput(Constants.IntakeConstants.BOTTOM_LIMIT);
   private final DigitalInput topLimit = new DigitalInput(Constants.IntakeConstants.TOP_LIMIT);
