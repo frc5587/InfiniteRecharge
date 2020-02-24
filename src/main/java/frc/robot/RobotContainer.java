@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Intake;
 import frc.robot.commands.IntakeStopper;;
 
@@ -35,13 +35,14 @@ public class RobotContainer {
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
 
   private final Intake intake = new Intake();
+  private final Conveyor conveyor = new Conveyor();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
-    intake.setDefaultCommand(new IntakeStopper(intake));
+    intake.setDefaultCommand(new IntakeStopper(intake, conveyor));
     configureButtonBindings();
   }
 
@@ -58,18 +59,18 @@ public class RobotContainer {
     var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
     rightBumper.whileHeld(() -> {
       intake.moveIntakeForward();
-      intake.moveConveyorForward();
+      conveyor.moveConveyorForward();
     }, intake).whenReleased(() -> {
-      intake.stopConveyorMovement();
+      conveyor.stopConveyorMovement();
       intake.stopIntakeMovement();
     });
 
     var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
     leftBumper.whileHeld(() -> {
-      intake.moveConveyorBackward();
+      conveyor.moveConveyorBackward();
       intake.moveIntakeBackward();
     }).whenReleased(() -> {
-      intake.stopConveyorMovement();
+      conveyor.stopConveyorMovement();
       intake.stopIntakeMovement();
     });
 

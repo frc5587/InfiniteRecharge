@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Intake;
 /**
  * This class records current amount of balls and issues a command in order to stop it when it gets to 5.
@@ -15,10 +16,12 @@ import frc.robot.subsystems.Intake;
 public class IntakeStopper extends CommandBase {
 
   private final Intake intake;
+  private final Conveyor conveyor;
 
-  public IntakeStopper(Intake intake) {
-    addRequirements(intake);
-
+  public IntakeStopper(Intake intake, Conveyor conveyor) {
+    addRequirements(intake, conveyor);
+  
+    this.conveyor = conveyor;
     this.intake = intake;
   }
 
@@ -35,6 +38,7 @@ public class IntakeStopper extends CommandBase {
     // the robot disables the intake motors.
     if (intake.getCurrentNumberOfBalls() >= 5) {
       intake.stopIntakeMovement();
+      conveyor.stopConveyorMovement();
     }
   }
 

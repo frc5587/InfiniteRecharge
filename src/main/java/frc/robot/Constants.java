@@ -28,11 +28,16 @@ public final class Constants {
     public static final class IntakeConstants {
         public static final int INTAKE_MOTOR = 41;
         public static final int CENTERING_MOTOR = 42;
-        public static final int CONVEYOR_MOTOR = 50;
         public static final int BOTTOM_LIMIT = 0;
         public static final int TOP_LIMIT = 1;
         public static final double THROTTLE = 1.0;
+ 
+    }
+    public static final class ConveyorConstants {
         public static final double CONVEYOR_THROTTLE = 0.75;
+        public static final int CONTROL_PANEL_TALON = 51;
+        public static final double CONTROL_PANEL_THROTTLE = 0.75;
+        public static final int CONVEYOR_MOTOR = 50;
     }
 
     public static final class ArmConstants {
