@@ -13,10 +13,12 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: Update submodules
-      run: git submodule sync --recursive&&git submodule update
-    - name: check files
-      run: python test.py
+    - name: Checkout submodules
+      uses: srt32/git-actions@v0.0.3
+      with:
+        args: git submodule update --init --recursive
+    # - name: check files
+      # run: python test.py
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
