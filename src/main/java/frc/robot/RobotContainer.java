@@ -67,10 +67,8 @@ public class RobotContainer {
   private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
 
-  private final Intake intake = new Intake();
   private final Conveyor conveyor = new Conveyor();
   private final LimelightCentering centeringCommand = new LimelightCentering(drivetrain, limelight);
-
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -134,7 +132,7 @@ public class RobotContainer {
     armLimitSwitch.whenActive(m_arm::resetEncoder);
 
     SmartDashboard.putData("Ball Reset", new InstantCommand(conveyor::reset));
-    
+
     // Run climber up
     upDPad.whenActive(() -> climber.set(0.5), climber).whenInactive(() -> climber.set(0), climber);
 
