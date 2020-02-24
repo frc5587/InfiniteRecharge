@@ -74,7 +74,7 @@ public class RobotContainer {
       intake.stopIntakeMovement();
     });
 
-    SmartDashboard.putData("Ball Reset", new InstantCommand(intake::reset));
+    SmartDashboard.putData("Ball Reset", new InstantCommand(conveyor::reset));
 
   }
 
