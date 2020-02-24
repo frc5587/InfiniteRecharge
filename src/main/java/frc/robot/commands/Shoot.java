@@ -17,55 +17,55 @@ import frc.robot.subsystems.Shooter;
  * A Shoot command that operates the shooter
  */
 public class Shoot extends CommandBase {
-	private Shooter shooter;
-	private DoubleSupplier yAxis;
-	private boolean velocityControl;
+  private Shooter shooter;
+  private DoubleSupplier yAxis;
+  private boolean velocityControl;
 
-	/**
-	 * Creates a new Shoot command
-	 *
-	 * @param subsystem The subsystem used by this command.
-	 */
-	public Shoot(Shooter shooter, DoubleSupplier y) {
-		this.shooter = shooter;
-		yAxis = y;
+  /**
+   * Creates a new Shoot command
+   *
+   * @param subsystem The subsystem used by this command.
+   */
+  public Shoot(Shooter shooter, DoubleSupplier y) {
+    this.shooter = shooter;
+    yAxis = y;
 
-		// Use addRequirements() here to declare subsystem dependencies.
-		addRequirements(shooter);
-	}
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(shooter);
+  }
 
-	public Shoot(Shooter shooter, DoubleSupplier y, boolean velocityControl) {
-		this.shooter = shooter;
-		yAxis = y;
-		this.velocityControl = velocityControl;
+  public Shoot(Shooter shooter, DoubleSupplier y, boolean velocityControl) {
+    this.shooter = shooter;
+    yAxis = y;
+    this.velocityControl = velocityControl;
 
-		// Use addRequirements() here to declare subsystem dependencies.
-		addRequirements(shooter);
-	}
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(shooter);
+  }
 
-	// Called when the command is initially scheduled.
-	@Override
-	public void initialize() {
-		SmartDashboard.putNumber("Setpoint", 0.0);
-	}
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    SmartDashboard.putNumber("Setpoint", 0.0);
+  }
 
-	/**
-	 * Stops the shooter from spinning
-	 */
-	@Override
-	public void end(boolean interrupted) {
-		System.out.println("Shoot ending, interrupted: " + interrupted);
-		shooter.setThrottle(0);
-	}
+  /**
+   * Stops the shooter from spinning
+   */
+  @Override
+  public void end(boolean interrupted) {
+    System.out.println("Shoot ending, interrupted: " + interrupted);
+    shooter.setThrottle(0);
+  }
 
-	@Override
-	public void execute() {
-		if (velocityControl) {
-			shooter.setVelocity(yAxis.getAsDouble());
-		} else {
-			shooter.setThrottle(yAxis.getAsDouble());
-		}
-		// shooter.setVelocity(SmartDashboard.getNumber("Setpoint", 0.0));
-		shooter.log();
-	}
+  @Override
+  public void execute() {
+    if (velocityControl) {
+      shooter.setVelocity(yAxis.getAsDouble());
+    } else {
+      shooter.setThrottle(yAxis.getAsDouble());
+    }
+    // shooter.setVelocity(SmartDashboard.getNumber("Setpoint", 0.0));
+    shooter.log();
+  }
 }

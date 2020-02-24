@@ -13,41 +13,41 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 
 public class ManualArmControl extends CommandBase {
-    private final Arm arm;
-    private final DoubleSupplier throttleSupplier;
+  private final Arm arm;
+  private final DoubleSupplier throttleSupplier;
 
-    /**
-     * Creates a new ManualArmControl.
-     */
-    public ManualArmControl(Arm arm, DoubleSupplier throttleSupplier) {
-        // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(arm);
+  /**
+   * Creates a new ManualArmControl.
+   */
+  public ManualArmControl(Arm arm, DoubleSupplier throttleSupplier) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(arm);
 
-        this.arm = arm;
-        this.throttleSupplier = throttleSupplier;
-    }
+    this.arm = arm;
+    this.throttleSupplier = throttleSupplier;
+  }
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-        arm.setArm(0);
-    }
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    arm.setArm(0);
+  }
 
-    // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {
-        arm.setArm(throttleSupplier.getAsDouble());
-    }
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    arm.setArm(throttleSupplier.getAsDouble());
+  }
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {
-        arm.setArm(0);
-    }
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    arm.setArm(0);
+  }
 
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }
