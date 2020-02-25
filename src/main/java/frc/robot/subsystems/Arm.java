@@ -114,7 +114,7 @@ public class Arm extends SubsystemBase {
      * @return calculated FeedForward value
      */
     public double calcFeedForward() {
-        var ff = Constants.ArmConstants.FF.calculate(Math.toRadians(SmartDashboard.getNumber("Goto Position", 0)), 0) / 12;
+        var ff = Constants.ArmConstants.FF.calculate(this.getAngleRadians(), 0) / 12;
         // System.out.println("FF: " + ff);
         return ff;
     }
@@ -137,7 +137,7 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println(getAngleDegrees());
+        // System.out.println(getAngleDegrees());
         refreshPID();
         armPIDController.setFF(calcFeedForward());
     }

@@ -76,7 +76,7 @@ public class RobotContainer {
     // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
     intake.setDefaultCommand(new IntakeStopper(intake));
-    m_arm.setDefaultCommand(new LimelightThread(m_arm, limelight));
+    // m_arm.setDefaultCommand(new LimelightThread(m_arm, limelight));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -101,6 +101,8 @@ public class RobotContainer {
     var armLimitSwitch = new Trigger(() -> m_arm.getLimitSwitchVal());
     var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
     var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
+
+    var leftStickButton = new JoystickButton(xb, XboxController.Button.kStickLeft.value);
 
     // Intake
     rightBumper.whileHeld(() -> {
@@ -145,6 +147,8 @@ public class RobotContainer {
     // Math.toRadians(46)))).whenInactive(() -> shooter.setThrottle(0));
     rightTrigger.whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight)))
         .whenInactive(() -> shooter.setThrottle(0));
+
+    leftStickButton.whileHeld(new LimelightThread(m_arm, limelight));
   }
 
   /**

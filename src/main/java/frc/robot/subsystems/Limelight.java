@@ -69,7 +69,7 @@ public class Limelight extends SubsystemBase {
    * @param currentArmAngle the angle that the arm is currently at, in radians
    * @return the height between the center of the shooter and the floor, in meters
    */
-  private double getShooterHeight(double currentArmAngle) {
+  public double getShooterHeight(double currentArmAngle) {
     return LimelightConstants.ARM_LENGTH_METERS * Math.sin(currentArmAngle)
         + 0.5 * LimelightConstants.ARM_HEIGHT_METERS * Math.cos(currentArmAngle)
         + LimelightConstants.ARM_AXLE_HEIGHT_METERS;
@@ -103,7 +103,7 @@ public class Limelight extends SubsystemBase {
    * @return the angle between the shooter and the front of the target, in
    *         radians, without accounting for drop
    */
-  private double getShooterFrontGoalAngle(double currentArmAngle) {
+  public double getShooterFrontGoalAngle(double currentArmAngle) {
     return (Math.PI / 2.0) - Math.asin((getLimelightDistance(currentArmAngle) / getShooterDistance(currentArmAngle))
         * Math.sin((Math.PI / 2.0) + Math.toRadians(getVerticalAngleOffset())));
   }

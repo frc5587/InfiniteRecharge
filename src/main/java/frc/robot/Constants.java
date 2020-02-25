@@ -124,6 +124,8 @@ public final class Constants {
         // 127.//0 //kD
         0);
 
+    public static final double ARM_LENGTH_METERS = 0.9;
+
   }
 
   public static final class ShooterConstants {

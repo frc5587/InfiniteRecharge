@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Limelight;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LimelightThread extends CommandBase {
   private Limelight limelight;
@@ -24,10 +25,19 @@ public class LimelightThread extends CommandBase {
     addRequirements(arm, limelight);
   }
   
+  // TODO: cache past positions that the limelight found, and if they are 0, use the most recent cached position
   public void updateArm() {
-    double distanceMeters = limelight.getShooterDistance(arm.getAngleRadians());
-    double angleToSetDegrees = calcArmAngleDegrees(distanceMeters);
-    arm.setArmAngleDegrees(angleToSetDegrees);
+    // angle of the arm
+    double armAngleRad = arm.getAngleRadians();
+
+    double heightOfWorkingTarget = Constants.LimelightConstants.GOAL_HEIGHT_METERS - limelight.getShooterHeight(armAngleRad);
+
+    double distance = limelight.getShooterGoalHorizontalDifference(armAngleRad, Limelight.Target.FRONT);
+
+    double angleToSetDegrees = calcArmAngleDegrees(distance, heightOfWorkingTarget);
+    SmartDashboard.putNumber("set angle", angleToSetDegrees);
+    // System.out.println("Setting angle to " + angleToSetDegrees + " degrees");
+    // arm.setArmAngleDegrees(angleToSetDegrees);
   }
 
   /**
@@ -37,8 +47,8 @@ public class LimelightThread extends CommandBase {
    * @param distanceMeters
    * @return
    */
-  public static double calcArmAngleDegrees(double distanceMeters) {
-    return Math.toDegrees(Math.atan(2 * Constants.ShooterConstants.GOAL_HEIGHT / distanceMeters));
+  public static double calcArmAngleDegrees(double distanceMeters, double height) {
+    return Math.toDegrees(Math.atan(2 * (height) / distanceMeters));
   }
 
   @Override
