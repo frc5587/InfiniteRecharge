@@ -167,13 +167,13 @@ public final class Constants {
    * Constants used by the Limelight
    */
   public static class LimelightConstants {
-    public static final double ARM_HEIGHT_METERS = Units.inchesToMeters(8.75);
-    public static final double ARM_LENGTH_METERS = Units.inchesToMeters(4404471.0 / 125000);
-    public static final double ARM_AXLE_HEIGHT_METERS = Units.inchesToMeters(1739459.0 / 250000);
+    public static final double ARM_HEIGHT_METERS = Units.inchesToMeters(8.5);
+    public static final double ARM_LENGTH_METERS = Units.inchesToMeters(35.235768);
+    public static final double ARM_AXLE_HEIGHT_METERS = Units.inchesToMeters(6.957836);
 
-    public static final double STANDOFF_METERS = Units.inchesToMeters(1.097);
+    public static final double STANDOFF_METERS = Units.inchesToMeters(2.25);
 
-    public static final double GOAL_HEIGHT_METERS = Units.inchesToMeters(98.25);
+    public static final double GOAL_HEIGHT_METERS = Units.inchesToMeters(97.5);
     public static final double INNER_OUTER_GOAL_DISTANCE_METERS = Units.inchesToMeters(29.25);
 
     public static final double G_METERS_PER_SECOND_SQUARED = 9.81;

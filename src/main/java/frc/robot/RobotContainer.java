@@ -32,8 +32,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.AutoAim;
 import frc.robot.commands.IntakeStopper;
 import frc.robot.commands.LimelightCentering;
+import frc.robot.commands.LimelightTest;
 import frc.robot.commands.ManualArmControl;
 import frc.robot.commands.RamseteCommandWrapper;
 import frc.robot.commands.Shoot;
@@ -59,7 +61,7 @@ public class RobotContainer {
   private final Limelight limelight = new Limelight();
   private final MachineLearning machineLearning = new MachineLearning();
   private final Climber climber = new Climber();
-  private final Arm m_arm = new Arm();
+  private final Arm arm = new Arm();
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
 
@@ -67,6 +69,7 @@ public class RobotContainer {
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
 
   private final LimelightCentering centeringCommand = new LimelightCentering(drivetrain, limelight);
+  private final AutoAim autoAim = new AutoAim(arm, limelight);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -75,6 +78,7 @@ public class RobotContainer {
     // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
     intake.setDefaultCommand(new IntakeStopper(intake));
+    limelight.setDefaultCommand(new LimelightTest(limelight, arm));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -96,9 +100,10 @@ public class RobotContainer {
     var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
     var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
     var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
-    var armLimitSwitch = new Trigger(() -> m_arm.getLimitSwitchVal());
+    var armLimitSwitch = new Trigger(() -> arm.getLimitSwitchVal());
     var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
     var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
+    var aButton = new JoystickButton(xb, XboxController.Button.kA.value);
 
     // Intake
     rightBumper.whileHeld(() -> {
@@ -119,14 +124,18 @@ public class RobotContainer {
 
     // arm
     // determines whether the arm should be manually controlled
-    leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(m_arm, () -> xb.getY(Hand.kRight)));
+    leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(arm, () -> xb.getY(Hand.kRight)));
 
     // moves arm to the lowest and highest positions
-    xButton.whenPressed(() -> m_arm.setArmAngleDegrees(14), m_arm);
-    yButton.whenPressed(() -> m_arm.setArmAngleDegrees(55), m_arm);
+    xButton.whenPressed(() -> arm.setArmAngleDegrees(14), arm)
+    .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
+    yButton.whenPressed(() -> arm.setArmAngleDegrees(55), arm)
+    .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
+
+    aButton.whenPressed(autoAim).whenReleased(() -> autoAim.cancel());
 
     // reset elevator encoder
-    armLimitSwitch.whenActive(m_arm::resetEncoder);
+    armLimitSwitch.whenActive(arm::resetEncoder);
 
     // Run climber up
     upDPad.whenActive(() -> climber.set(0.5), climber).whenInactive(() -> climber.set(0), climber);

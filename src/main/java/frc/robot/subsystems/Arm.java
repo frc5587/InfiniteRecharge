@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
@@ -22,8 +23,8 @@ public class Arm extends SubsystemBase {
     public Arm() {
         configSpark();
         resetEncoder();
-        startPID();
-        refreshPID();
+        // startPID();
+        // refreshPID();
     }
 
     /**
@@ -105,9 +106,10 @@ public class Arm extends SubsystemBase {
      * @return calculated FeedForward value
      */
     public double calcFeedForward() {
-        var ff = Constants.ArmConstants.FF.calculate(Math.toRadians(SmartDashboard.getNumber("Goto Position", 0)), 0) / 12;
-        // System.out.println("FF: " + ff);
-        return ff;
+        // var ff = Constants.ArmConstants.FF.calculate(Math.toRadians(getAngleDegrees()), 0) / 12;
+        // // System.out.println("FF: " + ff);
+        // return ff;
+        return Constants.ArmConstants.FF.calculate(Math.toRadians(getAngleDegrees()), 0) / 12.0;
     }
 
     public void startPID() {
@@ -126,12 +128,12 @@ public class Arm extends SubsystemBase {
         // setArmAngleDegrees(SmartDashboard.getNumber("Goto Position", 14));
     }
 
-    @Override
-    public void periodic() {
-        System.out.println(getAngleDegrees());
-        refreshPID();
-        armPIDController.setFF(calcFeedForward());
-    }
+    // @Override
+    // public void periodic() {
+    //     System.out.println(getAngleDegrees());
+    //     refreshPID();
+    //     armPIDController.setFF(calcFeedForward());
+    // }
 
     /**
      * Converts degrees of a circle to encoder ticks 1 tick == 180 degrees
@@ -168,5 +170,12 @@ public class Arm extends SubsystemBase {
       */
      public boolean getLimitSwitchVal() {
          return !(armLimitSwitch.get());
+     }
+
+     @Override
+     public void periodic() {
+         refreshPID();
+         var ff = calcFeedForward();
+         armPIDController.setFF(ff);
      }
 }
