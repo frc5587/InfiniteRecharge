@@ -22,7 +22,7 @@ public class Conveyor extends SubsystemBase {
   private final DigitalInput topLimit = new DigitalInput(Constants.IntakeConstants.TOP_LIMIT);
   private boolean previousSettingOfBottomSwitch = bottomLimit.get();
   private boolean previousSettingOfTopSwitch = topLimit.get();
-  private boolean shoot = false;
+  private boolean full = false;
   private boolean empty = false;
   private int currentNumberOfBalls = 3;
 
@@ -80,7 +80,14 @@ public class Conveyor extends SubsystemBase {
   public void stopSet(){
     colorRotator.set(ControlMode.PercentOutput, 0);
   }
+  public boolean getIsFull(){
+    return full;
+  }
   
+  public boolean getIsEmpty(){
+    return empty;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -94,11 +101,11 @@ public class Conveyor extends SubsystemBase {
     }
     // communicates to drive team about when to shoot.
     if (currentNumberOfBalls >= 5) {
-      shoot = true;
-      SmartDashboard.putBoolean("shoot?", shoot);
+      full = true;
+      SmartDashboard.putBoolean("shoot?", full);
     } else {
-      shoot = false;
-      SmartDashboard.putBoolean("shoot?", shoot);
+      full = false;
+      SmartDashboard.putBoolean("shoot?", full);
     }
     if (currentNumberOfBalls == 0){
       empty = true;
