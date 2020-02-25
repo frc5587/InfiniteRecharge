@@ -37,7 +37,6 @@ import frc.robot.commands.IntakeStopper;
 import frc.robot.commands.LimelightCentering;
 import frc.robot.commands.ManualArmControl;
 import frc.robot.commands.RamseteCommandWrapper;
-import frc.robot.commands.Shoot;
 import frc.robot.commands.TargetBall;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
@@ -118,7 +117,7 @@ public class RobotContainer {
       conveyor.stopConveyorMovement();
       intake.stopIntakeMovement();
     });
-    SmartDashboard.putData("Ball Count Reset", new InstantCommand(intake::reset));
+    SmartDashboard.putData("Ball Count Reset", new InstantCommand(conveyor::reset));
 
     // arm
     // determines whether the arm should be manually controlled
