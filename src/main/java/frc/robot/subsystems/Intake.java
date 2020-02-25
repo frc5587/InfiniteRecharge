@@ -23,7 +23,6 @@ public class Intake extends SubsystemBase {
   public Intake() {
     intakeTalon.setInverted(true);
   }
-
   /**
    * Moves the intake forward
    */
@@ -31,9 +30,6 @@ public class Intake extends SubsystemBase {
     intakeTalon.set(ControlMode.PercentOutput, IntakeConstants.THROTTLE);
     centeringTalon.set(ControlMode.PercentOutput, IntakeConstants.THROTTLE / 2);
   }
-
-
-
   /**
    * Moves the intake backward
    */
@@ -41,9 +37,6 @@ public class Intake extends SubsystemBase {
     intakeTalon.set(ControlMode.PercentOutput, -IntakeConstants.THROTTLE);
     centeringTalon.set(ControlMode.PercentOutput, -IntakeConstants.THROTTLE / 2);
   }
-
- 
-
   /**
    * Stops all movement of the intake
    */
@@ -51,7 +44,6 @@ public class Intake extends SubsystemBase {
     intakeTalon.set(ControlMode.PercentOutput, 0);
     centeringTalon.set(ControlMode.PercentOutput, 0);
   }
-
   @Override
   public void periodic() {
  
