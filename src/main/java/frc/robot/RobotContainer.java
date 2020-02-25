@@ -72,7 +72,7 @@ public class RobotContainer {
   private final LimelightCentering centeringCommand = new LimelightCentering(drivetrain, limelight);
 
   private final ArmThread armThread = new ArmThread(m_arm, limelight);
-  private final ShooterThread shooterThread = new ShooterThread(m_arm, shooter, limelight);
+  private final ShooterThread shooterThread = new ShooterThread(m_arm, shooter, limelight, conveyor);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.

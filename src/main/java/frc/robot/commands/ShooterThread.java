@@ -7,19 +7,23 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Conveyor;
 
 public class ShooterThread extends CommandBase {
   private Arm arm;
   private Shooter shooter;
   private Limelight limelight;
+  private Conveyor conveyor;
   private Notifier notifier = new Notifier(this::updateShooter);
+  private int startBalls = conveyor.getCurrentNumberOfBalls();
 
-  public ShooterThread(Arm arm, Shooter shooter, Limelight limelight) {
+  public ShooterThread(Arm arm, Shooter shooter, Limelight limelight, Conveyor conveyor) {
     this.arm = arm;
     this.shooter = shooter;
     this.limelight = limelight;
+    this.conveyor = conveyor;
 
-    addRequirements(shooter);
+    addRequirements(this.shooter, this.conveyor);
   }
 
   public void updateShooter() {
@@ -45,5 +49,10 @@ public class ShooterThread extends CommandBase {
   public void end(boolean interrupted) {
     System.out.println("ShooterThread ending - interrupted: " + interrupted);
     notifier.stop();
+  }
+
+  @Override
+  public boolean isFinished() {
+    return conveyor.getCurrentNumberOfBalls() == 0 && startBalls != 0;
   }
 }

@@ -26,7 +26,6 @@ public class ArmThread extends CommandBase {
     addRequirements(arm);
   }
   
-  // TODO: cache past positions that the limelight found, and if they are 0, use the most recent cached position
   public void updateArm() {
     // angle of the arm
     double armAngleRad = arm.getAngleRadians();
