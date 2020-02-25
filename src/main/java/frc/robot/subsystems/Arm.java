@@ -49,7 +49,9 @@ public class Arm extends SubsystemBase {
      * @param speed percent output used to set motor to a certain speed
      */
     public void setArm(double speed) {
-        armSpark.set(speed);
+        // armSpark.set(speed);
+        speed = speed * 10 + getAngleDegrees();
+        armPIDController.setReference(degreesToTicks(speed), ControlType.kPosition);
     }
 
     /**
