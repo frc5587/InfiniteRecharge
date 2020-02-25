@@ -101,10 +101,10 @@ public class Conveyor extends SubsystemBase {
       SmartDashboard.putBoolean("shoot?", shoot);
     }
     if (currentNumberOfBalls == 0){
-      empty = true
+      empty = true;
       SmartDashboard.putBoolean("empty?", empty);
     } else {
-      empty = false
+      empty = false;
       SmartDashboard.putBoolean("empty?", empty);
     }
     // this is done to update the value of the limit switch in order to establish
