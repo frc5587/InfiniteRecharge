@@ -7,7 +7,7 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class LimelightThread extends CommandBase {
+public class ArmThread extends CommandBase {
   private Limelight limelight;
   private Arm arm;
   private Notifier notifier = new Notifier(this::updateArm);
@@ -20,10 +20,10 @@ public class LimelightThread extends CommandBase {
    * @param arm arm subsystem
    * @param limelight limelight subsystem
    */
-  public LimelightThread(Arm arm, Limelight limelight) {
+  public ArmThread(Arm arm, Limelight limelight) {
     this.limelight = limelight;
     this.arm = arm;
-    addRequirements(arm, limelight);
+    addRequirements(arm);
   }
   
   // TODO: cache past positions that the limelight found, and if they are 0, use the most recent cached position
@@ -39,7 +39,7 @@ public class LimelightThread extends CommandBase {
     
     this.lastAngle = angleToSetDegrees;
 
-    SmartDashboard.putNumber("set angle", angleToSetDegrees);
+    SmartDashboard.putNumber("Setting Arm Angle - Thread", angleToSetDegrees);
     // System.out.println("Setting angle to " + angleToSetDegrees + " degrees");
     arm.setArmAngleDegrees(angleToSetDegrees);
   }
@@ -63,6 +63,6 @@ public class LimelightThread extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     notifier.stop();
-    System.out.println("LimelightThread ending - interrupted: " + interrupted);
+    System.out.println("ArmThread ending - interrupted: " + interrupted);
   }
 }

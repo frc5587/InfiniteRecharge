@@ -10,7 +10,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+// import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -19,12 +19,12 @@ import frc.robot.Constants.IntakeConstants;
  */
 public class Intake extends SubsystemBase {
   private final TalonSRX conveyorBeltMotor = new TalonSRX(IntakeConstants.CONVEYOR_MOTOR);
-  private final DigitalInput bottomLimit = new DigitalInput(IntakeConstants.BOTTOM_LIMIT);
-  private final DigitalInput topLimit = new DigitalInput(IntakeConstants.TOP_LIMIT);
+  // private final DigitalInput bottomLimit = new DigitalInput(IntakeConstants.BOTTOM_LIMIT);
+  // private final DigitalInput topLimit = new DigitalInput(IntakeConstants.TOP_LIMIT);
   private int currentNumberOfBalls = 0;
-  private boolean previousSettingOfBottomSwitch = bottomLimit.get();
-  private boolean previousSettingOfTopSwitch = topLimit.get();
-  private boolean shoot = false;
+  // private boolean previousSettingOfBottomSwitch = bottomLimit.get();
+  // private boolean previousSettingOfTopSwitch = topLimit.get();
+  // private boolean shoot = false;
   private final TalonSRX intakeTalon = new TalonSRX(IntakeConstants.INTAKE_MOTOR);
   private final TalonSRX centeringTalon = new TalonSRX(IntakeConstants.CENTERING_MOTOR);
 

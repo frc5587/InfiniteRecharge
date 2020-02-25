@@ -1,0 +1,49 @@
+package frc.robot.commands;
+
+import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Shooter;
+
+public class ShooterThread extends CommandBase {
+  private Arm arm;
+  private Shooter shooter;
+  private Limelight limelight;
+  private Notifier notifier = new Notifier(this::updateShooter);
+
+  public ShooterThread(Arm arm, Shooter shooter, Limelight limelight) {
+    this.arm = arm;
+    this.shooter = shooter;
+    this.limelight = limelight;
+
+    addRequirements(shooter);
+  }
+
+  public void updateShooter() {
+    double armAngle = arm.getAngleRadians();
+    double distance = limelight.getShooterGoalHorizontalDifference(armAngle, Limelight.Target.FRONT);
+    double speed = shooter.calculateShooterSpeed(distance, armAngle);
+
+    if (!limelight.isTargetDetected()) {
+      speed = 0;
+      System.out.println("No target detected!");
+    }
+
+    SmartDashboard.putNumber("Shooter Speed - Thread", speed);
+    shooter.setVelocity(speed);
+  }
+
+  @Override
+  public void initialize() {
+    notifier.startPeriodic(Constants.LimelightConstants.THREAD_PERIOD_TIME_SECONDS);
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    System.out.println("ShooterThread ending - interrupted: " + interrupted);
+    notifier.stop();
+  }
+}

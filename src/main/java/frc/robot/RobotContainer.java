@@ -33,11 +33,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.ArmThread;
 import frc.robot.commands.IntakeStopper;
 import frc.robot.commands.LimelightCentering;
 import frc.robot.commands.ManualArmControl;
 import frc.robot.commands.RamseteCommandWrapper;
-import frc.robot.commands.Shoot;
+import frc.robot.commands.ShooterThread;
 import frc.robot.commands.TargetBall;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
@@ -46,7 +47,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.MachineLearning;
 import frc.robot.subsystems.Shooter;
-import frc.robot.commands.LimelightThread;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -70,6 +70,9 @@ public class RobotContainer {
 
   private final Conveyor conveyor = new Conveyor();
   private final LimelightCentering centeringCommand = new LimelightCentering(drivetrain, limelight);
+
+  private final ArmThread armThread = new ArmThread(m_arm, limelight);
+  private final ShooterThread shooterThread = new ShooterThread(m_arm, shooter, limelight);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -105,6 +108,7 @@ public class RobotContainer {
     var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
 
     var leftStickButton = new JoystickButton(xb, XboxController.Button.kStickLeft.value);
+    var rightStickButton = new JoystickButton(xb, XboxController.Button.kStickRight.value);
 
     // Intake
     rightBumper.whileHeld(() -> {
@@ -152,7 +156,8 @@ public class RobotContainer {
     rightTrigger.whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight)))
         .whenInactive(() -> shooter.setThrottle(0));
 
-    leftStickButton.whileHeld(new LimelightThread(m_arm, limelight));
+    leftStickButton.whileHeld(armThread);
+    rightStickButton.whileHeld(shooterThread);
   }
 
   /**
