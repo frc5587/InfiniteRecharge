@@ -23,6 +23,7 @@ public class Conveyor extends SubsystemBase {
   private boolean previousSettingOfBottomSwitch = bottomLimit.get();
   private boolean previousSettingOfTopSwitch = topLimit.get();
   private boolean shoot = false;
+  private boolean empty = false;
   private int currentNumberOfBalls = 3;
 
   /**
@@ -98,6 +99,13 @@ public class Conveyor extends SubsystemBase {
     } else {
       shoot = false;
       SmartDashboard.putBoolean("shoot?", shoot);
+    }
+    if (currentNumberOfBalls == 0){
+      empty = true
+      SmartDashboard.putBoolean("empty?", empty);
+    } else {
+      empty = false
+      SmartDashboard.putBoolean("empty?", empty);
     }
     // this is done to update the value of the limit switch in order to establish
     // previous and current state of limit switch
