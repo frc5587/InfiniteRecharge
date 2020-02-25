@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.Conveyor;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
@@ -67,16 +68,17 @@ public class RobotContainer {
   private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
 
+  private final Conveyor conveyor = new Conveyor();
   private final LimelightCentering centeringCommand = new LimelightCentering(drivetrain, limelight);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
     // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
-    intake.setDefaultCommand(new IntakeStopper(intake));
-    // m_arm.setDefaultCommand(new LimelightThread(m_arm, limelight));
+    intake.setDefaultCommand(new IntakeStopper(intake, conveyor));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -107,16 +109,16 @@ public class RobotContainer {
     // Intake
     rightBumper.whileHeld(() -> {
       intake.moveIntakeForward();
-      intake.moveConveyorForward();
+      conveyor.moveConveyorForward();
     }, intake).whenReleased(() -> {
-      intake.stopConveyorMovement();
+      conveyor.stopConveyorMovement();
       intake.stopIntakeMovement();
     });
     leftBumper.whileHeld(() -> {
-      intake.moveConveyorBackward();
+      conveyor.moveConveyorBackward();
       intake.moveIntakeBackward();
     }).whenReleased(() -> {
-      intake.stopConveyorMovement();
+      conveyor.stopConveyorMovement();
       intake.stopIntakeMovement();
     });
     SmartDashboard.putData("Ball Count Reset", new InstantCommand(intake::reset));
@@ -131,6 +133,8 @@ public class RobotContainer {
 
     // reset elevator encoder
     armLimitSwitch.whenActive(m_arm::resetEncoder);
+
+    SmartDashboard.putData("Ball Reset", new InstantCommand(conveyor::reset));
 
     // Run climber up
     upDPad.whenActive(() -> climber.set(0.5), climber).whenInactive(() -> climber.set(0), climber);
