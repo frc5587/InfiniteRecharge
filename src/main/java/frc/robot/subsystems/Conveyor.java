@@ -14,16 +14,17 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
 public class Conveyor extends SubsystemBase {
   private final TalonSRX controlPanelTalon = new TalonSRX(Constants.ConveyorConstants.CONTROL_PANEL_MOTOR);
   private final TalonSRX conveyorBeltMotor = new TalonSRX(Constants.ConveyorConstants.CONVEYOR_MOTOR);
+  private TalonSRX colorRotator = new TalonSRX(Constants.ConveyorConstants.CONTROL_PANEL_MOTOR);
   private final DigitalInput bottomLimit = new DigitalInput(Constants.IntakeConstants.BOTTOM_LIMIT);
   private final DigitalInput topLimit = new DigitalInput(Constants.IntakeConstants.TOP_LIMIT);
   private boolean previousSettingOfBottomSwitch = bottomLimit.get();
   private boolean previousSettingOfTopSwitch = topLimit.get();
   private boolean shoot = false;
   private int currentNumberOfBalls = 3;
+
   /**
    * Creates a new Conveyor.
    */
@@ -32,21 +33,21 @@ public class Conveyor extends SubsystemBase {
     controlPanelTalon.setInverted(true);
   }
     /**
-   * Moves the conveyer forward
+   * Moves the conveyer forward and moves color wheel
    */
   public void moveConveyorForward( ){
     conveyorBeltMotor.set(ControlMode.PercentOutput, Constants.ConveyorConstants.CONVEYOR_THROTTLE);
     controlPanelTalon.set(ControlMode.PercentOutput, Constants.ConveyorConstants.CONTROL_PANEL_THROTTLE);
   }
   /**
-   * Moves the conveyer backward 
+   * Moves the conveyer backward and moves color wheel
    */
   public void moveConveyorBackward() {
     conveyorBeltMotor.set(ControlMode.PercentOutput, -Constants.ConveyorConstants.CONVEYOR_THROTTLE);
     controlPanelTalon.set(ControlMode.PercentOutput, -Constants.ConveyorConstants.CONTROL_PANEL_THROTTLE);
   }
   /**
-   * Stops all movement of the conveyer 
+   * Stops all movement of the conveyer and moves wheel
    */
   public void stopConveyorMovement() {
     conveyorBeltMotor.set(ControlMode.PercentOutput, 0);
@@ -65,6 +66,18 @@ public class Conveyor extends SubsystemBase {
    */
   public int getCurrentNumberOfBalls() {
     return currentNumberOfBalls;
+  }
+    /**
+   * Set the motor to a particular value
+   */
+  public void set() {
+    colorRotator.set(ControlMode.PercentOutput, Constants.ConveyorConstants.CONTROL_PANEL_THROTTLE);
+  }
+  /**
+   * Sets the motor to zero
+   */
+  public void stopSet(){
+    colorRotator.set(ControlMode.PercentOutput, 0);
   }
   
   @Override
