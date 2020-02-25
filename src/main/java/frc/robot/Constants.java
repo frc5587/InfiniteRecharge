@@ -121,8 +121,6 @@ public final class Constants {
     public static final int CONTROL_PANEL_MOTOR = 51;
     public static final double CONTROL_PANEL_THROTTLE = 0.75;
     public static final int CONVEYOR_MOTOR = 50;
-    public static final int CONTROL_PANEL_MOTOR = 2;
-    public static final double CONTROL_PANEL_THROTTLE = .25;
 }
 
   public static final class ArmConstants {

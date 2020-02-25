@@ -9,8 +9,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -18,14 +16,12 @@ import frc.robot.Constants.IntakeConstants;
  * this subsystem controls the collection and movement of balls for shooting.
  */
 public class Intake extends SubsystemBase {
-  private final TalonSRX conveyorBeltMotor = new TalonSRX(IntakeConstants.CONVEYOR_MOTOR);
   private final TalonSRX intakeTalon = new TalonSRX(IntakeConstants.INTAKE_MOTOR);
   private final TalonSRX centeringTalon = new TalonSRX(IntakeConstants.CENTERING_MOTOR);
 
   
   public Intake() {
     intakeTalon.setInverted(true);
-    conveyorBeltMotor.setInverted(true);
   }
 
   /**
