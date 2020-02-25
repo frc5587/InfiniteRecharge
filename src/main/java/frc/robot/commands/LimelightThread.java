@@ -11,6 +11,7 @@ public class LimelightThread extends CommandBase {
   private Limelight limelight;
   private Arm arm;
   private Notifier notifier = new Notifier(this::updateArm);
+  private double lastAngle = 30;
 
   /**
    * Creates a commands that schedules a thread for updating the arm based 
@@ -34,10 +35,13 @@ public class LimelightThread extends CommandBase {
 
     double distance = limelight.getShooterGoalHorizontalDifference(armAngleRad, Limelight.Target.FRONT);
 
-    double angleToSetDegrees = calcArmAngleDegrees(distance, heightOfWorkingTarget);
+    double angleToSetDegrees = limelight.isTargetDetected() ? calcArmAngleDegrees(distance, heightOfWorkingTarget) : this.lastAngle;
+    
+    this.lastAngle = angleToSetDegrees;
+
     SmartDashboard.putNumber("set angle", angleToSetDegrees);
     // System.out.println("Setting angle to " + angleToSetDegrees + " degrees");
-    // arm.setArmAngleDegrees(angleToSetDegrees);
+    arm.setArmAngleDegrees(angleToSetDegrees);
   }
 
   /**

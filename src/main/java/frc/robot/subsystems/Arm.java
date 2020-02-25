@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpiutil.math.MathUtil;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -59,6 +60,7 @@ public class Arm extends SubsystemBase {
      * @param angle angle wanted to set the arm - DEGREES
      */
     public void setArmAngleDegrees(double angle) {
+        angle = MathUtil.clamp(angle, 14, 70);
         armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
     }
 
