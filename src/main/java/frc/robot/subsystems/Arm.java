@@ -55,12 +55,13 @@ public class Arm extends SubsystemBase {
     }
 
     /**
-     * Set the arm to a specific angle
+     * Set the arm to a specific angle, clamps the value to it 
+     * cannot run the arm too far
      * 
      * @param angle angle wanted to set the arm - DEGREES
      */
     public void setArmAngleDegrees(double angle) {
-        angle = MathUtil.clamp(angle, 14, 70);
+        angle = MathUtil.clamp(angle, Constants.ArmConstants.LOWER_LIMIT_DEGREES, Constants.ArmConstants.UPPER_LIMIT_DEGREES);
         armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
     }
 

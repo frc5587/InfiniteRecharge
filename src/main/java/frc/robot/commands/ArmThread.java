@@ -27,19 +27,14 @@ public class ArmThread extends CommandBase {
   }
   
   public void updateArm() {
-    // angle of the arm
-    double armAngleRad = arm.getAngleRadians();
-
-    double heightOfWorkingTarget = Constants.LimelightConstants.GOAL_HEIGHT_METERS - limelight.getShooterHeight(armAngleRad);
-
-    double distance = limelight.getShooterGoalHorizontalDifference(armAngleRad, Limelight.Target.FRONT);
-
-    double angleToSetDegrees = limelight.isTargetDetected() ? calcArmAngleDegrees(distance, heightOfWorkingTarget) : this.lastAngle;
+    // Get angle to set arm, if the limelight hasn't found the target, it just sets it to the previous angle
+    double angleToSetDegrees = limelight.isTargetDetected() ? limelight.calculateArmMovement(arm.getAngleRadians(), Limelight.Target.FRONT) : this.lastAngle;  // alcArmAngleDegrees(distance, heightOfWorkingTarget) : this.lastAngle;
     
+    // saves last angle
     this.lastAngle = angleToSetDegrees;
 
+    // debugging
     SmartDashboard.putNumber("Setting Arm Angle - Thread", angleToSetDegrees);
-    // System.out.println("Setting angle to " + angleToSetDegrees + " degrees");
     arm.setArmAngleDegrees(angleToSetDegrees);
   }
 
@@ -50,10 +45,6 @@ public class ArmThread extends CommandBase {
    * @param distanceMeters
    * @return
    */
-  public static double calcArmAngleDegrees(double distanceMeters, double height) {
-    return Math.toDegrees(Math.atan(2 * (height) / distanceMeters));
-  }
-
   @Override
   public void initialize() {
     notifier.startPeriodic(Constants.LimelightConstants.THREAD_PERIOD_TIME_SECONDS);

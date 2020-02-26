@@ -106,9 +106,16 @@ public class Shooter extends SubsystemBase {
         * Constants.ShooterConstants.CONVERSION_FACTOR); // tangential velocity = angular velocity * radius
   }
 
-  // returns RPM
-  public double calculateShooterSpeed(double distanceFromTarget, double armAngle) {
-    return 600 + (((1 / (Math.sqrt((Constants.ShooterConstants.GOAL_HEIGHT
+  /**
+   * Calculates the speed that the shooter must spin at to get the powercell in the power port
+   * based on the distance from the power port and the angle of the arm
+   * 
+   * @param distanceFromTarget the distance from the target - METERS
+   * @param armAngle           the angle of the arm         - RADIANS
+   * @return                   the speed of the shooter     - RPM
+   */
+  public static double calculateShooterSpeed(double distanceFromTarget, double armAngle) {
+    return 600 + (((1 / (Math.sqrt((Limelight.getWorkingHeight(armAngle)
         - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * Constants.ShooterConstants.G)))))
         * (distanceFromTarget / Math.cos(armAngle))
         * (Constants.ShooterConstants.CONVERSION_FACTOR / Constants.ShooterConstants.FLYWHEEL_RADIUS)));
@@ -116,11 +123,6 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    // System.out.println("One: " + sparkEncoderOne.getVelocity());
-    // System.out.println("Two: " + sparkEncoderTwo.getVelocity());
     log();
-    // setVelocity(SmartDashboard.getNumber("desired velocity", 0));
-    // sparkPIDControllerOne.setD(SmartDashboard.getNumber("d value", 0));
   }
 }

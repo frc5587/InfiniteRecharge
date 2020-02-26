@@ -57,7 +57,7 @@ public class Limelight extends SubsystemBase {
    * @return the height between the center of the Limelight and the floor, in
    *         meters
    */
-  private double getLimelightHeight(double currentArmAngle) {
+  private static double getLimelightHeight(double currentArmAngle) {
     return LimelightConstants.ARM_LENGTH_METERS * Math.sin(currentArmAngle)
         + (LimelightConstants.ARM_HEIGHT_METERS + LimelightConstants.STANDOFF_METERS) * Math.cos(currentArmAngle)
         + LimelightConstants.ARM_HEIGHT_METERS;
@@ -69,10 +69,20 @@ public class Limelight extends SubsystemBase {
    * @param currentArmAngle the angle that the arm is currently at, in radians
    * @return the height between the center of the shooter and the floor, in meters
    */
-  public double getShooterHeight(double currentArmAngle) {
+  public static double getShooterHeight(double currentArmAngle) {
     return LimelightConstants.ARM_LENGTH_METERS * Math.sin(currentArmAngle)
         + 0.5 * LimelightConstants.ARM_HEIGHT_METERS * Math.cos(currentArmAngle)
         + LimelightConstants.ARM_AXLE_HEIGHT_METERS;
+  }
+
+  /**
+   * Gets the vertical distance in between the target and shooter
+   * 
+   * @param currentArmAngleRadians arm angle           - RADIANS
+   * @return                       vertical difference - METERS
+   */
+  public static double getWorkingHeight(double currentArmAngleRadians) {
+    return LimelightConstants.GOAL_HEIGHT_METERS - getShooterHeight(currentArmAngleRadians);
   }
 
   /**
@@ -92,7 +102,7 @@ public class Limelight extends SubsystemBase {
    * @return the distance between the center of the shooter and the target, in
    *         meters
    */
-  public double getShooterDistance(double currentArmAngle) {
+  private double getShooterDistance(double currentArmAngle) {
     return (LimelightConstants.GOAL_HEIGHT_METERS - getShooterHeight(currentArmAngle)) / Math.sin(currentArmAngle);
   }
 
@@ -103,7 +113,7 @@ public class Limelight extends SubsystemBase {
    * @return the angle between the shooter and the front of the target, in
    *         radians, without accounting for drop
    */
-  public double getShooterFrontGoalAngle(double currentArmAngle) {
+  private double getShooterFrontGoalAngle(double currentArmAngle) {
     return (Math.PI / 2.0) - Math.asin((getLimelightDistance(currentArmAngle) / getShooterDistance(currentArmAngle))
         * Math.sin((Math.PI / 2.0) + Math.toRadians(getVerticalAngleOffset())));
   }
@@ -146,7 +156,7 @@ public class Limelight extends SubsystemBase {
    * @return the horizontal difference between the shooter and the desired target,
    *         in meters
    */
-  public double getShooterGoalHorizontalDifference(double currentArmAngle, Target t) {
+  private double getShooterGoalHorizontalDifference(double currentArmAngle, Target t) {
     return (LimelightConstants.GOAL_HEIGHT_METERS - getShooterHeight(currentArmAngle))
         / Math.tan(getUnadjustedAngle(currentArmAngle, t));
   }
@@ -180,6 +190,48 @@ public class Limelight extends SubsystemBase {
     return Math.atan((LimelightConstants.GOAL_HEIGHT_METERS - getShooterHeight(unadjustedAngle) + getDropHeight(unadjustedAngle, t, shooterVelocity))
             / getShooterGoalHorizontalDifference(unadjustedAngle, t));
   }
+
+  /***
+   * Calculates the angle (in degrees) that the arm should move to based on the
+   * current angle the arm is at (in radians) and various distances it reads from
+   * the limelight
+   * 
+   * @param currentArmAngleRadians the angle of the arm                                        - RADIANS
+   * @param t                      the desired target
+   * @return                       the angle the arm should move to in order to hit the target - DEGREES
+   *                               at the top of the arc in the powercell's trajectory         
+   */
+  public double calculateArmMovement(double currentArmAngleRadians, Target t) {
+    // the horizontal distance between the target and shooter
+    double distanceMeters = this.getShooterGoalHorizontalDifference(currentArmAngleRadians, t);
+    return calculateArmAngleDegrees(distanceMeters, getWorkingHeight(currentArmAngleRadians));
+  }
+
+  /**
+   * Calculates the optimum angle to set the arm, in order to use the least amount of
+   * power shooting the powercells. This means that the powercell must enter the power
+   * port at the top of its arc.
+   * 
+   * @param distanceMeters the horizontal distance between the shooter and target - METERS
+   * @param height         the height of the target - METERS
+   * @return               the angle to set the arm - DEGREES
+   */
+  private static double calculateArmAngleDegrees(double distanceMeters, double height) {
+    return Math.toDegrees(Math.atan(2 * (height) / distanceMeters));
+  }
+
+  /**
+   * Calculates the speed that the shooter should spin at to get the power cell in the power
+   * port using the lowest speed possible
+   * 
+   * @param currentArmAngleRadians arm angle               - RADIANS
+   * @param t                      the target
+   * @return                       the speed of the shooter - RPM
+   */
+public double calculateShooterSpeed(double currentArmAngleRadians, Target t) {
+  return Shooter.calculateShooterSpeed(this.getShooterGoalHorizontalDifference(currentArmAngleRadians, t), currentArmAngleRadians);
+}
+
 
   /**
    * Targets that the robot can shoot at

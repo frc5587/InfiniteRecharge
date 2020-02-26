@@ -27,23 +27,22 @@ public class ShooterThread extends CommandBase {
   }
 
   public void updateShooter() {
-    double armAngle = arm.getAngleRadians();
-    double distance = limelight.getShooterGoalHorizontalDifference(armAngle, Limelight.Target.FRONT);
-    double speed = shooter.calculateShooterSpeed(distance, armAngle);
+    double speedRPM = limelight.calculateShooterSpeed(arm.getAngleRadians(), Limelight.Target.FRONT);
 
     if (!limelight.isTargetDetected()) {
-      speed = 0;
+      speedRPM = 0;
       System.out.println("No target detected!");
     }
 
-    SmartDashboard.putNumber("Shooter Speed - Thread", speed);
-    shooter.setVelocity(speed);
-    conveyor.moveConveyorForward();
+    SmartDashboard.putNumber("Shooter Speed - Thread", speedRPM);
+    shooter.setVelocity(speedRPM);
   }
 
   @Override
   public void initialize() {
     notifier.startPeriodic(Constants.LimelightConstants.THREAD_PERIOD_TIME_SECONDS);
+    
+    conveyor.moveConveyorForward();
   }
 
   @Override
