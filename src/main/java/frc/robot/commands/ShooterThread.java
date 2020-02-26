@@ -38,6 +38,7 @@ public class ShooterThread extends CommandBase {
 
     SmartDashboard.putNumber("Shooter Speed - Thread", speed);
     shooter.setVelocity(speed);
+    conveyor.moveConveyorForward();
   }
 
   @Override
@@ -49,6 +50,8 @@ public class ShooterThread extends CommandBase {
   public void end(boolean interrupted) {
     System.out.println("ShooterThread ending - interrupted: " + interrupted);
     notifier.stop();
+    conveyor.stopConveyorMovement();
+    shooter.setThrottle(0);
   }
 
   @Override
