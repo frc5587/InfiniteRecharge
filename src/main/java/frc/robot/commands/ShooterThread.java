@@ -15,13 +15,15 @@ public class ShooterThread extends CommandBase {
   private Limelight limelight;
   private Conveyor conveyor;
   private Notifier notifier = new Notifier(this::updateShooter);
-  private int startBalls = conveyor.getCurrentNumberOfBalls();
+  private int startBalls;
 
   public ShooterThread(Arm arm, Shooter shooter, Limelight limelight, Conveyor conveyor) {
     this.arm = arm;
     this.shooter = shooter;
     this.limelight = limelight;
     this.conveyor = conveyor;
+
+    this.startBalls = this.conveyor.getCurrentNumberOfBalls();
 
     addRequirements(this.shooter, this.conveyor);
   }
