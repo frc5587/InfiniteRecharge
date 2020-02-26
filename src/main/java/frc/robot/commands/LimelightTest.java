@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -16,6 +17,7 @@ import frc.robot.subsystems.Limelight;
 public class LimelightTest extends CommandBase {
   private Limelight limelight;
   private Arm arm;
+  private int counter;
   /**
    * Creates a new LimelightTest.
    */
@@ -29,16 +31,20 @@ public class LimelightTest extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // arm.setArmAngleDegrees(20);
+    counter = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // SmartDashboard.putNumber("Limelight Distance", Units.metersToInches(limelight.getLimelightDistance(Math.toRadians(arm.getAngleDegrees()))));
-    // SmartDashboard.putNumber("Shooter Distance", Units.metersToInches(limelight.getShooterDistance(Math.toRadians(arm.getAngleDegrees()))));
-    // System.out.println(limelight.getShooterHeight(Math.toRadians(arm.getAngleDegrees())));
-    // System.out.println(limelight.getLimelightHeight(Math.toRadians(arm.getAngleDegrees())));
-
+    SmartDashboard.putBoolean("Limit Switch", arm.getLimitSwitchVal());
+    SmartDashboard.putNumber("Arm Angle", arm.getAngleDegrees());
+    SmartDashboard.putNumber("ty", limelight.getVerticalAngleOffset());
+    if (counter % 15 == 0) {
+      arm.setArmAngleDegrees(limelight.getShooterFrontGoalAngle(arm.getAngleDegrees()));
+    }
+    counter++;
   }
 
   // Called once the command ends or is interrupted.

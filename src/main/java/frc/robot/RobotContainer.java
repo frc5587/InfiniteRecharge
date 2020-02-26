@@ -78,7 +78,7 @@ public class RobotContainer {
     // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
     intake.setDefaultCommand(new IntakeStopper(intake));
-    limelight.setDefaultCommand(new LimelightTest(limelight, arm));
+    // limelight.setDefaultCommand(new LimelightTest(limelight, arm));
 
     // Configure the button bindings
     configureButtonBindings();
