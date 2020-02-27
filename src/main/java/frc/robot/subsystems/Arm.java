@@ -55,8 +55,8 @@ public class Arm extends SubsystemBase {
      */
     public void setArm(double speed) {
         // armSpark.set(speed);
-        speed = speed * 10 + getAngleDegrees();
-        armPIDController.setReference(degreesToTicks(speed), ControlType.kPosition);
+        var position = speed * 10 + getAngleDegrees();
+        setArmAngleDegrees(position);
     }
 
     /**
@@ -90,7 +90,7 @@ public class Arm extends SubsystemBase {
     public void setArmAngleTicks(double angleTicks) {
         var clamped = MathUtil.clamp(angleTicks, ArmConstants.LOWER_BOUND_TICKS, ArmConstants.UPPER_BOUND_TICKS);
         lastSetpointTicks = clamped;
-        armPIDController.setReference(angleTicks, ControlType.kPosition);
+        armPIDController.setReference(clamped, ControlType.kPosition);
     }
 
     /**
