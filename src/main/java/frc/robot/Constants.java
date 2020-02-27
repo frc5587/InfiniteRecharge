@@ -8,6 +8,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.util.Units;
+import frc.robot.subsystems.Arm;
+
 import org.frc5587.lib.pid.FPID;
 import org.frc5587.lib.pid.PID;
 
@@ -124,6 +126,8 @@ public final class Constants {
         // 127.//0 //kD
         0);
 
+    public static final double LOWER_BOUND_TICKS = Arm.degreesToTicks(16);
+    public static final double UPPER_BOUND_TICKS = Arm.degreesToTicks(70);
   }
 
   public static final class ShooterConstants {

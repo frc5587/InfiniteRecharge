@@ -39,8 +39,14 @@ public class AutoAim extends CommandBase {
   @Override
   public void execute() {
     if (timer.advanceIfElapsed(LimelightConstants.UPDATE_PERIOD)) {
-      var desiredAngle = limelight.getShooterFrontGoalAngle(arm.getAngleRadians());
-      arm.setArmAngleRadians(desiredAngle);
+      if (limelight.isTargetDetected()) {
+        // Only find the angle based on the Limelight's data when a target is detected
+        var desiredAngle = limelight.getShooterFrontGoalAngle(arm.getAngleRadians());
+        arm.setArmAngleRadians(desiredAngle);
+      } else {
+        // Default to the last setpoint if there is nothing currently detected
+        arm.setArmAngleTicks(arm.getLastSetpoint());
+      }
     }
   }
 
