@@ -61,7 +61,7 @@ public class RobotContainer {
   private final Limelight limelight = new Limelight();
   private final MachineLearning machineLearning = new MachineLearning();
   private final Climber climber = new Climber();
-  private final Arm m_arm = new Arm();
+  private final Arm arm = new Arm();
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
 
@@ -71,8 +71,8 @@ public class RobotContainer {
   private final Conveyor conveyor = new Conveyor();
   private final LimelightCentering centeringCommand = new LimelightCentering(drivetrain, limelight);
 
-  private final ArmThread armThread = new ArmThread(m_arm, limelight);
-  private final ShooterThread shooterThread = new ShooterThread(m_arm, shooter, limelight, conveyor);
+  private final ArmThread armThread = new ArmThread(arm, limelight);
+  private final ShooterThread shooterThread = new ShooterThread(arm, shooter, limelight, conveyor);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -103,9 +103,10 @@ public class RobotContainer {
     var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
     var xButton = new JoystickButton(xb, XboxController.Button.kX.value);
     var yButton = new JoystickButton(xb, XboxController.Button.kY.value);
-    var armLimitSwitch = new Trigger(() -> m_arm.getLimitSwitchVal());
+    var armLimitSwitch = new Trigger(() -> arm.getLimitSwitchVal());
     var leftBumper = new JoystickButton(xb, XboxController.Button.kBumperLeft.value);
     var rightBumper = new JoystickButton(xb, XboxController.Button.kBumperRight.value);
+    var aButton = new JoystickButton(xb, XboxController.Button.kA.value);
 
     var leftStickButton = new JoystickButton(xb, XboxController.Button.kStickLeft.value);
     var rightStickButton = new JoystickButton(xb, XboxController.Button.kStickRight.value);
@@ -129,14 +130,16 @@ public class RobotContainer {
 
     // arm
     // determines whether the arm should be manually controlled
-    leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(m_arm, () -> xb.getY(Hand.kRight)));
+    leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(arm, () -> xb.getY(Hand.kRight)));
 
     // moves arm to the lowest and highest positions
-    xButton.whenPressed(() -> m_arm.setArmAngleDegrees(14), m_arm);
-    yButton.whenPressed(() -> m_arm.setArmAngleDegrees(55), m_arm);
+    xButton.whenPressed(() -> arm.setArmAngleDegrees(14), arm)
+    .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
+    yButton.whenPressed(() -> arm.setArmAngleDegrees(55), arm)
+    .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
 
     // reset elevator encoder
-    armLimitSwitch.whenActive(m_arm::resetEncoder);
+    armLimitSwitch.whenActive(arm::resetEncoder);
 
     SmartDashboard.putData("Ball Reset", new InstantCommand(conveyor::reset));
 

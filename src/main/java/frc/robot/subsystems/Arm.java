@@ -23,8 +23,8 @@ public class Arm extends SubsystemBase {
     public Arm() {
         configSpark();
         resetEncoder();
-        startPID();
-        refreshPID();
+        // startPID();
+        // refreshPID();
     }
 
     /**
@@ -51,7 +51,9 @@ public class Arm extends SubsystemBase {
      * @param speed percent output used to set motor to a certain speed
      */
     public void setArm(double speed) {
-        armSpark.set(speed);
+        // armSpark.set(speed);
+        speed = speed * 10 + getAngleDegrees();
+        armPIDController.setReference(degreesToTicks(speed), ControlType.kPosition);
     }
 
     /**
@@ -69,7 +71,7 @@ public class Arm extends SubsystemBase {
      * Reset arm encoder to zero
      */
     public void resetEncoder() {
-        armEncoder.setPosition(degreesToTicks(14));
+        armEncoder.setPosition(degreesToTicks(16));
     }
 
     /**
@@ -117,9 +119,10 @@ public class Arm extends SubsystemBase {
      * @return calculated FeedForward value
      */
     public double calcFeedForward() {
-        var ff = Constants.ArmConstants.FF.calculate(this.getAngleRadians(), 0) / 12;
-        // System.out.println("FF: " + ff);
-        return ff;
+        // var ff = Constants.ArmConstants.FF.calculate(Math.toRadians(getAngleDegrees()), 0) / 12;
+        // // System.out.println("FF: " + ff);
+        // return ff;
+        return Constants.ArmConstants.FF.calculate(Math.toRadians(getAngleDegrees()), 0) / 12.0;
     }
 
     public void startPID() {
@@ -191,4 +194,11 @@ public class Arm extends SubsystemBase {
      public boolean getLimitSwitchVal() {
          return !(armLimitSwitch.get());
      }
+
+    //  @Override
+    //  public void periodic() {
+    //      refreshPID();
+    //      var ff = calcFeedForward();
+    //      armPIDController.setFF(ff);
+    //  }
 }
