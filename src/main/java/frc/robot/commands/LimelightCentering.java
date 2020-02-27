@@ -66,7 +66,8 @@ public class LimelightCentering extends CommandBase {
   public boolean isFinished() {
     // Finish once the turn PID controller is at the setpoint, indicating that it is
     // centred on the target
-    return drivetrain.atSetpoint();
+    // return drivetrain.atSetpoint();
+    return false;
   }
 
   /**

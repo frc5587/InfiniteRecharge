@@ -22,6 +22,7 @@ public class Limelight extends SubsystemBase {
   public NetworkTableEntry tv = limelightTable.getEntry("tv");
   public NetworkTableEntry tx = limelightTable.getEntry("tx");
   public NetworkTableEntry ty = limelightTable.getEntry("ty");
+  public double lastDistance;
 
   /**
    * Get whether the target is being detected by the Limelight
@@ -100,7 +101,8 @@ public class Limelight extends SubsystemBase {
   }
 
   public double getShooterGoalHorizontalDifference(double currentArmAngle) {
-    return getLimelightGoalHorizontalDifference(currentArmAngle) - getStubbyThing(currentArmAngle);
+    this.lastDistance = this.isTargetDetected() ? getLimelightGoalHorizontalDifference(currentArmAngle) - getStubbyThing(currentArmAngle) : this.lastDistance;
+    return this.lastDistance;
   }
 
    /**

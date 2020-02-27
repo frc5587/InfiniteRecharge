@@ -106,6 +106,10 @@ public class Shooter extends SubsystemBase {
         * Constants.ShooterConstants.CONVERSION_FACTOR); // tangential velocity = angular velocity * radius
   }
 
+  public double getShooterSpeed() {
+    return (sparkEncoderOne.getVelocity() + sparkEncoderTwo.getVelocity()) / 2;
+  }
+
   /**
    * Calculates the speed that the shooter must spin at to get the powercell in the power port
    * based on the distance from the power port and the angle of the arm
