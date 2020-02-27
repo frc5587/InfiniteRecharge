@@ -23,6 +23,7 @@ public class ArmThread extends CommandBase {
   public ArmThread(Arm arm, Limelight limelight) {
     this.limelight = limelight;
     this.arm = arm;
+    this.lastAngle = arm.getAngleDegrees();
     addRequirements(arm);
   }
   
@@ -32,6 +33,8 @@ public class ArmThread extends CommandBase {
     
     // saves last angle
     this.lastAngle = angleToSetDegrees;
+    SmartDashboard.putNumber("Horizontal", limelight.getShooterGoalHorizontalDifference(arm.getAngleRadians()));
+    
 
     // debugging
     SmartDashboard.putNumber("Setting Arm Angle - Thread", angleToSetDegrees);

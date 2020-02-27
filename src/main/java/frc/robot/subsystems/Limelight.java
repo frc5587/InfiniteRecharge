@@ -232,7 +232,7 @@ public class Limelight extends SubsystemBase {
    */
   public double calculateArmMovement(double currentArmAngleRadians, Target t) {
     // the horizontal distance between the target and shooter
-    double distanceMeters = this.getShooterGoalHorizontalDifference(currentArmAngleRadians, t);
+    double distanceMeters = this.getShooterGoalHorizontalDifference(currentArmAngleRadians);
     return calculateArmAngleDegrees(distanceMeters, getWorkingHeight(currentArmAngleRadians));
   }
 

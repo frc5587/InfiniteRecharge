@@ -57,6 +57,7 @@ public class ShooterThread extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return conveyor.getCurrentNumberOfBalls() == 0 && startBalls != 0;
+    return false;
+    // return conveyor.getCurrentNumberOfBalls() == 0 && startBalls != 0;
   }
 }
