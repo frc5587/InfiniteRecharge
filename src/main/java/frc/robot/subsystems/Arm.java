@@ -4,14 +4,13 @@ import com.revrobotics.AlternateEncoderType;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
@@ -24,7 +23,6 @@ public class Arm extends SubsystemBase {
         configSpark();
         resetEncoder();
         // startPID();
-        // refreshPID();
     }
 
     /**
@@ -57,13 +55,21 @@ public class Arm extends SubsystemBase {
     }
 
     /**
-     * Set the arm to a specific angle
+     * Set the arm to a specific angle in degrees
      * 
-     * @param angle angle wanted to set the arm - DEGREES
+     * @param angleDegrees angle wanted to set the arm - DEGREES
      */
-    public void setArmAngleDegrees(double angle) {
-        armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
+    public void setArmAngleDegrees(double angleDegrees) {
+        armPIDController.setReference(degreesToTicks(angleDegrees), ControlType.kPosition);
+    }
 
+    /**
+     * Set the arm to a specific angle in radians
+     * 
+     * @param angleRadians angle to set the arm to - RADIANS
+     */
+    public void setArmAngleRadians(double angleRadians) {
+        armPIDController.setReference(radiansToTicks(angleRadians), ControlType.kPosition);
     }
 
     /**
@@ -92,7 +98,7 @@ public class Arm extends SubsystemBase {
     }
 
     /**
-     * Get the current angle of the arm relative to the down position
+     * Get the current angle of the arm relative to the drivetrain in degrees
      * 
      * @return current position of the arm - DEGREES
      */
@@ -102,16 +108,22 @@ public class Arm extends SubsystemBase {
     }
 
     /**
+     * Get the current angle of the arm in radians relative to the drivetrain
+     * 
+     * @return current position of the arm - RADIANS
+     */
+    public double getAngleRadians() {
+        return ticksToRadians(getPositionTicks());
+    }
+
+    /**
      * Calculate the FeedForward for the arm necessary in PID based on the value
      * given in {@link Constants.ArmConstants#FF}
      * 
      * @return calculated FeedForward value
      */
     public double calcFeedForward() {
-        // var ff = Constants.ArmConstants.FF.calculate(Math.toRadians(getAngleDegrees()), 0) / 12;
-        // // System.out.println("FF: " + ff);
-        // return ff;
-        return Constants.ArmConstants.FF.calculate(Math.toRadians(getAngleDegrees()), 0) / 12.0;
+        return Constants.ArmConstants.FF.calculate(getAngleRadians(), 0) / 12.0;
     }
 
     public void startPID() {
@@ -130,15 +142,8 @@ public class Arm extends SubsystemBase {
         // setArmAngleDegrees(SmartDashboard.getNumber("Goto Position", 14));
     }
 
-    // @Override
-    // public void periodic() {
-    //     System.out.println(getAngleDegrees());
-    //     refreshPID();
-    //     armPIDController.setFF(calcFeedForward());
-    // }
-
     /**
-     * Converts degrees of a circle to encoder ticks 1 tick == 180 degrees
+     * Converts degrees of a circle to encoder ticks
      * 
      * @param degrees angle to convert to ticks
      * @return angle in ticks
@@ -148,9 +153,19 @@ public class Arm extends SubsystemBase {
     }
 
     /**
-     * Converts encoder ticks to degrees of a circle 1 tick == 180 degrees
+     * Converts radians of a circle to encoder ticks
      * 
-     * @param ticks angle to convert to degrees
+     * @param radians angle to convert to ticks in radians
+     * @return angle in encoder ticks
+     */
+    public double radiansToTicks(double radians) {
+        return radians / Math.PI;
+    }
+
+    /**
+     * Converts encoder ticks to degrees of a circle
+     * 
+     * @param ticks encoder ticks to convert to degrees
      * @return angle in degrees
      */
     public double ticksToDegrees(double ticks) {
@@ -158,26 +173,37 @@ public class Arm extends SubsystemBase {
     }
 
     /**
+     * Converts encoder ticks to radians of a circle
+     * 
+     * @param ticks encoder ticks to convert to radians
+     * @return angle in radians
+     */
+    public double ticksToRadians(double ticks) {
+        return ticks * Math.PI;
+    }
+
+    /**
      * Returns the limit switch for the arm
      * 
      * @return arm limit switch
      */
-     public DigitalInput getArmLimitSwitch() {
-         return armLimitSwitch;
-     }
+    public DigitalInput getArmLimitSwitch() {
+        return armLimitSwitch;
+    }
 
-     /**
-      * gets the value for the limit switch and switches it
-      * @return limit switch value
-      */
-     public boolean getLimitSwitchVal() {
-         return !(armLimitSwitch.get());
-     }
+    /**
+     * gets the value for the limit switch and switches it
+     * 
+     * @return limit switch value
+     */
+    public boolean getLimitSwitchVal() {
+        return !(armLimitSwitch.get());
+    }
 
-     @Override
-     public void periodic() {
-         refreshPID();
-         var ff = calcFeedForward();
-         armPIDController.setFF(ff);
-     }
+    @Override
+    public void periodic() {
+        refreshPID();
+        var ff = calcFeedForward();
+        armPIDController.setFF(ff);
+    }
 }

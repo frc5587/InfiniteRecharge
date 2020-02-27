@@ -7,16 +7,17 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Limelight.Target;
 
 public class AutoAim extends CommandBase {
   private Arm arm;
   private Limelight limelight;
-  private int counter;
+  private Timer timer = new Timer();
+
   /**
    * Creates a new AutoAim.
    */
@@ -30,25 +31,23 @@ public class AutoAim extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    counter = 0;
+    timer.reset();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // arm.setArmAngleDegrees(arm.getAngleDegrees() + limelight.getVerticalAngleOffset());
-    // arm.setArmAngleDegrees(limelight.getShooterFrontGoalAngle(arm.getAngleDegrees()));
-    if (counter % 15 == 0) {
-      arm.setArmAngleDegrees(Math.toDegrees(limelight.getShooterFrontGoalAngle(Math.toRadians(arm.getAngleDegrees()))));
+    if (timer.advanceIfElapsed(LimelightConstants.UPDATE_PERIOD)) {
+      var desiredAngle = limelight.getShooterFrontGoalAngle(arm.getAngleRadians());
+      arm.setArmAngleRadians(desiredAngle);
     }
-    counter++;
-
-    // SmartDashboard.putNumber("Ideal Angle", limelight.getShooterFrontGoalAngle(arm.getAngleDegrees()));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    timer.stop();
   }
 
   // Returns true when the command should end.

@@ -9,15 +9,16 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Limelight;
 
 public class LimelightTest extends CommandBase {
   private Limelight limelight;
   private Arm arm;
-  private int counter;
+  private Timer timer = new Timer();
+
   /**
    * Creates a new LimelightTest.
    */
@@ -32,7 +33,8 @@ public class LimelightTest extends CommandBase {
   @Override
   public void initialize() {
     // arm.setArmAngleDegrees(20);
-    counter = 0;
+    timer.reset();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -41,15 +43,16 @@ public class LimelightTest extends CommandBase {
     SmartDashboard.putBoolean("Limit Switch", arm.getLimitSwitchVal());
     SmartDashboard.putNumber("Arm Angle", arm.getAngleDegrees());
     SmartDashboard.putNumber("ty", limelight.getVerticalAngleOffset());
-    if (counter % 15 == 0) {
-      arm.setArmAngleDegrees(limelight.getShooterFrontGoalAngle(arm.getAngleDegrees()));
+
+    if (timer.advanceIfElapsed(LimelightConstants.UPDATE_PERIOD)) {
+      // arm.setArmAngleDegrees(limelight.getShooterFrontGoalAngle(arm.getAngleDegrees()));
     }
-    counter++;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    timer.stop();
   }
 
   // Returns true when the command should end.
