@@ -88,7 +88,6 @@ public class LimelightCentering extends CommandBase {
     if (limelight.isTargetDetected()) {
       // Get the difference between centre and vision target (error)
       var angleError = limelight.getHorizontalAngleOffset();
-      SmartDashboard.putNumber("Angle Error", angleError);
 
       // Calculate the desired angle using the error and current angle
       var currentHeading = drivetrain.getHeading180();
@@ -99,9 +98,6 @@ public class LimelightCentering extends CommandBase {
       desiredAngle = drivetrain.getLastAngleSetpoint();
     } else {
       desiredAngle = drivetrain.getHeading180();
-    }
-
-    SmartDashboard.putNumber("Desired Angle", desiredAngle);
 
     // Set the angle PID controller to the desired angle
     drivetrain.setSetpoint(desiredAngle);

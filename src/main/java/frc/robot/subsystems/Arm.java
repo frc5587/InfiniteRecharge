@@ -64,7 +64,7 @@ public class Arm extends SubsystemBase {
      */
     public void setArmAngleDegrees(double angle) {
         angle = MathUtil.clamp(angle, Constants.ArmConstants.LOWER_LIMIT_DEGREES, Constants.ArmConstants.UPPER_LIMIT_DEGREES);
-        SmartDashboard.putNumber("Real set", angle);
+        SmartDashboard.putNumber("Actual arm angle set", angle);
         armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
     }
 
@@ -135,11 +135,6 @@ public class Arm extends SubsystemBase {
      * SmartDashboard to update FeedForward
      */
     public void refreshPID() {
-        SmartDashboard.putNumber("Angle", getAngleDegrees());
-        SmartDashboard.putNumber("Encoder Val", getPositionTicks());
-        SmartDashboard.putNumber("FF", calcFeedForward());
-        SmartDashboard.putNumber("Vel", getVelocityDegreesPerSecond());
-        // setArmAngleDegrees(SmartDashboard.getNumber("Goto Position", 14));
     }
 
     @Override

@@ -81,10 +81,8 @@ public class Conveyor extends SubsystemBase {
     // communicates to drive team about when to shoot.
     if (currentNumberOfBalls >= 5) {
       shoot = true;
-      SmartDashboard.putBoolean("shoot?", shoot);
     } else {
       shoot = false;
-      SmartDashboard.putBoolean("shoot?", shoot);
     }
     // this is done to update the value of the limit switch in order to establish
     // previous and current state of limit switch

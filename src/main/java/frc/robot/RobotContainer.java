@@ -34,7 +34,6 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmThread;
-import frc.robot.commands.IntakeStopper;
 import frc.robot.commands.LimelightCentering;
 import frc.robot.commands.LimelightTest;
 import frc.robot.commands.ManualArmControl;
@@ -150,10 +149,6 @@ public class RobotContainer {
 
     buttonTwelve.whenPressed(centeringCommand).whenReleased(() -> centeringCommand.cancel());
     buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));
-
-    SmartDashboard.putData("Reset Drivetrain Encoders", new InstantCommand(drivetrain::resetEncoders));
-    SmartDashboard.putData("Reset Drivetrain Heading", new InstantCommand(drivetrain::resetHeading));
-    SmartDashboard.putData("Reset Drivetrain Odometry", new InstantCommand(drivetrain::resetOdometry));
 
     // rightTrigger.whenActive(() ->
     // shooter.setVelocity(shooter.calculateShooterSpeed(3,

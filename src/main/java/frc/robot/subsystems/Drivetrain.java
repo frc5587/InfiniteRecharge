@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants.DrivetrainConstants;
@@ -273,16 +272,5 @@ public class Drivetrain extends PIDSubsystem {
 
     // Log the pose
     poseHistory.put(Timer.getFPGATimestamp(), getPose());
-
-    // Log debug data
-    SmartDashboard.putNumber("L Distance Feet", Units.metersToFeet(getLeftPositionMeters()));
-    SmartDashboard.putNumber("R Distance Feet", Units.metersToFeet(getRightPositionMeters()));
-    SmartDashboard.putNumber("L Distance Meters", getLeftPositionMeters());
-    SmartDashboard.putNumber("R Distance Meters", getRightPositionMeters());
-    SmartDashboard.putNumber("L Velocity Meters", getLeftVelocityMetersPerSecond());
-    SmartDashboard.putNumber("R Velocity Meters", getRightVelocityMetersPerSecond());
-    SmartDashboard.putNumber("Heading", getHeading360());
-    SmartDashboard.putString("Pose", getPose().toString());
-    SmartDashboard.putString("Wheel Speed", getWheelSpeeds().toString());
   }
 }
