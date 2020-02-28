@@ -98,6 +98,7 @@ public class LimelightCentering extends CommandBase {
       desiredAngle = drivetrain.getLastAngleSetpoint();
     } else {
       desiredAngle = drivetrain.getHeading180();
+    }
 
     // Set the angle PID controller to the desired angle
     drivetrain.setSetpoint(desiredAngle);
