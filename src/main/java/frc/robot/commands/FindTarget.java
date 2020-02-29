@@ -5,7 +5,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Limelight;
 
-public class FindLimelight extends CommandBase {
+public class FindTarget extends CommandBase {
   private Arm arm;
   private Limelight limelight;
   private int direction = -1;
@@ -18,7 +18,7 @@ public class FindLimelight extends CommandBase {
    * @param arm the arm subsystem
    * @param limelight the limelight subsystem
    */
-  public FindLimelight(Arm arm, Limelight limelight) {
+  public FindTarget(Arm arm, Limelight limelight) {
     this.arm = arm;
     this.limelight = limelight;
 
