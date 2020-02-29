@@ -134,7 +134,7 @@ public final class Constants {
     public static final double ARM_LENGTH_METERS = 0.9;
     
     // physical limits of the arm
-    public static final int UPPER_LIMIT_DEGREES = 70;
+    public static final int UPPER_LIMIT_DEGREES = 60;
     public static final int LOWER_LIMIT_DEGREES = 16;
 
   }
