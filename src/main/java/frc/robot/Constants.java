@@ -107,7 +107,7 @@ public final class Constants {
     public static final int BOTTOM_LIMIT = 0;
     public static final int TOP_LIMIT = 1;
     public static final double THROTTLE = 1.0;
-    public static final double CONVEYOR_THROTTLE = 0.75;
+    public static final double CONVEYOR_THROTTLE = 1;
   }
 
   public static final class ConveyorConstants {
@@ -134,7 +134,7 @@ public final class Constants {
         0);
 
     public static final double LOWER_BOUND_TICKS = Arm.degreesToTicks(16);
-    public static final double UPPER_BOUND_TICKS = Arm.degreesToTicks(70);
+    public static final double UPPER_BOUND_TICKS = Arm.degreesToTicks(60);
   }
 
   public static final class ShooterConstants {
@@ -143,6 +143,9 @@ public final class Constants {
 
     public static final float MIN_OUTPUT = 1;
     public static final float MAX_OUTPUT = 1;
+
+    public static final int SMART_CURRENT_LIMIT = 20;
+    public static final int HARD_CURRENT_LIMIT = 30;
 
     public static final double V_COMP_SATURATION = 12.0;
 
@@ -172,6 +175,8 @@ public final class Constants {
     public static final double GOAL_HEIGHT = 2.495; // height in meters
 
     public static final double G = 9.8; // gravitational acceleration
+
+    public static final double GEAR_RATIO = 42.0 / 18.0;
   }
 
   /**
@@ -184,7 +189,8 @@ public final class Constants {
 
     public static final double STANDOFF_METERS = Units.inchesToMeters(2.25);
 
-    public static final double GOAL_HEIGHT_METERS = Units.inchesToMeters(97.5);
+    public static final double GOAL_HEIGHT_METERS = Units.inchesToMeters(98.25);
+    // public static final double GOAL_HEIGHT_METERS = Units.inchesToMeters(98.25 - 27);
     public static final double INNER_OUTER_GOAL_DISTANCE_METERS = Units.inchesToMeters(29.25);
 
     public static final double G_METERS_PER_SECOND_SQUARED = 9.81;

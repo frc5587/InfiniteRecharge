@@ -122,7 +122,7 @@ public class RobotContainer {
       conveyor.stopConveyorMovement();
       intake.stopIntakeMovement();
     });
-    SmartDashboard.putData("Ball Count Reset", new InstantCommand(intake::reset));
+    SmartDashboard.putData("Ball Count Reset", new InstantCommand(conveyor::reset));
 
     // arm
     // determines whether the arm should be manually controlled
