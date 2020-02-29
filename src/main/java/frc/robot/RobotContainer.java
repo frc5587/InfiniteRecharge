@@ -38,6 +38,7 @@ import frc.robot.commands.LimelightCentering;
 import frc.robot.commands.LimelightTest;
 import frc.robot.commands.ManualArmControl;
 import frc.robot.commands.RamseteCommandWrapper;
+import frc.robot.commands.ResetEncoder;
 import frc.robot.commands.ShooterThread;
 import frc.robot.commands.TargetBall;
 import frc.robot.subsystems.Arm;
@@ -73,6 +74,7 @@ public class RobotContainer {
 
   private final ArmThread armThread = new ArmThread(arm, limelight);
   private final ShooterThread shooterThread = new ShooterThread(arm, shooter, limelight, conveyor);
+  private final ResetEncoder resetEncoder = new ResetEncoder(arm);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -82,6 +84,7 @@ public class RobotContainer {
     // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
     limelight.setDefaultCommand(new LimelightTest(limelight, arm));
+    arm.setDefaultCommand(armThread);
     // intake.setDefaultCommand(new IntakeStopper(intake, conveyor));
 
     // Configure the button bindings
@@ -114,18 +117,18 @@ public class RobotContainer {
 
     // Intake
     rightBumper.whileHeld(() -> {
-      intake.moveIntakeForward();
-      conveyor.moveConveyorForward();
+        intake.moveIntakeForward();
+        conveyor.moveConveyorForward();
     }, intake).whenReleased(() -> {
-      conveyor.stopConveyorMovement();
-      intake.stopIntakeMovement();
+        conveyor.stopConveyorMovement();
+        intake.stopIntakeMovement();
     });
     leftBumper.whileHeld(() -> {
-      conveyor.moveConveyorBackward();
-      intake.moveIntakeBackward();
+        conveyor.moveConveyorBackward();
+        intake.moveIntakeBackward();
     }).whenReleased(() -> {
-      conveyor.stopConveyorMovement();
-      intake.stopIntakeMovement();
+        conveyor.stopConveyorMovement();
+        intake.stopIntakeMovement();
     });
     SmartDashboard.putData("Ball Count Reset", new InstantCommand(intake::reset));
 
@@ -134,10 +137,13 @@ public class RobotContainer {
     leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(arm, () -> xb.getY(Hand.kRight)));
 
     // moves arm to the lowest and highest positions
-    xButton.whenPressed(() -> arm.setArmAngleDegrees(14), arm)
-    .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
-    yButton.whenPressed(() -> arm.setArmAngleDegrees(55), arm)
-    .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
+    xButton
+      .whenPressed(() -> arm.setArmAngleDegrees(14), arm)
+      .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
+
+    yButton
+      .whenPressed(() -> arm.setArmAngleDegrees(55), arm)
+      .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
 
     // reset elevator encoder
     armLimitSwitch.whenActive(arm::resetEncoder);
@@ -147,16 +153,20 @@ public class RobotContainer {
     // Run climber up
     upDPad.whenActive(() -> climber.set(0.5), climber).whenInactive(() -> climber.set(0), climber);
 
-    buttonTwelve.whenPressed(centeringCommand).whenReleased(() -> centeringCommand.cancel());
+    buttonTwelve
+      .whenPressed(centeringCommand)
+      .whenReleased(() -> centeringCommand.cancel());
+      
     buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));
 
     // rightTrigger.whenActive(() ->
     // shooter.setVelocity(shooter.calculateShooterSpeed(3,
     // Math.toRadians(46)))).whenInactive(() -> shooter.setThrottle(0));
-    rightTrigger.whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight)))
-        .whenInactive(() -> shooter.setThrottle(0));
+    rightTrigger
+      .whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight)))
+      .whenInactive(() -> shooter.setThrottle(0));
 
-    leftStickButton.whileHeld(armThread);
+    leftStickButton.whileHeld(resetEncoder);
     rightStickButton.whileHeld(shooterThread);
   }
 

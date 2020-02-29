@@ -57,13 +57,14 @@ public class Arm extends SubsystemBase {
     }
 
     /**
-     * Set the arm to a specific angle, clamps the value to it 
-     * cannot run the arm too far
+     * Set the arm to a specific angle, clamps the value to it cannot run the arm
+     * too far
      * 
      * @param angle angle wanted to set the arm - DEGREES
      */
     public void setArmAngleDegrees(double angle) {
-        angle = MathUtil.clamp(angle, Constants.ArmConstants.LOWER_LIMIT_DEGREES, Constants.ArmConstants.UPPER_LIMIT_DEGREES);
+        angle = MathUtil.clamp(angle, Constants.ArmConstants.LOWER_LIMIT_DEGREES,
+                Constants.ArmConstants.UPPER_LIMIT_DEGREES);
         SmartDashboard.putNumber("Actual arm angle set", angle);
         armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
     }
@@ -120,7 +121,9 @@ public class Arm extends SubsystemBase {
      * @return calculated FeedForward value
      */
     public double calcFeedForward() {
-        // var ff = Constants.ArmConstants.FF.calculate(Math.toRadians(getAngleDegrees()), 0) / 12;
+        // var ff =
+        // Constants.ArmConstants.FF.calculate(Math.toRadians(getAngleDegrees()), 0) /
+        // 12;
         // // System.out.println("FF: " + ff);
         // return ff;
         return Constants.ArmConstants.FF.calculate(Math.toRadians(getAngleDegrees()), 0) / 12.0;
@@ -180,22 +183,16 @@ public class Arm extends SubsystemBase {
      * 
      * @return arm limit switch
      */
-     public DigitalInput getArmLimitSwitch() {
-         return armLimitSwitch;
-     }
+    public DigitalInput getArmLimitSwitch() {
+        return armLimitSwitch;
+    }
 
-     /**
-      * gets the value for the limit switch and switches it
-      * @return limit switch value
-      */
-     public boolean getLimitSwitchVal() {
-         return !(armLimitSwitch.get());
-     }
-
-    //  @Override
-    //  public void periodic() {
-    //      refreshPID();
-    //      var ff = calcFeedForward();
-    //      armPIDController.setFF(ff);
-    //  }
+    /**
+     * gets the value for the limit switch and switches it
+     * 
+     * @return limit switch value
+     */
+    public boolean getLimitSwitchVal() {
+        return !(armLimitSwitch.get());
+    }
 }

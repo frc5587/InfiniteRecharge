@@ -33,10 +33,15 @@ public class ArmThread extends CommandBase {
     
     // saves last angle
     this.lastAngle = angleToSetDegrees;
+
+    double diff =  this.lastAngle - arm.getAngleDegrees();
+
+    double set = diff / 2 + arm.getAngleDegrees();
     
     // debugging
     SmartDashboard.putNumber("Setting Arm Angle - Thread", angleToSetDegrees);
-    arm.setArmAngleDegrees(angleToSetDegrees);
+    SmartDashboard.putNumber("Adjusted angle", set);
+    arm.setArmAngleDegrees(set);
   }
 
   /**

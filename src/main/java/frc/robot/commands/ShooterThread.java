@@ -30,11 +30,14 @@ public class ShooterThread extends CommandBase {
 
   public void updateShooter() {
     // TODO: adust coefficient
-    double speedRPM = .4 * limelight.calculateShooterSpeed(arm.getAngleRadians(), Limelight.Target.FRONT) * limelight.getShooterGoalHorizontalDifference(arm.getAngleRadians());
+    // 1st power: 2.58
+    // 2nd power: N/A
+    // 1.3 power: 
+    double speedRPM = 5 * limelight.calculateShooterSpeed(arm.getAngleRadians(), Limelight.Target.FRONT) * Math.pow(arm.getAngleRadians(), 1.3);
 
     SmartDashboard.putBoolean("Target detected", limelight.isTargetDetected());
 
-    if (0.98 * shooter.getShooterSpeed() <= speedRPM && speedRPM <= 1.02 * shooter.getShooterSpeed()) {
+    if (0.96 * shooter.getShooterSpeed() <= speedRPM && speedRPM <= 1.04 * shooter.getShooterSpeed()) {
       conveyor.moveConveyorForward();
     } else {
       conveyor.stopConveyorMovement();
