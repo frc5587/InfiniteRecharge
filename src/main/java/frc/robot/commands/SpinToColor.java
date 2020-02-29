@@ -7,16 +7,16 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.ColorSensor;
+import frc.robot.subsystems.ColorSensor.TargetColor;
 import frc.robot.subsystems.Conveyor;
 
 public class SpinToColor extends CommandBase {
   private ColorSensor colorSensor;
-  private char desiredColor;
   private Conveyor conveyor;
+  private TargetColor targetColor;
 
   /**
    * Creates a new SpinToColor.
@@ -31,14 +31,8 @@ public class SpinToColor extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    String fmsData = DriverStation.getInstance().getGameSpecificMessage();
-    if (fmsData.length() > 0) {
-      desiredColor = fmsData.charAt(0);
-      conveyor.set();
-    } else {
-      desiredColor = '0';
-      DriverStation.reportError("No game data detected", false);
-    }
+    conveyor.set();
+    targetColor = colorSensor.getTargetColor();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -55,6 +49,6 @@ public class SpinToColor extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return desiredColor == '0' || desiredColor == colorSensor.getTargetColor().toString().charAt(0);
+    return targetColor != colorSensor.getTargetColor();
   }
 }
