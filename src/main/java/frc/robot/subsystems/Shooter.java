@@ -15,8 +15,10 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
   private final CANSparkMax motorOne = new CANSparkMax(Constants.ShooterConstants.SHOOTER_MOTOR_ONE,
@@ -75,11 +77,12 @@ public class Shooter extends SubsystemBase {
 
     sparkPIDControllerOne.setOutputRange(-Constants.ShooterConstants.MIN_OUTPUT, Constants.ShooterConstants.MAX_OUTPUT);
 
-    motorOne.setSmartCurrentLimit(40, 35);
+    motorOne.setSmartCurrentLimit(ShooterConstants.SMART_CURRENT_LIMIT);
+    motorTwo.setSmartCurrentLimit(ShooterConstants.SMART_CURRENT_LIMIT);
+    motorOne.setSecondaryCurrentLimit(ShooterConstants.HARD_CURRENT_LIMIT);
+    motorTwo.setSecondaryCurrentLimit(ShooterConstants.HARD_CURRENT_LIMIT);
 
     sparkPIDControllerTwo.setOutputRange(-Constants.ShooterConstants.MIN_OUTPUT, Constants.ShooterConstants.MAX_OUTPUT);
-
-    motorTwo.setSmartCurrentLimit(40, 35);
 
     // set PID coefficients
     sparkPIDControllerOne.setFF(Constants.ShooterConstants.SHOOTER_ONE_FPID.kF);
@@ -102,8 +105,12 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getBallExitVelocity() {
-    return (sparkEncoderOne.getVelocity() * Constants.ShooterConstants.FLYWHEEL_RADIUS
-        * Constants.ShooterConstants.CONVERSION_FACTOR); // tangential velocity = angular velocity * radius
+    var rpm = sparkEncoderOne.getVelocity();
+    var radsPerSec = Units.rotationsPerMinuteToRadiansPerSecond(rpm);
+    var outputRadsPerSecond = radsPerSec * (1 / Constants.ShooterConstants.GEAR_RATIO);
+
+    // tangential velocity = angular velocity * radius
+    return outputRadsPerSecond * Constants.ShooterConstants.FLYWHEEL_RADIUS;
   }
 
   // returns RPM
