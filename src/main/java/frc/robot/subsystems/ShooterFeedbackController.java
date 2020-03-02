@@ -76,8 +76,7 @@ public class ShooterFeedbackController {
   /**
    * Calculates the voltage to set the motor to
    * 
-   * @param currentVelocityRPS  current speed of the shooter - ROTATIONS PER
-   *                            SECOND
+   * @param currentVelocityRPS  current speed of the shooter - ROTATIONS PER SECOND
    * @param setpointVelocityRPS setpoint speed - ROTATIONS PER SECOND
    * @return voltage - VOLTS
    */
@@ -97,20 +96,50 @@ public class ShooterFeedbackController {
     return timeDiff;
   }
 
+  /**
+   * Sets the setpoint for the PID
+   * 
+   * @param setpointVelocityRPS setpoint - ROTATIONS PER SECOND
+   */
   public void setSetpoint(double setpointVelocityRPS) {
     this.setpointVelocityRPS = setpointVelocityRPS;
   }
 
+  /**
+   * Sets the setpoints, the calculates the PID based on the current speed of the
+   * arm, which is retrieved via the DoubleSupplier
+   * 
+   * @param setpointVelocityRPS setpoint - ROTATIONS PER SECOND
+   * @return voltage to set the shooter - VOLTS
+   */
+  public double setSetpointAndCalculate(double setpointVelocityRPS) {
+    setSetpoint(setpointVelocityRPS);
+    return calculate();
+  }
+
+  /*
+   * Sends debug info to Smart Dashboard
+   */
   public void sendDebugInfo() {
     SmartDashboard.putNumber("Shooter Setpoint", setpointVelocityRPS);
     SmartDashboard.putNumber("Shooter Last Output", lastOutput);
     SmartDashboard.putNumber("Shooter Current Velocity", motorVelocitySupplier.getAsDouble());
   }
 
+  /**
+   * Get the current setpoint of the shooter
+   * 
+   * @return setpoint - ROTATIONS PER SECOND
+   */
   public double getSetpoint() {
     return setpointVelocityRPS;
   }
 
+  /**
+   * True if the shooter speed is within [+/-] `errorThreshold` percent
+   * 
+   * @return true if "close enough"
+   */
   public boolean atSetpoint() {
     return ((1 - errorThreshold) < motorVelocitySupplier.getAsDouble() / setpointVelocityRPS)
         && (motorVelocitySupplier.getAsDouble() / setpointVelocityRPS < (1 + errorThreshold));
