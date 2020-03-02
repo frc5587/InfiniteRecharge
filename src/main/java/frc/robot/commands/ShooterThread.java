@@ -33,7 +33,7 @@ public class ShooterThread extends CommandBase {
     // 1st power: 2.58
     // 2nd power: N/A
     // 1.3 power: 
-    double speedRPM = 5 * limelight.calculateShooterSpeed(arm.getAngleRadians(), Limelight.Target.FRONT) * Math.pow(arm.getAngleRadians(), 1.3);
+    double speedRPM = 2.58 * limelight.calculateShooterSpeed(arm.getAngleRadians(), Limelight.Target.FRONT) * Math.pow(arm.getAngleRadians(), 1);
 
     SmartDashboard.putBoolean("Target detected", limelight.isTargetDetected());
 
@@ -45,7 +45,6 @@ public class ShooterThread extends CommandBase {
     SmartDashboard.putNumber("real speed", shooter.getShooterSpeed());
     SmartDashboard.putNumber("Shooter Speed - Thread", speedRPM);
     shooter.setVelocity(speedRPM);
-
   }
 
   @Override

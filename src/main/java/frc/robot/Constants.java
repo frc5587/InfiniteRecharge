@@ -174,6 +174,10 @@ public final class Constants {
     public static final double GOAL_HEIGHT = 2.495; // height in meters
 
     public static final double G = 9.8; // gravitational acceleration
+
+    public static final double kJ = 0.001;     // need tuning
+    public static final double kF = 8;         // need tuning
+    public static final double kLoadRatio = 1; // need tuning
   }
 
   /**
