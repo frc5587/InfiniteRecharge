@@ -64,10 +64,20 @@ public class ShooterPID extends SubsystemBase {
     motorTwo.setVoltage(motorTwoVoltage);
   }
 
+  /**
+   * Gets the velocity of the first motor
+   * 
+   * @return velocity - ROTATIONS PER SECOND
+   */
   public double getMotorOneVelocity() {
     return sparkEncoderOne.getVelocity();
   }
 
+  /**
+   * Gets the velocity of the second motor
+   * 
+   * @return velocity - ROTATIONS PER SECOND
+   */
   public double getMotorTwoVelocity() {
     return sparkEncoderTwo.getVelocity();
   }
@@ -131,7 +141,7 @@ public class ShooterPID extends SubsystemBase {
    * 
    * @param setpointVelocity new setpoint - ROTATIONS PER SECOND
    */
-  public void setSetpoint(double setpointVelocity) {
+  public void setVelocity(double setpointVelocity) {
     this.setpointVelocity = setpointVelocity;
   }
 

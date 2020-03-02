@@ -6,18 +6,18 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterPID;
 import frc.robot.subsystems.Conveyor;
 
 public class ShooterThread extends CommandBase {
   private Arm arm;
-  private Shooter shooter;
+  private ShooterPID shooter;
   private Limelight limelight;
   private Conveyor conveyor;
   private Notifier notifier = new Notifier(this::updateShooter);
   // private int startBalls;
 
-  public ShooterThread(Arm arm, Shooter shooter, Limelight limelight, Conveyor conveyor) {
+  public ShooterThread(Arm arm, ShooterPID shooter, Limelight limelight, Conveyor conveyor) {
     this.arm = arm;
     this.shooter = shooter;
     this.limelight = limelight;
@@ -33,7 +33,9 @@ public class ShooterThread extends CommandBase {
     // 1st power: 2.58
     // 2nd power: N/A
     // 1.3 power: 
-    double speedRPM = 2.58 * limelight.calculateShooterSpeed(arm.getAngleRadians(), Limelight.Target.FRONT) * Math.pow(arm.getAngleRadians(), 1);
+    // double speedRPM = 2.58 * limelight.calculateShooterSpeed(arm.getAngleRadians(), Limelight.Target.FRONT) * Math.pow(arm.getAngleRadians(), 1);
+
+    double speedRPM = limelight.calculateShooterSpeed(arm.getAngleRadians(), Limelight.Target.FRONT);
 
     SmartDashboard.putBoolean("Target detected", limelight.isTargetDetected());
 
@@ -49,9 +51,8 @@ public class ShooterThread extends CommandBase {
 
   @Override
   public void initialize() {
+    shooter.enable();
     notifier.startPeriodic(Constants.LimelightConstants.THREAD_PERIOD_TIME_SECONDS);
-    
-    
   }
 
   @Override
@@ -60,6 +61,7 @@ public class ShooterThread extends CommandBase {
     notifier.stop();
     conveyor.stopConveyorMovement();
     shooter.setThrottle(0);
+    shooter.disable();
   }
 
   @Override

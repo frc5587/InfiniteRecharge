@@ -49,6 +49,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.MachineLearning;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterPID;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -65,7 +66,8 @@ public class RobotContainer {
   private final Climber climber = new Climber();
   private final Arm arm = new Arm();
   private final Intake intake = new Intake();
-  private final Shooter shooter = new Shooter();
+  // private final Shooter shooter = new Shooter();
+  private final ShooterPID shooter = new ShooterPID();
 
   private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
