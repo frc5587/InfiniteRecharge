@@ -94,7 +94,7 @@ public class Drivetrain extends PIDSubsystem {
   }
 
   public void arcadeDrive(double throttle, double curve) {
-    differentialDrive.arcadeDrive(throttle, curve);
+    differentialDrive.arcadeDrive(throttle, curve, false);
   }
 
   public void tankLR(double leftThrottle, double rightThrottle) {
