@@ -1,20 +1,21 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.ShooterConstants;
+import org.frc5587.lib.pid.JRAD;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Timer;
 
 public class ShooterFeedbackController {
-  private double kF;
-  private double kJ;
-  private double kLoadRatio;
-  private double lastOutput;
-  private double setpointVelocityRPS;
+  private JRAD JRADConstants;
+  // private double kF;
+  // private double kJ;
+  // private double kLoadRatio;
+  private double lastOutput = 0;
+  private double setpointVelocityRPM;
   private double lastTime;
+  private double diff;
 
   private double errorThreshold = 0.06;
 
@@ -33,39 +34,19 @@ public class ShooterFeedbackController {
    * @param kLoadRatio arbitrary constant
    * @param kF         voltage constant
    */
-  public ShooterFeedbackController(double kJ, double kLoadRatio, double kF, DoubleSupplier motorVelocitySupplier) {
-    this.kF = kF;
-    this.kJ = kJ;
-    this.kLoadRatio = kLoadRatio;
+  public ShooterFeedbackController(JRAD JRADConstants, DoubleSupplier motorVelocitySupplier) {
+    this.JRADConstants = JRADConstants;
     this.motorVelocitySupplier = motorVelocitySupplier;
     timer.start();
     lastTime = timer.get();
   }
 
   /**
-   * Builds a controller that uses 254's suggest voltage constant of 8V
-   * 
-   * @param kJ         arbitrary constant
-   * @param kLoadRatio arbitrary constant
-   */
-  public ShooterFeedbackController(double kJ, double kLoadRatio, DoubleSupplier motorVelocitySupplier) {
-    this(kJ, kLoadRatio, 8, motorVelocitySupplier);
-  }
-
-  /**
-   * Build a controller that uses the shooter constants
-   */
-  public ShooterFeedbackController(DoubleSupplier motorVelocitySupplier) {
-    this(ShooterConstants.kJ, ShooterConstants.kLoadRatio, ShooterConstants.kF, motorVelocitySupplier);
-  }
-
-  /**
-   * @param currentVelocityRPS the current velocity - ROTATION PER SECOND
+   * @param currentVelocityRPM the current velocity - ROTATIONS PER MINUTE
    * @return the voltage to set the motor to
    */
-  public double calculate(double currentVelocityRPS) {
-    this.lastOutput = (kF * setpointVelocityRPS) + lastOutput
-        + (kJ * elapsedTime() * ((kLoadRatio * setpointVelocityRPS) - currentVelocityRPS));
+  public double calculate(double currentVelocityRPM) {
+    this.lastOutput = (JRADConstants.kF * setpointVelocityRPM) + lastOutput + (JRADConstants.kJ * elapsedTime() * ((JRADConstants.kLoadRatio * setpointVelocityRPM) - currentVelocityRPM));
     return this.lastOutput;
   }
 
@@ -76,44 +57,44 @@ public class ShooterFeedbackController {
   /**
    * Calculates the voltage to set the motor to
    * 
-   * @param currentVelocityRPS  current speed of the shooter - ROTATIONS PER SECOND
-   * @param setpointVelocityRPS setpoint speed - ROTATIONS PER SECOND
+   * @param currentVelocityRPM  current speed of the shooter - ROTATIONS PER MINUTE
+   * @param setpointVelocityRPM setpoint speed - ROTATIONS PER MINUTE
    * @return voltage - VOLTS
    */
-  public double calculate(double currentVelocityRPS, double setpointVelocityRPS) {
-    setSetpoint(setpointVelocityRPS);
-    return calculate(currentVelocityRPS);
+  public double calculate(double currentVelocityRPM, double setpointVelocityRPM) {
+    setSetpoint(setpointVelocityRPM);
+    return calculate(currentVelocityRPM);
   }
 
   /**
    * Get (and set) the time since this method was called last
    * 
-   * @return elapsed time - SECONDS
+   * @return elapsed time - MINUTES
    */
   public double elapsedTime() {
-    double timeDiff = timer.get() - this.lastTime;
+    this.diff = timer.get() - this.lastTime;
     this.lastTime = timer.get();
-    return timeDiff;
+    return diff;
   }
 
   /**
    * Sets the setpoint for the PID
    * 
-   * @param setpointVelocityRPS setpoint - ROTATIONS PER SECOND
+   * @param setpointVelocityRPM setpoint - ROTATIONS PER MINUTE
    */
-  public void setSetpoint(double setpointVelocityRPS) {
-    this.setpointVelocityRPS = setpointVelocityRPS;
+  public void setSetpoint(double setpointVelocityRPM) {
+    this.setpointVelocityRPM = setpointVelocityRPM;
   }
 
   /**
    * Sets the setpoints, the calculates the PID based on the current speed of the
    * arm, which is retrieved via the DoubleSupplier
    * 
-   * @param setpointVelocityRPS setpoint - ROTATIONS PER SECOND
+   * @param setpointVelocityRPM setpoint - ROTATIONS PER MINUTE
    * @return voltage to set the shooter - VOLTS
    */
-  public double setSetpointAndCalculate(double setpointVelocityRPS) {
-    setSetpoint(setpointVelocityRPS);
+  public double setSetpointAndCalculate(double setpointVelocityRPM) {
+    setSetpoint(setpointVelocityRPM);
     return calculate();
   }
 
@@ -121,18 +102,19 @@ public class ShooterFeedbackController {
    * Sends debug info to Smart Dashboard
    */
   public void sendDebugInfo() {
-    SmartDashboard.putNumber("Shooter Setpoint", setpointVelocityRPS);
+    SmartDashboard.putNumber("Shooter Setpoint RPM", setpointVelocityRPM);
     SmartDashboard.putNumber("Shooter Last Output", lastOutput);
     SmartDashboard.putNumber("Shooter Current Velocity", motorVelocitySupplier.getAsDouble());
+    SmartDashboard.putNumber("diff", diff);
   }
 
   /**
    * Get the current setpoint of the shooter
    * 
-   * @return setpoint - ROTATIONS PER SECOND
+   * @return setpoint - ROTATIONS PER MINUTE
    */
   public double getSetpoint() {
-    return setpointVelocityRPS;
+    return setpointVelocityRPM;
   }
 
   /**
@@ -141,7 +123,7 @@ public class ShooterFeedbackController {
    * @return true if "close enough"
    */
   public boolean atSetpoint() {
-    return ((1 - errorThreshold) < motorVelocitySupplier.getAsDouble() / setpointVelocityRPS)
-        && (motorVelocitySupplier.getAsDouble() / setpointVelocityRPS < (1 + errorThreshold));
+    return ((1 - errorThreshold) < motorVelocitySupplier.getAsDouble() / setpointVelocityRPM)
+        && (motorVelocitySupplier.getAsDouble() / setpointVelocityRPM < (1 + errorThreshold));
   }
 }

@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.util.Units;
 import org.frc5587.lib.pid.FPID;
 import org.frc5587.lib.pid.PID;
+import org.frc5587.lib.pid.JRAD;
 
 import edu.wpi.first.wpilibj.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
@@ -175,10 +176,9 @@ public final class Constants {
 
     public static final double G = 9.8; // gravitational acceleration
 
-    public static final double kJ = 0.001;     // need tuning
-    public static final double kF = 8;         // need tuning
-    public static final double kLoadRatio = 1; // need tuning
-  }
+    public static final JRAD MOTOR_ONE_JRAD = new JRAD(0.001, 0, 1.14285);  // need tuning
+    public static final JRAD MOTOR_TWO_JRAD = new JRAD(0.001, 0, 1.14285);  // need tuning
+  } 
 
   /**
    * Constants used by the Limelight

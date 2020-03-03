@@ -19,13 +19,11 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.Conveyor;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -48,7 +46,6 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.MachineLearning;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPID;
 
 /**
@@ -91,8 +88,13 @@ public class RobotContainer {
     arm.setDefaultCommand(armThread);
     // intake.setDefaultCommand(new IntakeStopper(intake, conveyor));
 
+    
+    // var rightStickButton = new JoystickButton(xb, XboxController.Button.kA.value);
+    
+
     // Configure the button bindings
     configureButtonBindings();
+
   }
 
   /**
@@ -134,25 +136,13 @@ public class RobotContainer {
         conveyor.stopConveyorMovement();
         intake.stopIntakeMovement();
     });
-    SmartDashboard.putData("Ball Count Reset", new InstantCommand(intake::reset));
 
     // arm
     // determines whether the arm should be manually controlled
     leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(arm, () -> xb.getY(Hand.kRight)));
 
-    // moves arm to the lowest and highest positions
-    xButton
-      .whenPressed(() -> arm.setArmAngleDegrees(14), arm)
-      .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
-
-    yButton
-      .whenPressed(() -> arm.setArmAngleDegrees(55), arm)
-      .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
-
     // reset elevator encoder
     armLimitSwitch.whenActive(arm::resetEncoder);
-
-    SmartDashboard.putData("Ball Reset", new InstantCommand(conveyor::reset));
 
     // Run climber up
     upDPad.whenActive(() -> climber.set(0.5), climber).whenInactive(() -> climber.set(0), climber);
@@ -163,15 +153,13 @@ public class RobotContainer {
       
     buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));
 
-    // rightTrigger.whenActive(() ->
-    // shooter.setVelocity(shooter.calculateShooterSpeed(3,
-    // Math.toRadians(46)))).whenInactive(() -> shooter.setThrottle(0));
     rightTrigger
       .whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight)))
       .whenInactive(() -> shooter.setThrottle(0));
 
     leftStickButton.whenHeld(resetEncoder);
-    rightStickButton.whileHeld(shooterThread);
+    leftStickButton.whileHeld(() -> shooter.setVelocity(1600), shooter).whenReleased(() -> shooter.setVelocity(0), shooter);
+    // rightStickButton.whileHeld(shooterThread);
     aButton.whenHeld(findTarget);
   }
 

@@ -60,8 +60,8 @@ public class ShooterThread extends CommandBase {
     System.out.println("ShooterThread ending - interrupted: " + interrupted);
     notifier.stop();
     conveyor.stopConveyorMovement();
+    // shooter.disable();
     shooter.setThrottle(0);
-    shooter.disable();
   }
 
   @Override

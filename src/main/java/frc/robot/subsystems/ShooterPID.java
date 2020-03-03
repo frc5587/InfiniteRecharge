@@ -16,8 +16,8 @@ public class ShooterPID extends SubsystemBase {
   private final CANEncoder sparkEncoderOne = motorOne.getEncoder();
   private final CANEncoder sparkEncoderTwo = motorTwo.getEncoder();
 
-  private final ShooterFeedbackController motorOneController = new ShooterFeedbackController(this::getMotorOneVelocity);
-  private final ShooterFeedbackController motorTwoController = new ShooterFeedbackController(this::getMotorTwoVelocity);
+  private final ShooterFeedbackController motorOneController = new ShooterFeedbackController(ShooterConstants.MOTOR_ONE_JRAD, this::getMotorOneVelocity);
+  private final ShooterFeedbackController motorTwoController = new ShooterFeedbackController(ShooterConstants.MOTOR_TWO_JRAD, this::getMotorTwoVelocity);
 
   private double setpointVelocity = 0;
   private boolean enabled = true;
