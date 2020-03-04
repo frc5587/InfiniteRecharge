@@ -9,7 +9,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ShooterPID extends SubsystemBase {
+public class ShooterJRAD extends SubsystemBase {
   private final CANSparkMax motorOne = new CANSparkMax(ShooterConstants.SHOOTER_MOTOR_ONE, MotorType.kBrushless);
   private final CANSparkMax motorTwo = new CANSparkMax(ShooterConstants.SHOOTER_MOTOR_TWO, MotorType.kBrushless);
 
@@ -22,7 +22,7 @@ public class ShooterPID extends SubsystemBase {
   private double setpointVelocity = 0;
   private boolean enabled = true;
 
-  public ShooterPID() {
+  public ShooterJRAD() {
     configureSpark();
   }
 
@@ -54,12 +54,12 @@ public class ShooterPID extends SubsystemBase {
   }
 
   /**
-   * Uses the output from the PID controller
+   * Uses the output from the JRAD controller
    * 
    * @param motorOneVoltage
    * @param motorTwoVoltage
    */
-  protected void useOutput(double motorOneVoltage, double motorTwoVoltage) {
+  public void useOutput(double motorOneVoltage, double motorTwoVoltage) {
     motorOne.setVoltage(motorOneVoltage);
     motorTwo.setVoltage(motorTwoVoltage);
   }
@@ -107,7 +107,7 @@ public class ShooterPID extends SubsystemBase {
   }
 
   /**
-   * If the PID control in enabled, it will update the motors based on the
+   * If the JRAD control in enabled, it will update the motors based on the
    * setpoint
    */
   @Override
@@ -123,14 +123,14 @@ public class ShooterPID extends SubsystemBase {
   }
 
   /**
-   * Enables PID control
+   * Enables JRAD control
    */
   public void enable() {
     enabled = true;
   }
 
   /**
-   * Disables PID control
+   * Disables JRAD control
    */
   public void disable() {
     enabled = false;
@@ -146,7 +146,7 @@ public class ShooterPID extends SubsystemBase {
   }
 
   /**
-   * If PID is disable, this controls the percent output of the shooter
+   * If JRAD is disable, this controls the percent output of the shooter
    * 
    * @param throttle percent output - [-1, 1]
    */
@@ -155,5 +155,9 @@ public class ShooterPID extends SubsystemBase {
       motorOne.set(throttle);
       motorTwo.set(throttle);
     }
+  }
+
+  public boolean atSetpoint() {
+    return motorOneController.atSetpoint() && motorTwoController.atSetpoint();
   }
 }

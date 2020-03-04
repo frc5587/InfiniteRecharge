@@ -46,7 +46,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.MachineLearning;
-import frc.robot.subsystems.ShooterPID;
+import frc.robot.subsystems.ShooterJRAD;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -64,7 +64,7 @@ public class RobotContainer {
   private final Arm arm = new Arm();
   private final Intake intake = new Intake();
   // private final Shooter shooter = new Shooter();
-  private final ShooterPID shooter = new ShooterPID();
+  private final ShooterJRAD shooter = new ShooterJRAD();
 
   private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
@@ -104,7 +104,6 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
     var buttonEleven = new JoystickButton(joy, 11);
     var buttonTwelve = new JoystickButton(joy, 12);
     var upDPad = new POVButton(xb, 0);

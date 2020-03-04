@@ -6,18 +6,19 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.ShooterPID;
+import frc.robot.subsystems.ShooterJRAD;
 import frc.robot.subsystems.Conveyor;
 
 public class ShooterThread extends CommandBase {
   private Arm arm;
-  private ShooterPID shooter;
+  private ShooterJRAD shooter;
   private Limelight limelight;
   private Conveyor conveyor;
   private Notifier notifier = new Notifier(this::updateShooter);
+  private boolean moveConveyor = false;
   // private int startBalls;
 
-  public ShooterThread(Arm arm, ShooterPID shooter, Limelight limelight, Conveyor conveyor) {
+  public ShooterThread(Arm arm, ShooterJRAD shooter, Limelight limelight, Conveyor conveyor) {
     this.arm = arm;
     this.shooter = shooter;
     this.limelight = limelight;
@@ -39,11 +40,13 @@ public class ShooterThread extends CommandBase {
 
     SmartDashboard.putBoolean("Target detected", limelight.isTargetDetected());
 
-    if (0.96 * shooter.getShooterSpeed() <= speedRPM && speedRPM <= 1.04 * shooter.getShooterSpeed()) {
+    if (shooter.atSetpoint()) {
+      moveConveyor = true;
+    } 
+    if (moveConveyor) {
       conveyor.moveConveyorForward();
-    } else {
-      conveyor.stopConveyorMovement();
     }
+
     SmartDashboard.putNumber("real speed", shooter.getShooterSpeed());
     SmartDashboard.putNumber("Shooter Speed - Thread", speedRPM);
     shooter.setVelocity(speedRPM);
@@ -52,6 +55,7 @@ public class ShooterThread extends CommandBase {
   @Override
   public void initialize() {
     shooter.enable();
+    moveConveyor = false;
     notifier.startPeriodic(Constants.LimelightConstants.THREAD_PERIOD_TIME_SECONDS);
   }
 
@@ -60,7 +64,7 @@ public class ShooterThread extends CommandBase {
     System.out.println("ShooterThread ending - interrupted: " + interrupted);
     notifier.stop();
     conveyor.stopConveyorMovement();
-    // shooter.disable();
+    shooter.disable();
     shooter.setThrottle(0);
   }
 

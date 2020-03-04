@@ -9,15 +9,12 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class ShooterFeedbackController {
   private JRAD JRADConstants;
-  // private double kF;
-  // private double kJ;
-  // private double kLoadRatio;
   private double lastOutput = 0;
   private double setpointVelocityRPM;
   private double lastTime;
   private double diff;
 
-  private double errorThreshold = 0.06;
+  private double errorThreshold = 0.98;
 
   private Timer timer = new Timer();
   private DoubleSupplier motorVelocitySupplier;
@@ -118,12 +115,15 @@ public class ShooterFeedbackController {
   }
 
   /**
-   * True if the shooter speed is within [+/-] `errorThreshold` percent
+   * Because this overshoots the setpoint (as designed), we should only check if it 
+   * is above the setpoint. Once a ball shoots the speed will drop, but the speed 
+   * should always stay above the setpoint
    * 
-   * @return true if "close enough"
+   * @return true if the speed is above the setpoint
    */
   public boolean atSetpoint() {
-    return ((1 - errorThreshold) < motorVelocitySupplier.getAsDouble() / setpointVelocityRPM)
-        && (motorVelocitySupplier.getAsDouble() / setpointVelocityRPM < (1 + errorThreshold));
+    return (motorVelocitySupplier.getAsDouble() >= setpointVelocityRPM);
+    // return ((1 - errorThreshold) < motorVelocitySupplier.getAsDouble() / setpointVelocityRPM)
+    //     && (motorVelocitySupplier.getAsDouble() / setpointVelocityRPM < (1 + errorThreshold));
   }
 }
