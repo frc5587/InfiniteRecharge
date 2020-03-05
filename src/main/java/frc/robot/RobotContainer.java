@@ -34,7 +34,6 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmThread;
 import frc.robot.commands.FindTarget;
 import frc.robot.commands.LimelightCentering;
-import frc.robot.commands.LimelightTest;
 import frc.robot.commands.ManualArmControl;
 import frc.robot.commands.RamseteCommandWrapper;
 import frc.robot.commands.ResetEncoder;
@@ -84,7 +83,6 @@ public class RobotContainer {
 
     // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
-    limelight.setDefaultCommand(new LimelightTest(limelight, arm));
     arm.setDefaultCommand(armThread);
     // intake.setDefaultCommand(new IntakeStopper(intake, conveyor));
 
@@ -157,8 +155,9 @@ public class RobotContainer {
       .whenInactive(() -> shooter.setThrottle(0));
 
     leftStickButton.whenHeld(resetEncoder);
-    leftStickButton.whileHeld(() -> shooter.setVelocity(1600), shooter).whenReleased(() -> shooter.setVelocity(0), shooter);
-    // rightStickButton.whileHeld(shooterThread);
+    // rightStickButton.whileHeld(() -> shooter.setVelocity(1600), shooter).whenReleased(() -> shooter.setVelocity(0), shooter);
+    rightStickButton.whileHeld(shooterThread)
+    ;
     aButton.whenHeld(findTarget);
   }
 

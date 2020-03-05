@@ -65,7 +65,6 @@ public class Arm extends SubsystemBase {
     public void setArmAngleDegrees(double angle) {
         angle = MathUtil.clamp(angle, Constants.ArmConstants.LOWER_LIMIT_DEGREES,
                 Constants.ArmConstants.UPPER_LIMIT_DEGREES);
-        SmartDashboard.putNumber("Actual arm angle set", angle);
         armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
     }
 
@@ -101,6 +100,7 @@ public class Arm extends SubsystemBase {
      */
     public double getAngleDegrees() {
         // return Math.toRadians(armEncoder.getPosition() * 180 + 15);
+        System.out.println(ticksToDegrees(getPositionTicks()));
         return ticksToDegrees(getPositionTicks());
     }
 
@@ -142,8 +142,7 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // System.out.println(getAngleDegrees());
-        SmartDashboard.putNumber("Arm angle", this.getAngleDegrees());
+        SmartDashboard.putNumber("Actual Arm Angle", this.getAngleDegrees());
         refreshPID();
         armPIDController.setFF(calcFeedForward());
     }

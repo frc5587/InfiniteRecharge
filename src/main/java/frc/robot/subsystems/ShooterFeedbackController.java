@@ -14,7 +14,7 @@ public class ShooterFeedbackController {
   private double lastTime;
   private double diff;
 
-  private double errorThreshold = 0.98;
+  // private double errorThreshold = 0.98;
 
   private Timer timer = new Timer();
   private DoubleSupplier motorVelocitySupplier;
@@ -23,9 +23,6 @@ public class ShooterFeedbackController {
    * This build a controller based on
    * https://www.team254.com/frc-day-12-13-build-blog/ Its controls the shooter to
    * anticipate the drop in speed from shooting the ball.
-   * 
-   * I really made a mess of this controller, many of the inherited methods will
-   * not work, so you should really only use the methods defines in this class
    * 
    * @param kJ         arbitrary constant
    * @param kLoadRatio arbitrary constant
@@ -99,10 +96,8 @@ public class ShooterFeedbackController {
    * Sends debug info to Smart Dashboard
    */
   public void sendDebugInfo() {
-    SmartDashboard.putNumber("Shooter Setpoint RPM", setpointVelocityRPM);
-    SmartDashboard.putNumber("Shooter Last Output", lastOutput);
+    SmartDashboard.putNumber("Shooter Last Output (V)", lastOutput);
     SmartDashboard.putNumber("Shooter Current Velocity", motorVelocitySupplier.getAsDouble());
-    SmartDashboard.putNumber("diff", diff);
   }
 
   /**
@@ -123,7 +118,5 @@ public class ShooterFeedbackController {
    */
   public boolean atSetpoint() {
     return (motorVelocitySupplier.getAsDouble() >= setpointVelocityRPM);
-    // return ((1 - errorThreshold) < motorVelocitySupplier.getAsDouble() / setpointVelocityRPM)
-    //     && (motorVelocitySupplier.getAsDouble() / setpointVelocityRPM < (1 + errorThreshold));
   }
 }

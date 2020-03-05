@@ -11,7 +11,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -88,6 +87,5 @@ public class Conveyor extends SubsystemBase {
     // previous and current state of limit switch
     previousSettingOfBottomSwitch = bottomLimit.get();
     previousSettingOfTopSwitch = topLimit.get();
-    SmartDashboard.putNumber("number_of_balls", currentNumberOfBalls);
   }
 }

@@ -135,7 +135,7 @@ public final class Constants {
     public static final double ARM_LENGTH_METERS = 0.9;
     
     // physical limits of the arm
-    public static final int UPPER_LIMIT_DEGREES = 60;
+    public static final int UPPER_LIMIT_DEGREES = 54;
     public static final int LOWER_LIMIT_DEGREES = 16;
 
   }
@@ -176,8 +176,8 @@ public final class Constants {
 
     public static final double G = 9.8; // gravitational acceleration
 
-    public static final JRAD MOTOR_ONE_JRAD = new JRAD(0.001, 0, 1.14285);  // need tuning
-    public static final JRAD MOTOR_TWO_JRAD = new JRAD(0.001, 0, 1.14285);  // need tuning
+    public static final JRAD MOTOR_ONE_JRAD = new JRAD(0.001, 0, 1.2);  // need tuning
+    public static final JRAD MOTOR_TWO_JRAD = new JRAD(0.001, 0, 1.2);  // need tuning
   } 
 
   /**

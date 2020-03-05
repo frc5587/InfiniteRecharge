@@ -34,8 +34,6 @@ public class Shooter extends SubsystemBase {
    */
   public Shooter() {
     configureSpark();
-    // SmartDashboard.putNumber("desired velocity", 0.0);
-    // SmartDashboard.putNumber("d value", .6);
   }
 
   /**

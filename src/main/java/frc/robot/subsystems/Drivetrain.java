@@ -48,6 +48,7 @@ public class Drivetrain extends PIDSubsystem {
 
   private final PIDController turnController = getController();
   private double lastAngleSetpoint = Double.NaN;
+  private double lastCurve = 0;
 
   /**
    * Creates a new Drive.
@@ -194,8 +195,15 @@ public class Drivetrain extends PIDSubsystem {
   @Override
   protected void useOutput(double output, double setpoint) {
     // Use the output and add the turn PID feed forward constant
+    double curve = output + Math.copySign(DrivetrainConstants.TURN_FPID.kF, output);
+    // Moves only half of the curve, so it doesn't over-correct
+    double diff = curve - lastCurve;
+    double set = diff / 2 + lastCurve;
+
     arcadeDrive(DrivetrainConstants.TURN_PID_FORWARD_THROTTLE,
-        output + Math.copySign(DrivetrainConstants.TURN_FPID.kF, output));
+        set);
+
+    lastCurve = set;
   }
 
   @Override

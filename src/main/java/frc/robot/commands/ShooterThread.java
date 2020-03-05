@@ -38,7 +38,9 @@ public class ShooterThread extends CommandBase {
 
     double speedRPM = limelight.calculateShooterSpeed(arm.getAngleRadians(), Limelight.Target.FRONT);
 
-    SmartDashboard.putBoolean("Target detected", limelight.isTargetDetected());
+    SmartDashboard.putNumber("Actual Shooter Speed", shooter.getShooterSpeed());
+    SmartDashboard.putNumber("Shooter Setpoint", speedRPM);
+    shooter.setVelocity(speedRPM);
 
     if (shooter.atSetpoint()) {
       moveConveyor = true;
@@ -46,10 +48,6 @@ public class ShooterThread extends CommandBase {
     if (moveConveyor) {
       conveyor.moveConveyorForward();
     }
-
-    SmartDashboard.putNumber("real speed", shooter.getShooterSpeed());
-    SmartDashboard.putNumber("Shooter Speed - Thread", speedRPM);
-    shooter.setVelocity(speedRPM);
   }
 
   @Override
@@ -61,7 +59,6 @@ public class ShooterThread extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    System.out.println("ShooterThread ending - interrupted: " + interrupted);
     notifier.stop();
     conveyor.stopConveyorMovement();
     shooter.disable();
