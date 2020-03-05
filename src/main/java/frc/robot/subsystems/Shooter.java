@@ -116,7 +116,7 @@ public class Shooter extends SubsystemBase {
    * @param armAngle           the angle of the arm         - RADIANS
    * @return                   the speed of the shooter     - RPM
    */
-  public static double calculateShooterSpeed(double distanceFromTarget, double armAngle) {
+  public static double calculateShooterSpeed(double armAngle) {
     
     return 60 * Math.sqrt(2 * ShooterConstants.G * Limelight.getWorkingHeight(armAngle))
         / (ShooterConstants.FLYWHEEL_CIRCUMFERENCE * Math.sin(armAngle) * ShooterConstants.GEARING);

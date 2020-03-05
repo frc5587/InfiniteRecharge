@@ -260,7 +260,7 @@ public class Limelight extends SubsystemBase {
    * @return                       the speed of the shooter - RPM
    */
 public double calculateShooterSpeed(double currentArmAngleRadians, Target t) {
-  return Shooter.calculateShooterSpeed(this.getShooterGoalHorizontalDifference(currentArmAngleRadians, t), currentArmAngleRadians);
+  return Shooter.calculateShooterSpeed(currentArmAngleRadians);
 }
 
 
