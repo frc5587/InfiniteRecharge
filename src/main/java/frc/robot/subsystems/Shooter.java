@@ -16,12 +16,12 @@ import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;;
 
 public class Shooter extends SubsystemBase {
-  private final CANSparkMax motorOne = new CANSparkMax(Constants.ShooterConstants.SHOOTER_MOTOR_ONE,
+  private final CANSparkMax motorOne = new CANSparkMax(ShooterConstants.SHOOTER_MOTOR_ONE,
       MotorType.kBrushless);
-  private final CANSparkMax motorTwo = new CANSparkMax(Constants.ShooterConstants.SHOOTER_MOTOR_TWO,
+  private final CANSparkMax motorTwo = new CANSparkMax(ShooterConstants.SHOOTER_MOTOR_TWO,
       MotorType.kBrushless);
   private final CANPIDController sparkPIDControllerOne = motorOne.getPIDController();
   private final CANPIDController sparkPIDControllerTwo = motorTwo.getPIDController();
@@ -71,24 +71,24 @@ public class Shooter extends SubsystemBase {
     sparkPIDControllerOne.setFeedbackDevice(sparkEncoderOne);
     sparkPIDControllerTwo.setFeedbackDevice(sparkEncoderTwo);
 
-    sparkPIDControllerOne.setOutputRange(-Constants.ShooterConstants.MIN_OUTPUT, Constants.ShooterConstants.MAX_OUTPUT);
+    sparkPIDControllerOne.setOutputRange(-ShooterConstants.MIN_OUTPUT, ShooterConstants.MAX_OUTPUT);
 
     motorOne.setSmartCurrentLimit(40, 35);
 
-    sparkPIDControllerTwo.setOutputRange(-Constants.ShooterConstants.MIN_OUTPUT, Constants.ShooterConstants.MAX_OUTPUT);
+    sparkPIDControllerTwo.setOutputRange(-ShooterConstants.MIN_OUTPUT, ShooterConstants.MAX_OUTPUT);
 
     motorTwo.setSmartCurrentLimit(40, 35);
 
     // set PID coefficients
-    sparkPIDControllerOne.setFF(Constants.ShooterConstants.SHOOTER_ONE_FPID.kF);
-    sparkPIDControllerOne.setP(Constants.ShooterConstants.SHOOTER_ONE_FPID.kP);
-    sparkPIDControllerOne.setI(Constants.ShooterConstants.SHOOTER_ONE_FPID.kI);
-    sparkPIDControllerOne.setD(Constants.ShooterConstants.SHOOTER_ONE_FPID.kD);
+    sparkPIDControllerOne.setFF(ShooterConstants.SHOOTER_ONE_FPID.kF);
+    sparkPIDControllerOne.setP(ShooterConstants.SHOOTER_ONE_FPID.kP);
+    sparkPIDControllerOne.setI(ShooterConstants.SHOOTER_ONE_FPID.kI);
+    sparkPIDControllerOne.setD(ShooterConstants.SHOOTER_ONE_FPID.kD);
 
-    sparkPIDControllerTwo.setFF(Constants.ShooterConstants.SHOOTER_TWO_FPID.kF);
-    sparkPIDControllerTwo.setP(Constants.ShooterConstants.SHOOTER_TWO_FPID.kP);
-    sparkPIDControllerTwo.setI(Constants.ShooterConstants.SHOOTER_TWO_FPID.kI);
-    sparkPIDControllerTwo.setD(Constants.ShooterConstants.SHOOTER_TWO_FPID.kD);
+    sparkPIDControllerTwo.setFF(ShooterConstants.SHOOTER_TWO_FPID.kF);
+    sparkPIDControllerTwo.setP(ShooterConstants.SHOOTER_TWO_FPID.kP);
+    sparkPIDControllerTwo.setI(ShooterConstants.SHOOTER_TWO_FPID.kI);
+    sparkPIDControllerTwo.setD(ShooterConstants.SHOOTER_TWO_FPID.kD);
   }
 
   /**
@@ -100,8 +100,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getBallExitVelocity() {
-    return (sparkEncoderOne.getVelocity() * Constants.ShooterConstants.FLYWHEEL_RADIUS
-        * Constants.ShooterConstants.CONVERSION_FACTOR); // tangential velocity = angular velocity * radius
+    return (sparkEncoderOne.getVelocity() * ShooterConstants.FLYWHEEL_RADIUS
+        * ShooterConstants.CONVERSION_FACTOR); // tangential velocity = angular velocity * radius
   }
 
   public double getShooterSpeed() {
@@ -117,10 +117,15 @@ public class Shooter extends SubsystemBase {
    * @return                   the speed of the shooter     - RPM
    */
   public static double calculateShooterSpeed(double distanceFromTarget, double armAngle) {
-    return 600 + (((1 / (Math.sqrt((Limelight.getWorkingHeight(armAngle)
-        - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * Constants.ShooterConstants.G)))))
-        * (distanceFromTarget / Math.cos(armAngle))
-        * (Constants.ShooterConstants.CONVERSION_FACTOR / Constants.ShooterConstants.FLYWHEEL_RADIUS)));
+    return 1 / (Math.sqrt((Limelight.getWorkingHeight(armAngle) - (distanceFromTarget * Math.tan(armAngle)) / (-0.5 * ShooterConstants.G)))
+                  * (distanceFromTarget / Math.cos(armAngle))
+                  * (ShooterConstants.CONVERSION_FACTOR / ShooterConstants.FLYWHEEL_RADIUS)
+                  * ShooterConstants.GEARING);
+
+    // return (1 / (Math.sqrt((Limelight.getWorkingHeight(armAngle)
+    //     - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * ShooterConstants.G)))))
+    //     * (distanceFromTarget / Math.cos(armAngle))
+    //     * (ShooterConstants.CONVERSION_FACTOR / ShooterConstants.FLYWHEEL_RADIUS);
   }
 
   @Override

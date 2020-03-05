@@ -172,9 +172,9 @@ public final class Constants {
 
     public static final double CONVERSION_FACTOR = 30 / Math.PI; // RPM --> radians/second
 
-    public static final double GOAL_HEIGHT = 2.495; // height in meters
-
     public static final double G = 9.8; // gravitational acceleration
+
+    public static final double GEARING = 2.3333;
 
     public static final JRAD MOTOR_ONE_JRAD = new JRAD(0.001, 0, 1.2);  // needs tuning
     public static final JRAD MOTOR_TWO_JRAD = new JRAD(0.001, 0, 1.2);  // needs tuning
