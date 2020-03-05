@@ -170,6 +170,8 @@ public final class Constants {
 
     public static final double FLYWHEEL_RADIUS = 0.0508; // radius in meters (2")
 
+    public static final double FLYWHEEL_CIRCUMFERENCE = 0.319186;
+
     public static final double CONVERSION_FACTOR = 30 / Math.PI; // RPM --> radians/second
 
     public static final double G = 9.8; // gravitational acceleration
