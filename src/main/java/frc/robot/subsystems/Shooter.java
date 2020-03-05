@@ -31,6 +31,8 @@ public class Shooter extends SubsystemBase {
   private final CANEncoder sparkEncoderOne = motorOne.getEncoder();
   private final CANEncoder sparkEncoderTwo = motorTwo.getEncoder();
 
+  private Double mostRecentSetpoint = null;
+
   /**
    * Creates the Shooter subsystem
    */
@@ -53,9 +55,19 @@ public class Shooter extends SubsystemBase {
   /**
    * Uses the PID method `setReference` to set the speed of the shooter
    */
-  public void setVelocity(double velocityRPM) {
-    sparkPIDControllerOne.setReference(velocityRPM, ControlType.kVelocity);
-    sparkPIDControllerTwo.setReference(velocityRPM, ControlType.kVelocity);
+  public void setVelocity(double velocityOuputRPM) {
+    var velocityMotor = velocityOuputRPM * ShooterConstants.GEAR_RATIO;
+    sparkPIDControllerOne.setReference(velocityMotor, ControlType.kVelocity);
+    sparkPIDControllerTwo.setReference(velocityMotor, ControlType.kVelocity);
+
+    mostRecentSetpoint = velocityMotor;
+  }
+
+  public boolean atSetpoint() {
+    if (mostRecentSetpoint != null) {
+      return Math.abs(mostRecentSetpoint - getAverageVelocityRPM()) < ShooterConstants.VELOCITY_TOLERANCE_RPM;
+    }
+    return false;
   }
 
   /**
@@ -102,6 +114,18 @@ public class Shooter extends SubsystemBase {
   public void log() {
     SmartDashboard.putNumber("velocity one", sparkEncoderOne.getVelocity());
     SmartDashboard.putNumber("velocity two", sparkEncoderTwo.getVelocity());
+  }
+
+  public double getOneVelocityRPM() {
+    return sparkEncoderOne.getVelocity() / ShooterConstants.GEAR_RATIO;
+  }
+
+  public double getTwoVelocityRPM() {
+    return sparkEncoderTwo.getVelocity() / ShooterConstants.GEAR_RATIO;
+  }
+
+  public double getAverageVelocityRPM() {
+    return (sparkEncoderOne.getVelocity() + sparkEncoderTwo.getVelocity()) / 2.0;
   }
 
   public double getBallExitVelocity() {
