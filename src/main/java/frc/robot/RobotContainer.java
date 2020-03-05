@@ -156,8 +156,11 @@ public class RobotContainer {
 
     leftStickButton.whenHeld(resetEncoder);
     // rightStickButton.whileHeld(() -> shooter.setVelocity(1600), shooter).whenReleased(() -> shooter.setVelocity(0), shooter);
-    rightStickButton.whileHeld(shooterThread)
-    ;
+    rightStickButton.whileHeld(shooterThread);
+
+    // Stops the armThread from running
+    leftTrigger.whenActive(() -> {}, arm);
+
     aButton.whenHeld(findTarget);
   }
 

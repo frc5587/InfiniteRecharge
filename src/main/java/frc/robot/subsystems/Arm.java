@@ -7,7 +7,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpiutil.math.MathUtil;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -53,18 +52,17 @@ public class Arm extends SubsystemBase {
     public void setArm(double speed) {
         // armSpark.set(speed);
         speed = speed * 10 + getAngleDegrees();
-        armPIDController.setReference(degreesToTicks(speed), ControlType.kPosition);
+        setArmAngleDegrees(speed);
     }
 
     /**
-     * Set the arm to a specific angle, clamps the value to it cannot run the arm
-     * too far
+     * Set the arm to a specific angle, clamps the value on the upper limit, and let periodic()
+     * stop the arm once it gets to its lower limit.
      * 
      * @param angle angle wanted to set the arm - DEGREES
      */
     public void setArmAngleDegrees(double angle) {
-        angle = MathUtil.clamp(angle, Constants.ArmConstants.LOWER_LIMIT_DEGREES,
-                Constants.ArmConstants.UPPER_LIMIT_DEGREES);
+        angle = Math.min(angle, Constants.ArmConstants.UPPER_LIMIT_DEGREES);
         armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
     }
 
@@ -145,6 +143,9 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Actual Arm Angle", this.getAngleDegrees());
         refreshPID();
         armPIDController.setFF(calcFeedForward());
+        if (getLimitSwitchVal()) {
+            setArm(0);
+        }
     }
 
     /**
