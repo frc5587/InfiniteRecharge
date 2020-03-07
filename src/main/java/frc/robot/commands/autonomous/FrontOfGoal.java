@@ -20,15 +20,15 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShooterJRAD;
 
 public class FrontOfGoal extends SequentialCommandGroup {
-    AutoPaths rightStartToPowerPort;
+    // AutoPaths rightStartToPowerPort;
 
     public FrontOfGoal(Drivetrain drivetrain, ShooterJRAD shooter, Arm arm, Conveyor conveyor, Intake intake, Limelight limelight) {
 
-        addCommands(new SequentialCommandGroup(new FindTarget(arm, limelight), new ParallelRaceGroup(new ArmThread(arm, limelight), new ShooterThread(arm, shooter, limelight, conveyor), new AutoConveyor(conveyor))),
-                new ParallelCommandGroup(new RamseteCommandWrapper(drivetrain, rightStartToPowerPort),
+        addCommands(new SequentialCommandGroup(new FindTarget(arm, limelight), new ParallelRaceGroup(new ArmThread(arm, limelight), new ShooterThread(arm, shooter, limelight, conveyor))),
+                new ParallelCommandGroup(new RamseteCommandWrapper(drivetrain, RamseteCommandWrapper.AutoPaths.RightStartToPowerPort),
                     new AutoIntake(intake, conveyor)),
-                    new LimelightCentering(drivetrain, limelight),
-                    new SequentialCommandGroup(new FindTarget(arm, limelight), new ParallelRaceGroup(new ArmThread(arm, limelight), new ShooterThread(arm, shooter, limelight, conveyor), new AutoConveyor(conveyor))));
+                new LimelightCentering(drivetrain, limelight),
+                new SequentialCommandGroup(new FindTarget(arm, limelight), new ParallelRaceGroup(new ArmThread(arm, limelight), new ShooterThread(arm, shooter, limelight, conveyor))));
     }
 
 }
