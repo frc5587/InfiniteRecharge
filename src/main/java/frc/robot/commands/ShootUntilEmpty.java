@@ -10,51 +10,47 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Intake;
-/**
- * This class records current amount of balls and issues a command in order to stop it when it gets to 5.
- */
-public class AutoIntake extends CommandBase {
+import frc.robot.subsystems.Shooter;
 
-  private final Intake intake;
-  private final Conveyor conveyor;
+public class ShootUntilEmpty extends CommandBase {
+  /**
+   * Creates a new CycleShoot.
+   */
+  private Conveyor conveyor;
+  private Shooter shooter;
+  private Intake intake;
 
-  public AutoIntake(Intake intake, Conveyor conveyor) {
-    addRequirements(intake, conveyor);
-  
+  public ShootUntilEmpty(Conveyor conveyor, Intake intake, Shooter shooter) {
     this.conveyor = conveyor;
+    this.shooter = shooter;
     this.intake = intake;
-
+    addRequirements(conveyor, shooter, intake);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      intake.moveIntakeForward();
-      conveyor.moveConveyorForward();
+    conveyor.moveConveyorForward();
+    intake.moveIntakeForward();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
-  // Sets the intake to zero if parameter is met.
   @Override
   public void execute() {
-    // We can only hold 5 balls, therefore when the sensors detect more than that
-    // the robot disables the intake motors.
-    if (conveyor.getCurrentNumberOfBalls() >= 5) {
-      intake.stopIntakeMovement();
-      conveyor.stopConveyorMovement();
-    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // timer.stop();
+    conveyor.stopConveyorMovement();
+    intake.stopIntakeMovement();
+    shooter.setThrottle(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return false;
-    return conveyor.getCurrentNumberOfBalls() >= 5;
+    return conveyor.getCurrentNumberOfBalls() == 0;
   }
 }

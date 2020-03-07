@@ -91,19 +91,32 @@ public class Limelight extends SubsystemBase {
   public static double getWorkingHeight(double currentArmAngleRadians) {
     return LimelightConstants.GOAL_HEIGHT_METERS - getShooterHeight(currentArmAngleRadians);
   }
+   
+  private double getLimelightGoalHorizontalDistance(double currentArmAngle) {
+    return (LimelightConstants.GOAL_HEIGHT_METERS - getLimelightHeight(currentArmAngle))
+        / Math.tan(currentArmAngle + Math.toRadians(getVerticalAngleOffset()));
+  }
 
-  /**
-   * Get the distance between the Limelight and the target
-   * 
-   * @param currentArmAngle the angle that the arm is currently at, in radians
-   * @return the distance between the Limelight and the target, in meters
-   */
-  public double getLimelightGoalHorizontalDifference(double currentArmAngle) {
+  private double getLimelightGoalHorizontalDifference(double currentArmAngle) {
     return (LimelightConstants.GOAL_HEIGHT_METERS - getLimelightHeight(currentArmAngle))
         / Math.tan(currentArmAngle + Math.toRadians(getVerticalAngleOffset()));
   }
 
   public double getStubbyThing(double currentArmAngle) {
+  /**
+   * Get the difference between the horizontal distance between the center of the
+   * Limelight and the goal and the horizontal distance between the center of the
+   * shooter and the goal
+   * 
+   * @param currentArmAngle the angle that the arm is currently at, in radians
+   * @return the difference between the Limelight and shooter distances, in meters
+   */
+
+   return (0.5 * LimelightConstants.ARM_HEIGHT_METERS + LimelightConstants.STANDOFF_METERS) * Math.sin(currentArmAngle);
+
+  }
+
+  private double getLSDistanceDifference(double currentArmAngle) {
     return (0.5 * LimelightConstants.ARM_HEIGHT_METERS + LimelightConstants.STANDOFF_METERS)
         * Math.sin(currentArmAngle);
   }
@@ -114,13 +127,22 @@ public class Limelight extends SubsystemBase {
         : this.lastDistance;
     return this.lastDistance;
   }
+  /**
+   * Get the horizontal distance between the center of the shooter and the goal
+   * 
+   * @param currentArmAngle the angle that the arm is currently at, in radians
+   * @return the distance between the shooter and the goal, in meters
+   */
+  public double getShooterGoalHorizontalDistance(double currentArmAngle) {
+    return getLimelightGoalHorizontalDistance(currentArmAngle) - getLSDistanceDifference(currentArmAngle);
+  }
 
   /**
    * Get the angle between the shooter and the front of the target
    * 
    * @param currentArmAngle the angle that the arm is currently at, in radians
    * @return the angle between the shooter and the front of the target, in
-   *         radians, without accounting for drop
+   * radians, without accounting for drop
    */
   public double getShooterFrontGoalAngle(double currentArmAngle) {
     return Math.atan((LimelightConstants.GOAL_HEIGHT_METERS - getShooterHeight(currentArmAngle))
@@ -132,7 +154,7 @@ public class Limelight extends SubsystemBase {
    * 
    * @param currentArmAngle the angle that the arm is currently at, in radians
    * @return the angle between the shooter and the inner target, in radians,
-   *         without accounting for drop
+   * without accounting for drop
    */
   private double getShooterInnerGoalAngle(double currentArmAngle) {
     return Math.atan((LimelightConstants.GOAL_HEIGHT_METERS - getShooterHeight(currentArmAngle))
@@ -174,14 +196,13 @@ public class Limelight extends SubsystemBase {
    * Get how much the ball being thrown deviates from a straight line trajectory
    * 
    * @param currentArmAngle the angle that the arm is currently at, in radians
-   * @param t               the desired target
    * @param shooterVelocity the velocity of the shooter, in meters / second
    * @return the height difference between the straight line trajectory and the
-   *         actual trajectory, in meters
+   * actual trajectory, in meters
    */
-  public double getDropHeight(double currentArmAngle, double shooterVelocity) {
+  private double getDropHeight(double currentArmAngle, double shooterVelocity) {
     var unadjustedAngle = getShooterFrontGoalAngle(currentArmAngle);
-    var horizontalDifference = getShooterGoalHorizontalDifference(unadjustedAngle);
+    var horizontalDifference = getShooterGoalHorizontalDistance(unadjustedAngle);
     return horizontalDifference * Math.tan(unadjustedAngle) - 0.5 * LimelightConstants.G_METERS_PER_SECOND_SQUARED
         * Math.pow(horizontalDifference / (shooterVelocity * Math.cos(unadjustedAngle)), 2);
   }
@@ -190,7 +211,6 @@ public class Limelight extends SubsystemBase {
    * Get the angle that the arm should be at, adjusted for the drop in height
    * 
    * @param currentArmAngle the angle that the arm is currently at, in radians
-   * @param t               the desired target
    * @param shooterVelocity the velocity of the shooter, in meters / second
    * @return the angle that the arm should be at, in radians
    */

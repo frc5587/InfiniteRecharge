@@ -17,6 +17,7 @@ public class LimelightCentering extends CommandBase {
   private final Drivetrain drivetrain;
   private final Limelight limelight;
   private final Notifier notifier;
+  private boolean notifierRunning;
 
   /**
    * Creates a new LimelightCentring.
@@ -36,6 +37,9 @@ public class LimelightCentering extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // Whether the Notifier has run its first loop
+    notifierRunning = false;
+
     // Run the update method based on the given period
     notifier.startPeriodic(Constants.DrivetrainConstants.TURN_PID_UPDATE_PERIOD_SEC);
 
@@ -66,8 +70,7 @@ public class LimelightCentering extends CommandBase {
   public boolean isFinished() {
     // Finish once the turn PID controller is at the setpoint, indicating that it is
     // centred on the target
-    // return drivetrain.atSetpoint();
-    return false;
+    return notifierRunning && drivetrain.atSetpoint();
   }
 
   /**
@@ -85,6 +88,7 @@ public class LimelightCentering extends CommandBase {
   private void updatePID() {
     double desiredAngle;
     limelight.turnOn();
+    notifierRunning = true;
 
     if (limelight.isTargetDetected()) {
       // Get the difference between centre and vision target (error)

@@ -19,36 +19,42 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.subsystems.Conveyor;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmThread;
+import frc.robot.commands.AutoAim;
 import frc.robot.commands.AutoConveyor;
 import frc.robot.commands.FindTarget;
+import frc.robot.commands.IntakeStopper;
 import frc.robot.commands.LimelightCentering;
 import frc.robot.commands.ManualArmControl;
 import frc.robot.commands.RamseteCommandWrapper;
 import frc.robot.commands.ResetEncoder;
 import frc.robot.commands.ShooterThread;
+import frc.robot.commands.ShootCycle;
 import frc.robot.commands.TargetBall;
 import frc.robot.commands.autonomous.CloseWall;
 import frc.robot.commands.autonomous.FrontOfGoal;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.MachineLearning;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterJRAD;
 
 /**
@@ -67,19 +73,21 @@ public class RobotContainer {
   private final Arm arm = new Arm();
   private final Intake intake = new Intake();
   // private final Shooter shooter = new Shooter();
-  private final ShooterJRAD shooter = new ShooterJRAD();
+  private final ShooterJRAD shooter2 = new ShooterJRAD();
 
+  private final Shooter shooter = new Shooter();
   private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
-
   private final Conveyor conveyor = new Conveyor();
   private final LimelightCentering centeringCommand = new LimelightCentering(drivetrain, limelight);
 
   private final ArmThread armThread = new ArmThread(arm, limelight);
-  private final ShooterThread shooterThread = new ShooterThread(arm, shooter, limelight, conveyor);
+  private final ShooterThread shooterThread = new ShooterThread(arm, shooter2, limelight, conveyor);
   private final ResetEncoder resetEncoder = new ResetEncoder(arm);
   private final FindTarget findTarget = new FindTarget(arm, limelight);
   private final AutoConveyor autoConveyor = new AutoConveyor(conveyor);
+  private final AutoAim autoAim = new AutoAim(arm, limelight);
+  private final ShootCycle cycleshoot = new ShootCycle(shooter, conveyor, intake, 1000);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -94,6 +102,7 @@ public class RobotContainer {
     
     // var rightStickButton = new JoystickButton(xb, XboxController.Button.kA.value);
     
+    intake.setDefaultCommand(new IntakeStopper(intake, conveyor));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -109,7 +118,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     var buttonEleven = new JoystickButton(joy, 11);
     var buttonTwelve = new JoystickButton(joy, 12);
-    var upDPad = new POVButton(xb, 0);
+    // var upDPad = new POVButton(xb, 0);
+    var downDPad = new POVButton(xb, 180);
     var leftTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
     var rightTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
     var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
@@ -138,16 +148,29 @@ public class RobotContainer {
         conveyor.stopConveyorMovement();
         intake.stopIntakeMovement();
     });
+    SmartDashboard.putData("Ball Count Reset", new InstantCommand(conveyor::reset));
 
     // arm
     // determines whether the arm should be manually controlled
     leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(arm, () -> xb.getY(Hand.kRight)));
 
+    // moves arm to the lowest and highest positions
+    // xButton.whenPressed(() -> arm.setArmAngleDegrees(14), arm)
+    // .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
+    // yButton.whenPressed(() -> arm.setArmAngleDegrees(55), arm)
+    // .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
+
+    aButton.whenPressed(autoAim).whenReleased(() -> autoAim.cancel());
+    // leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(m_arm, () -> xb.getY(Hand.kRight)));
+
+    xButton.whenPressed(cycleshoot).whenReleased(cycleshoot::cancel);
+
     // reset elevator encoder
     armLimitSwitch.whenActive(arm::resetEncoder);
 
     // Run climber up
-    upDPad.whenActive(() -> climber.set(0.5), climber).whenInactive(() -> climber.set(0), climber);
+    // upDPad.whenActive(() -> climber.set(-0.5), climber).whenInactive(() -> climber.set(0), climber);
+    downDPad.whenActive(() -> climber.set(1), climber).whenInactive(() -> climber.set(0), climber);
 
     buttonTwelve
       .whenPressed(centeringCommand)
@@ -203,7 +226,7 @@ public class RobotContainer {
     // return new RamseteCommandWrapper(drivetrain, exampleTrajectory);
     // // return new RamseteCommandWrapper(drivetrain, AutoPaths.SuperCoolPath);
 
-    FrontOfGoal frontOfGoal = new FrontOfGoal(drivetrain, shooter, arm, conveyor, intake, limelight);
+    FrontOfGoal frontOfGoal = new FrontOfGoal(drivetrain, shooter2, arm, conveyor, intake, limelight);
     return frontOfGoal;
   }
 }

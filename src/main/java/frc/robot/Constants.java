@@ -8,6 +8,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.util.Units;
+import frc.robot.subsystems.Arm;
+
 import org.frc5587.lib.pid.FPID;
 import org.frc5587.lib.pid.PID;
 import org.frc5587.lib.pid.JRAD;
@@ -76,6 +78,8 @@ public final class Constants {
 
     // Lag compensation
     public static final int HISTORY_LIMIT = 32;
+
+    public static final double EASING = 0.5;
   }
 
   public static class MLConstants {
@@ -93,7 +97,7 @@ public final class Constants {
    * Constants used by the climber
    */
   public static final class ClimberConstants {
-    public static final int CLIMBER_MOTOR = 1;
+    public static final int CLIMBER_MOTOR = 31; 
   }
 
   /**
@@ -106,7 +110,7 @@ public final class Constants {
     public static final int BOTTOM_LIMIT = 0;
     public static final int TOP_LIMIT = 1;
     public static final double THROTTLE = 1.0;
-    public static final double CONVEYOR_THROTTLE = 0.75;
+    public static final double CONVEYOR_THROTTLE = 1;
   }
 
   public static final class ConveyorConstants {
@@ -134,10 +138,11 @@ public final class Constants {
 
     public static final double ARM_LENGTH_METERS = 0.9;
     
-    // physical limits of the arm
+    public static final double LOWER_BOUND_TICKS = Arm.degreesToTicks(16);
+    public static final double UPPER_BOUND_TICKS = Arm.degreesToTicks(54);
+
     public static final double UPPER_LIMIT_DEGREES = 54;
     public static final double LOWER_LIMIT_DEGREES = 16;
-
   }
 
   public static final class ShooterConstants {
@@ -146,6 +151,9 @@ public final class Constants {
 
     public static final float MIN_OUTPUT = 1;
     public static final float MAX_OUTPUT = 1;
+
+    public static final int SMART_CURRENT_LIMIT = 20;
+    public static final int HARD_CURRENT_LIMIT = 30;
 
     public static final double V_COMP_SATURATION = 12.0;
 
@@ -180,7 +188,11 @@ public final class Constants {
 
     public static final JRAD MOTOR_ONE_JRAD = new JRAD(0.001, 0, 1.5);  // needs tuning
     public static final JRAD MOTOR_TWO_JRAD = new JRAD(0.001, 0, 1.5);  // needs tuning
-  } 
+  
+    public static final double GEAR_RATIO = 42.0 / 18.0;
+
+    public static final double VELOCITY_TOLERANCE_RPM = 25.0;
+  }
 
   /**
    * Constants used by the Limelight
@@ -192,11 +204,15 @@ public final class Constants {
 
     public static final double STANDOFF_METERS = Units.inchesToMeters(2.25);
 
-    public static final double GOAL_HEIGHT_METERS = Units.inchesToMeters(97.5);
+    public static final double GOAL_HEIGHT_METERS = Units.inchesToMeters(98.25);
+    // public static final double GOAL_HEIGHT_METERS = Units.inchesToMeters(98.25 - 27);
     public static final double INNER_OUTER_GOAL_DISTANCE_METERS = Units.inchesToMeters(29.25);
 
     public static final double G_METERS_PER_SECOND_SQUARED = 9.81;
 
     public static final double THREAD_PERIOD_TIME_SECONDS = 0.01;
+    public static final double UPDATE_PERIOD = 0.15;
+
+    public static final double EASING = 0.5;
   }
 }

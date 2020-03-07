@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -71,12 +72,12 @@ public class Conveyor extends SubsystemBase {
     // This method will be called once per scheduler run
        // updates the number of balls. Only works if limit switch was not previously
     // enabled.
-    if (bottomLimit.get() && bottomLimit.get() != previousSettingOfBottomSwitch && currentNumberOfBalls <= 5) {
+    //if (bottomLimit.get() && bottomLimit.get() != previousSettingOfBottomSwitch && currentNumberOfBalls <= 5) {
       currentNumberOfBalls += 1;
-    }
-    if (topLimit.get() && topLimit.get() != previousSettingOfTopSwitch && currentNumberOfBalls > 0) {
+    //}
+    //if (topLimit.get() && topLimit.get() != previousSettingOfTopSwitch && currentNumberOfBalls > 0) {
       currentNumberOfBalls -= 1;
-    }
+    //}
     // communicates to drive team about when to shoot.
     if (currentNumberOfBalls >= 5) {
       shoot = true;
@@ -87,5 +88,8 @@ public class Conveyor extends SubsystemBase {
     // previous and current state of limit switch
     previousSettingOfBottomSwitch = bottomLimit.get();
     previousSettingOfTopSwitch = topLimit.get();
+    //previousSettingOfBottomSwitch = bottomLimit.get();
+    //previousSettingOfTopSwitch = topLimit.get();
+    SmartDashboard.putNumber("number_of_balls", currentNumberOfBalls);
   }
 }
