@@ -32,6 +32,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmThread;
+import frc.robot.commands.AutoConveyor;
 import frc.robot.commands.FindTarget;
 import frc.robot.commands.LimelightCentering;
 import frc.robot.commands.ManualArmControl;
@@ -39,6 +40,8 @@ import frc.robot.commands.RamseteCommandWrapper;
 import frc.robot.commands.ResetEncoder;
 import frc.robot.commands.ShooterThread;
 import frc.robot.commands.TargetBall;
+import frc.robot.commands.autonomous.CloseWall;
+import frc.robot.commands.autonomous.FrontOfGoal;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
@@ -75,6 +78,7 @@ public class RobotContainer {
   private final ShooterThread shooterThread = new ShooterThread(arm, shooter, limelight, conveyor);
   private final ResetEncoder resetEncoder = new ResetEncoder(arm);
   private final FindTarget findTarget = new FindTarget(arm, limelight);
+  private final AutoConveyor autoConveyor = new AutoConveyor(conveyor);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -171,31 +175,34 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-        new SimpleMotorFeedforward(DrivetrainConstants.KS_VOLTS, DrivetrainConstants.KV_VOLT_SECONDS_PER_METER,
-            DrivetrainConstants.KA_VOLT_SECONDS_SQUARED_PER_METER),
-        DrivetrainConstants.DRIVETRAIN_KINEMATICS, 10);
+    // var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
+    //     new SimpleMotorFeedforward(DrivetrainConstants.KS_VOLTS, DrivetrainConstants.KV_VOLT_SECONDS_PER_METER,
+    //         DrivetrainConstants.KA_VOLT_SECONDS_SQUARED_PER_METER),
+    //     DrivetrainConstants.DRIVETRAIN_KINEMATICS, 10);
 
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(AutoConstants.MAX_VELOCITY_METERS_PER_SECOND,
-        AutoConstants.MAX_ACCEL_METERS_PER_SECOND_SQUARED)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DrivetrainConstants.DRIVETRAIN_KINEMATICS)
-            // Apply the voltage constraint
-            .addConstraint(autoVoltageConstraint);
+    // // Create config for trajectory
+    // TrajectoryConfig config = new TrajectoryConfig(AutoConstants.MAX_VELOCITY_METERS_PER_SECOND,
+    //     AutoConstants.MAX_ACCEL_METERS_PER_SECOND_SQUARED)
+    //         // Add kinematics to ensure max speed is actually obeyed
+    //         .setKinematics(DrivetrainConstants.DRIVETRAIN_KINEMATICS)
+    //         // Apply the voltage constraint
+    //         .addConstraint(autoVoltageConstraint);
 
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        // Pass config
-        config);
+    // // An example trajectory to follow. All units in meters.
+    // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+    //     // Start at the origin facing the +X direction
+    //     new Pose2d(0, 0, new Rotation2d(0)),
+    //     // Pass through these two interior waypoints, making an 's' curve path
+    //     List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+    //     // End 3 meters straight ahead of where we started, facing forward
+    //     new Pose2d(3, 0, new Rotation2d(0)),
+    //     // Pass config
+    //     config);
 
-    return new RamseteCommandWrapper(drivetrain, exampleTrajectory);
-    // return new RamseteCommandWrapper(drivetrain, AutoPaths.SuperCoolPath);
+    // return new RamseteCommandWrapper(drivetrain, exampleTrajectory);
+    // // return new RamseteCommandWrapper(drivetrain, AutoPaths.SuperCoolPath);
+
+    FrontOfGoal frontOfGoal = new FrontOfGoal(drivetrain, shooter, arm, conveyor, intake, limelight);
+    return frontOfGoal;
   }
 }
