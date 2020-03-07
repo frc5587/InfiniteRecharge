@@ -23,6 +23,7 @@ public class Limelight extends SubsystemBase {
   public NetworkTableEntry tx = limelightTable.getEntry("tx");
   public NetworkTableEntry ty = limelightTable.getEntry("ty");
   public double lastDistance;
+  private boolean lightOn = false;
 
   public Limelight() {
     super();
@@ -250,14 +251,18 @@ public class Limelight extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-  }
+    if (lightOn) {
+      limelightTable.getEntry("ledMode").setNumber(3);
+    } else {
+      limelightTable.getEntry("ledMode").setNumber(1);
+    }
+  } 
 
   public void turnOn() {
-    limelightTable.getEntry("ledMode").setNumber(2);
+    lightOn = true;
   }
 
   public void turnOff() {
-    limelightTable.getEntry("ledMode").setNumber(1);
+    lightOn = false;
   }
 }

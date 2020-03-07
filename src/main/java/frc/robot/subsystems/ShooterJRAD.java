@@ -94,13 +94,13 @@ public class ShooterJRAD extends SubsystemBase {
    * @return the speed of the shooter - RPM
    */
   public static double calculateShooterSpeed(double distanceFromTarget, double armAngle) {
-    // return 60 * Math.sqrt(2 * ShooterConstants.G * Limelight.getWorkingHeight(armAngle))
-    //         / (ShooterConstants.FLYWHEEL_CIRCUMFERENCE * Math.sin(armAngle) * ShooterConstants.GEARING);
+    return 60 * Math.sqrt(2 * ShooterConstants.G * Limelight.getWorkingHeight(armAngle))
+            / (ShooterConstants.FLYWHEEL_CIRCUMFERENCE * Math.sin(armAngle) * ShooterConstants.GEARING);
 
-    return (((1 / (Math.sqrt((Limelight.getWorkingHeight(armAngle)
-        - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * ShooterConstants.G)))))
-        * (distanceFromTarget / Math.cos(armAngle))
-        * (ShooterConstants.CONVERSION_FACTOR / (ShooterConstants.FLYWHEEL_RADIUS * ShooterConstants.GEARING))));
+    // return (((1 / (Math.sqrt((Limelight.getWorkingHeight(armAngle)
+    //     - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * ShooterConstants.G)))))
+    //     * (distanceFromTarget / Math.cos(armAngle))
+    //     * (ShooterConstants.CONVERSION_FACTOR / (ShooterConstants.FLYWHEEL_RADIUS * ShooterConstants.GEARING))));
   }
 
   /**
@@ -108,7 +108,7 @@ public class ShooterJRAD extends SubsystemBase {
    */
   public void log() {
     SmartDashboard.putNumber("Velocity difference", nowVelocity - lastVelocity);
-    SmartDashboard.putNumber("Velocity Setpoint Slice", Math.min(0,  getShooterSpeed() - setpointVelocity));
+    SmartDashboard.putNumber("Velocity Setpoint Slice", Math.max(0,  getShooterSpeed() - setpointVelocity));
     SmartDashboard.putNumber("velocity one", sparkEncoderOne.getVelocity());
     SmartDashboard.putNumber("velocity two", sparkEncoderTwo.getVelocity());
   }
@@ -135,6 +135,8 @@ public class ShooterJRAD extends SubsystemBase {
    * Enables JRAD control
    */
   public void enable() {
+    motorOneController.reset();
+    motorTwoController.reset();
     enabled = true;
   }
 
