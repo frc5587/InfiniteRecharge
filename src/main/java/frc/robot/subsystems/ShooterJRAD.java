@@ -21,6 +21,8 @@ public class ShooterJRAD extends SubsystemBase {
 
   private double setpointVelocity = 0;
   private boolean enabled = true;
+  private double lastVelocity = 0;
+  private double nowVelocity = 0;
 
   public ShooterJRAD() {
     configureSpark();
@@ -92,16 +94,21 @@ public class ShooterJRAD extends SubsystemBase {
    * @return the speed of the shooter - RPM
    */
   public static double calculateShooterSpeed(double distanceFromTarget, double armAngle) {
-    return 600 + (((1 / (Math.sqrt((Limelight.getWorkingHeight(armAngle)
+    // return 60 * Math.sqrt(2 * ShooterConstants.G * Limelight.getWorkingHeight(armAngle))
+    //         / (ShooterConstants.FLYWHEEL_CIRCUMFERENCE * Math.sin(armAngle) * ShooterConstants.GEARING);
+
+    return (((1 / (Math.sqrt((Limelight.getWorkingHeight(armAngle)
         - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * ShooterConstants.G)))))
         * (distanceFromTarget / Math.cos(armAngle))
-        * (ShooterConstants.CONVERSION_FACTOR / ShooterConstants.FLYWHEEL_RADIUS)));
+        * (ShooterConstants.CONVERSION_FACTOR / (ShooterConstants.FLYWHEEL_RADIUS * ShooterConstants.GEARING))));
   }
 
   /**
    * Logs velocity data
    */
   public void log() {
+    SmartDashboard.putNumber("Velocity difference", nowVelocity - lastVelocity);
+    SmartDashboard.putNumber("Velocity Setpoint Slice", Math.min(0,  getShooterSpeed() - setpointVelocity));
     SmartDashboard.putNumber("velocity one", sparkEncoderOne.getVelocity());
     SmartDashboard.putNumber("velocity two", sparkEncoderTwo.getVelocity());
   }
@@ -112,6 +119,8 @@ public class ShooterJRAD extends SubsystemBase {
    */
   @Override
   public void periodic() {
+    lastVelocity = nowVelocity;
+    nowVelocity = sparkEncoderOne.getVelocity();
     log();
     motorOneController.sendDebugInfo();
     // motorTwoController.sendDebugInfo();

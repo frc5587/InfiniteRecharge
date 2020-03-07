@@ -19,6 +19,8 @@ public class Arm extends SubsystemBase {
     private final CANEncoder armEncoder = armSpark.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
     private final DigitalInput armLimitSwitch = new DigitalInput(Constants.ArmConstants.ARM_LIMIT_SWITCH);
 
+    private double lastSetpoint;
+
     public Arm() {
         configSpark();
         resetEncoder();
@@ -63,7 +65,11 @@ public class Arm extends SubsystemBase {
      */
     public void setArmAngleDegrees(double angle) {
         angle = Math.min(angle, Constants.ArmConstants.UPPER_LIMIT_DEGREES);
-        armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
+        if (angle > lastSetpoint || !getLimitSwitchVal()) {
+            armPIDController.setReference(degreesToTicks(angle), ControlType.kPosition);
+            lastSetpoint = angle;
+        }
+        
     }
 
     /**
@@ -98,7 +104,6 @@ public class Arm extends SubsystemBase {
      */
     public double getAngleDegrees() {
         // return Math.toRadians(armEncoder.getPosition() * 180 + 15);
-        System.out.println(ticksToDegrees(getPositionTicks()));
         return ticksToDegrees(getPositionTicks());
     }
 
@@ -143,9 +148,6 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Actual Arm Angle", this.getAngleDegrees());
         refreshPID();
         armPIDController.setFF(calcFeedForward());
-        if (getLimitSwitchVal()) {
-            setArm(0);
-        }
     }
 
     /**

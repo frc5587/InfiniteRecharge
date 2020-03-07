@@ -42,12 +42,12 @@ public class ShooterThread extends CommandBase {
     SmartDashboard.putNumber("Shooter Setpoint", speedRPM);
     shooter.setVelocity(speedRPM);
 
-    if (shooter.atSetpoint()) {
-      moveConveyor = true;
-    } 
-    if (moveConveyor) {
-      conveyor.moveConveyorForward();
-    }
+    // if (shooter.atSetpoint()) {
+    //   moveConveyor = true;
+    // } 
+    // if (moveConveyor) {
+    //   conveyor.moveConveyorForward();
+    // }
   }
 
   @Override

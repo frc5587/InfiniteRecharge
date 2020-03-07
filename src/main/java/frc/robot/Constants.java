@@ -178,8 +178,8 @@ public final class Constants {
 
     public static final double GEARING = 2.3333;
 
-    public static final JRAD MOTOR_ONE_JRAD = new JRAD(0.001, 0, 1.2);  // needs tuning
-    public static final JRAD MOTOR_TWO_JRAD = new JRAD(0.001, 0, 1.2);  // needs tuning
+    public static final JRAD MOTOR_ONE_JRAD = new JRAD(0.001, 0.1, 1.5);  // needs tuning
+    public static final JRAD MOTOR_TWO_JRAD = new JRAD(0.001, 0.1, 1.5);  // needs tuning
   } 
 
   /**

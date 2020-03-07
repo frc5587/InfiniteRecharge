@@ -40,7 +40,8 @@ public class ShooterFeedbackController {
    * @return the voltage to set the motor to
    */
   public double calculate(double currentVelocityRPM) {
-    this.lastOutput = (JRADConstants.kF * setpointVelocityRPM) + lastOutput + (JRADConstants.kJ * elapsedTime() * ((JRADConstants.kLoadRatio * setpointVelocityRPM) - currentVelocityRPM));
+    this.lastOutput = (JRADConstants.kF * setpointVelocityRPM) + lastOutput
+        + (JRADConstants.kJ * 0.02 * ((JRADConstants.kLoadRatio * setpointVelocityRPM) - currentVelocityRPM));
     return this.lastOutput;
   }
 
@@ -51,7 +52,8 @@ public class ShooterFeedbackController {
   /**
    * Calculates the voltage to set the motor to
    * 
-   * @param currentVelocityRPM  current speed of the shooter - ROTATIONS PER MINUTE
+   * @param currentVelocityRPM  current speed of the shooter - ROTATIONS PER
+   *                            MINUTE
    * @param setpointVelocityRPM setpoint speed - ROTATIONS PER MINUTE
    * @return voltage - VOLTS
    */
@@ -110,13 +112,13 @@ public class ShooterFeedbackController {
   }
 
   /**
-   * Because this overshoots the setpoint (as designed), we should only check if it 
-   * is above the setpoint. Once a ball shoots the speed will drop, but the speed 
-   * should always stay above the setpoint
+   * Because this overshoots the setpoint (as designed), we should only check if
+   * it is above the setpoint. Once a ball shoots the speed will drop, but the
+   * speed should always stay above the setpoint
    * 
    * @return true if the speed is above the setpoint
    */
   public boolean atSetpoint() {
-    return (motorVelocitySupplier.getAsDouble() >= setpointVelocityRPM);
+    return (motorVelocitySupplier.getAsDouble() >= setpointVelocityRPM * JRADConstants.kLoadRatio);
   }
 }

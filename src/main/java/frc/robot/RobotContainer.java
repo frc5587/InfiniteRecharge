@@ -83,7 +83,7 @@ public class RobotContainer {
 
     // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
-    arm.setDefaultCommand(armThread);
+    // arm.setDefaultCommand(armThread);
     // intake.setDefaultCommand(new IntakeStopper(intake, conveyor));
 
     
@@ -148,20 +148,21 @@ public class RobotContainer {
       .whenPressed(centeringCommand)
       .whenReleased(() -> centeringCommand.cancel());
       
-    buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));
+    // buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));
 
     rightTrigger
       .whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight)))
       .whenInactive(() -> shooter.setThrottle(0));
 
-    leftStickButton.whenHeld(resetEncoder);
+    leftStickButton.whileHeld(armThread);
     // rightStickButton.whileHeld(() -> shooter.setVelocity(1600), shooter).whenReleased(() -> shooter.setVelocity(0), shooter);
     rightStickButton.whileHeld(shooterThread);
 
     // Stops the armThread from running
-    leftTrigger.whenActive(() -> {}, arm);
+    // leftTrigger.whenActive(() -> {}, arm);
 
     aButton.whenHeld(findTarget);
+    xButton.whileHeld(resetEncoder);
   }
 
   /**
