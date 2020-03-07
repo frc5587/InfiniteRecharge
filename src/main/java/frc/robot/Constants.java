@@ -77,6 +77,8 @@ public final class Constants {
 
     // Lag compensation
     public static final int HISTORY_LIMIT = 32;
+
+    public static final double EASING = 0.5;
   }
 
   public static class MLConstants {
@@ -94,7 +96,7 @@ public final class Constants {
    * Constants used by the climber
    */
   public static final class ClimberConstants {
-    public static final int CLIMBER_MOTOR = 1;
+    public static final int CLIMBER_MOTOR = 31;
   }
 
   /**
@@ -197,5 +199,7 @@ public final class Constants {
 
     public static final double G_METERS_PER_SECOND_SQUARED = 9.81;
     public static final double UPDATE_PERIOD = 0.15;
+
+    public static final double EASING = 0.5;
   }
 }

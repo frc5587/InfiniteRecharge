@@ -94,7 +94,8 @@ public class RobotContainer {
 
     var buttonEleven = new JoystickButton(joy, 11);
     var buttonTwelve = new JoystickButton(joy, 12);
-    var upDPad = new POVButton(xb, 0);
+    // var upDPad = new POVButton(xb, 0);
+    var downDPad = new POVButton(xb, 180);
     var leftTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
     var rightTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
     var rightJoy = new Trigger(() -> xb.getY(Hand.kRight) != 0);
@@ -143,7 +144,8 @@ public class RobotContainer {
     SmartDashboard.putData("Ball Reset", new InstantCommand(conveyor::reset));
 
     // Run climber up
-    upDPad.whenActive(() -> climber.set(0.5), climber).whenInactive(() -> climber.set(0), climber);
+    // upDPad.whenActive(() -> climber.set(-0.5), climber).whenInactive(() -> climber.set(0), climber);
+    downDPad.whenActive(() -> climber.set(1), climber).whenInactive(() -> climber.set(0), climber);
 
     buttonTwelve.whenPressed(centeringCommand).whenReleased(() -> centeringCommand.cancel());
     buttonEleven.whenPressed(new TargetBall(drivetrain, machineLearning));

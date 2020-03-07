@@ -7,18 +7,17 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.Constants;
 
 /**
  * The subsystem for the climber
  */
 public class Climber extends SubsystemBase {
-  private final TalonFX climberMotor = new TalonFX(Constants.ClimberConstants.CLIMBER_MOTOR);
+  private final CANSparkMax climberMotor = new CANSparkMax(Constants.ClimberConstants.CLIMBER_MOTOR, MotorType.kBrushless);
 
   /**
    * Inverts the motors
@@ -33,7 +32,7 @@ public class Climber extends SubsystemBase {
    * @param percent percent to set the motor to
    */
   public void set(double percent) {
-    climberMotor.set(ControlMode.PercentOutput, percent);
+    climberMotor.set(percent);
   }
 
   @Override
