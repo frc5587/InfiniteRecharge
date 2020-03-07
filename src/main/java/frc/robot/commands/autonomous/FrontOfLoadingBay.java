@@ -16,15 +16,16 @@ import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterJRAD;
 
 public class FrontOfLoadingBay extends SequentialCommandGroup {
-    public FrontOfLoadingBay(Arm arm, Conveyor conveyor, Drivetrain drivetrain, Intake intake, Limelight limelight, Shooter shooter, AutoPaths reverseToRendezvous, AutoPaths sCurveFromRendezvous, FindTarget findTarget, ArmThread armThread, ShooterThread shooterThread, AutoConveyor autoConveyor) {
+    AutoPaths reverseToRendezvous, sCurveFromRendezvous;
+    public FrontOfLoadingBay(Arm arm, Conveyor conveyor, Drivetrain drivetrain, Intake intake, Limelight limelight, ShooterJRAD shooter) {
         addCommands(
                 new ParallelCommandGroup(new RamseteCommandWrapper(drivetrain, reverseToRendezvous),
                         new AutoIntake(intake, conveyor)),
                 new RamseteCommandWrapper(drivetrain, sCurveFromRendezvous), 
                 new ParallelCommandGroup(new LimelightCentering(drivetrain, limelight),
-                        new SequentialCommandGroup(findTarget, new ParallelRaceGroup(armThread, shooterThread, autoConveyor))));
+                        new SequentialCommandGroup(new FindTarget(arm, limelight), new ParallelRaceGroup(new ArmThread(arm, limelight), new ShooterThread(arm, shooter, limelight, conveyor), new AutoConveyor(conveyor)))));
     }
 }
