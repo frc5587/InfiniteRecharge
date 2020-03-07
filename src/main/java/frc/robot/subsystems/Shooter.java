@@ -29,6 +29,8 @@ public class Shooter extends SubsystemBase {
   private final CANEncoder sparkEncoderOne = motorOne.getEncoder();
   private final CANEncoder sparkEncoderTwo = motorTwo.getEncoder();
 
+  private Double mostRecentSetpoint = null;
+
   /**
    * Creates the Shooter subsystem
    */
@@ -50,8 +52,11 @@ public class Shooter extends SubsystemBase {
    * Uses the PID method `setReference` to set the speed of the shooter
    */
   public void setVelocity(double velocityRPM) {
+    var velocityMotor = velocityRPM * ShooterConstants.GEAR_RATIO;
     sparkPIDControllerOne.setReference(velocityRPM, ControlType.kVelocity);
     sparkPIDControllerTwo.setReference(velocityRPM, ControlType.kVelocity);
+
+    mostRecentSetpoint = velocityMotor;
   }
 
   /**
