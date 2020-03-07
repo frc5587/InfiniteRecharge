@@ -35,13 +35,13 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.AutoAim;
 import frc.robot.commands.IntakeStopper;
 import frc.robot.commands.LimelightCentering;
-import frc.robot.commands.LimelightTest;
 import frc.robot.commands.ManualArmControl;
 import frc.robot.commands.RamseteCommandWrapper;
-import frc.robot.commands.Shoot;
+import frc.robot.commands.ShootCycle;
 import frc.robot.commands.TargetBall;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
@@ -64,21 +64,21 @@ public class RobotContainer {
   private final Arm arm = new Arm();
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
-
   private final Joystick joy = new Joystick(0);
   private final DeadbandXboxController xb = new DeadbandXboxController(1);
-
+  private final Conveyor conveyor = new Conveyor();
   private final LimelightCentering centeringCommand = new LimelightCentering(drivetrain, limelight);
   private final AutoAim autoAim = new AutoAim(arm, limelight);
+  private final ShootCycle cycleshoot = new ShootCycle(shooter, conveyor, intake, 1000);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
     // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
-    intake.setDefaultCommand(new IntakeStopper(intake));
-    // limelight.setDefaultCommand(new LimelightTest(limelight, arm));
+    intake.setDefaultCommand(new IntakeStopper(intake, conveyor));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -108,34 +108,39 @@ public class RobotContainer {
     // Intake
     rightBumper.whileHeld(() -> {
       intake.moveIntakeForward();
-      intake.moveConveyorForward();
+      conveyor.moveConveyorForward();
     }, intake).whenReleased(() -> {
-      intake.stopConveyorMovement();
+      conveyor.stopConveyorMovement();
       intake.stopIntakeMovement();
     });
     leftBumper.whileHeld(() -> {
-      intake.moveConveyorBackward();
+      conveyor.moveConveyorBackward();
       intake.moveIntakeBackward();
     }).whenReleased(() -> {
-      intake.stopConveyorMovement();
+      conveyor.stopConveyorMovement();
       intake.stopIntakeMovement();
     });
-    SmartDashboard.putData("Ball Count Reset", new InstantCommand(intake::reset));
+    SmartDashboard.putData("Ball Count Reset", new InstantCommand(conveyor::reset));
 
     // arm
     // determines whether the arm should be manually controlled
     leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(arm, () -> xb.getY(Hand.kRight)));
 
     // moves arm to the lowest and highest positions
-    xButton.whenPressed(() -> arm.setArmAngleDegrees(14), arm)
-    .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
-    yButton.whenPressed(() -> arm.setArmAngleDegrees(55), arm)
-    .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
+    // xButton.whenPressed(() -> arm.setArmAngleDegrees(14), arm)
+    // .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
+    // yButton.whenPressed(() -> arm.setArmAngleDegrees(55), arm)
+    // .whenReleased(() -> arm.setArmAngleDegrees(arm.getAngleDegrees()));
 
     aButton.whenPressed(autoAim).whenReleased(() -> autoAim.cancel());
+    // leftTrigger.and(rightJoy).whileActiveContinuous(new ManualArmControl(m_arm, () -> xb.getY(Hand.kRight)));
+
+    xButton.whenPressed(cycleshoot).whenReleased(cycleshoot::cancel);
 
     // reset elevator encoder
     armLimitSwitch.whenActive(arm::resetEncoder);
+
+    SmartDashboard.putData("Ball Reset", new InstantCommand(conveyor::reset));
 
     // Run climber up
     upDPad.whenActive(() -> climber.set(0.5), climber).whenInactive(() -> climber.set(0), climber);

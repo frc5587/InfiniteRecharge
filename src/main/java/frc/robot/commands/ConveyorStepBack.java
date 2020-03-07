@@ -7,49 +7,51 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Intake;
-/**
- * This class records current amount of balls and issues a command in order to stop it when it gets to 5.
- */
-public class IntakeStopper extends CommandBase {
 
-  private final Intake intake;
-  private final Conveyor conveyor;
+public class ConveyorStepBack extends CommandBase {
+  private Conveyor conveyor;
+  private Intake intake;
+  private Timer timer;
 
-  public IntakeStopper(Intake intake, Conveyor conveyor) {
-    addRequirements(intake, conveyor);
-  
+  /**
+   * Creates a new ConveyorStepBack.
+   */
+  public ConveyorStepBack(Conveyor conveyor, Intake intake) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(conveyor, intake);
+
     this.conveyor = conveyor;
     this.intake = intake;
+    this.timer = new Timer();
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    conveyor.moveConveyorBackward();
+    intake.moveIntakeBackward();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
-  // Sets the intake to zero if parameter is met.
   @Override
   public void execute() {
-    // We can only hold 5 balls, therefore when the sensors detect more than that
-    // the robot disables the intake motors.
-    if (conveyor.getCurrentNumberOfBalls() >= 5) {
-      intake.stopIntakeMovement();
-      conveyor.stopConveyorMovement();
-    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    conveyor.stopConveyorMovement();
+    intake.stopIntakeMovement();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return timer.hasElapsed(0.25);
   }
 }
