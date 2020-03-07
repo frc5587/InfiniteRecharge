@@ -24,6 +24,11 @@ public class Limelight extends SubsystemBase {
   public NetworkTableEntry ty = limelightTable.getEntry("ty");
   public double lastDistance;
 
+  public Limelight() {
+    super();
+    turnOff();
+  }
+
   /**
    * Get whether the target is being detected by the Limelight
    * 
@@ -120,42 +125,6 @@ public class Limelight extends SubsystemBase {
     return Math.atan((LimelightConstants.GOAL_HEIGHT_METERS - getShooterHeight(currentArmAngle))
         / getShooterGoalHorizontalDifference(currentArmAngle));
   }
-
-  // /**
-  // * Get the distance between the Limelight and the target
-  // *
-  // * @param currentArmAngle the angle that the arm is currently at, in radians
-  // * @return the distance between the Limelight and the target, in meters
-  // */
-  // public double getLimelightDistance(double currentArmAngle) {
-  // return (LimelightConstants.GOAL_HEIGHT_METERS -
-  // getLimelightHeight(currentArmAngle)) / Math.sin(currentArmAngle);
-  // }
-
-  // /**
-  // * Get the distance between the shooter and the target
-  // *
-  // * @param currentArmAngle the angle that the arm is currently at, in radians
-  // * @return the distance between the center of the shooter and the target, in
-  // * meters
-  // */
-  // public double getShooterDistance(double currentArmAngle) {
-  // return (LimelightConstants.GOAL_HEIGHT_METERS -
-  // getShooterHeight(currentArmAngle)) / Math.sin(currentArmAngle);
-  // }
-
-  // /**
-  // * Get the angle between the shooter and the front of the target
-  // *
-  // * @param currentArmAngle the angle that the arm is currently at, in radians
-  // * @return the angle between the shooter and the front of the target, in
-  // * radians, without accounting for drop
-  // */
-  // public double getShooterFrontGoalAngle(double currentArmAngle) {
-  // return (Math.PI / 2.0) - Math.asin((getLimelightDistance(currentArmAngle) /
-  // getShooterDistance(currentArmAngle))
-  // * Math.sin((Math.PI / 2.0) + Math.toRadians(getVerticalAngleOffset())));
-  // }
 
   /**
    * Get the angle between the shooter and the inner target
@@ -282,5 +251,13 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void turnOn() {
+    limelightTable.getEntry("ledMode").setNumber(2);
+  }
+
+  public void turnOff() {
+    limelightTable.getEntry("ledMode").setNumber(1);
   }
 }

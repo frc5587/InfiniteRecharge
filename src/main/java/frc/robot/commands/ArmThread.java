@@ -28,6 +28,7 @@ public class ArmThread extends CommandBase {
   }
   
   public void updateArm() {
+    limelight.turnOn();
     SmartDashboard.putNumber("Distance", limelight.getShooterGoalHorizontalDifference(arm.getAngleRadians()));
     // Get angle to set arm, if the limelight hasn't found the target, it just sets it to the previous angle
     double angleToSetDegrees = limelight.isTargetDetected() ? limelight.calculateArmMovement(arm.getAngleRadians(), Limelight.Target.FRONT) : this.lastAngle;  // alcArmAngleDegrees(distance, heightOfWorkingTarget) : this.lastAngle;
@@ -58,6 +59,7 @@ public class ArmThread extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
+    limelight.turnOff();
     notifier.stop();
     System.out.println("ArmThread ending - interrupted: " + interrupted);
   }

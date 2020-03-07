@@ -30,6 +30,7 @@ public class ShooterThread extends CommandBase {
   }
 
   public void updateShooter() {
+    limelight.turnOn();
     // TODO: adust coefficient
     // 1st power: 2.58
     // 2nd power: N/A
@@ -59,6 +60,7 @@ public class ShooterThread extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
+    limelight.turnOff();
     notifier.stop();
     conveyor.stopConveyorMovement();
     shooter.disable();

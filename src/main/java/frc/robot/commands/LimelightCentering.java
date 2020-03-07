@@ -53,6 +53,7 @@ public class LimelightCentering extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     // Stop the drivetrain and PID controller
+    limelight.turnOff();
     drivetrain.stop();
     drivetrain.disable();
 
@@ -83,6 +84,7 @@ public class LimelightCentering extends CommandBase {
    */
   private void updatePID() {
     double desiredAngle;
+    limelight.turnOn();
 
     if (limelight.isTargetDetected()) {
       // Get the difference between centre and vision target (error)
