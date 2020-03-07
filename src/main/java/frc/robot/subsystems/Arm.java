@@ -88,9 +88,11 @@ public class Arm extends SubsystemBase {
      * @param angleTicks angle to set the arm to - TICKS
      */
     public void setArmAngleTicks(double angleTicks) {
-        var clamped = MathUtil.clamp(angleTicks, ArmConstants.LOWER_BOUND_TICKS, ArmConstants.UPPER_BOUND_TICKS);
-        lastSetpointTicks = clamped;
-        armPIDController.setReference(clamped, ControlType.kPosition);
+        var clamped = Math.min(angleTicks, ArmConstants.UPPER_BOUND_TICKS);
+        if(lastSetpointTicks < angleTicks || !getLimitSwitchVal()) {
+            lastSetpointTicks = clamped;
+            armPIDController.setReference(clamped, ControlType.kPosition);
+        }
     }
 
     /**
