@@ -121,4 +121,8 @@ public class ShooterFeedbackController {
   public boolean atSetpoint() {
     return (motorVelocitySupplier.getAsDouble() >= setpointVelocityRPM * JRADConstants.kLoadRatio);
   }
+
+  public void reset() {
+    lastOutput = 0;
+  }
 }

@@ -23,7 +23,7 @@ public class ResetEncoder extends CommandBase {
    */
   @Override
   public void initialize() {
-    arm.setArm(-0.5);
+    arm.setArm(-0.75);
   }
 
   /**

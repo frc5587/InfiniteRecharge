@@ -31,10 +31,10 @@ public class FindTarget extends CommandBase {
   @Override
   public void execute() {
     if (arm.getLimitSwitchVal()) {
-      direction *= -1;
+      direction = 1;
     }
 
-    arm.setArm(0.5 * direction);
+    arm.setArm(0.75 * direction);
   }
 
   /**

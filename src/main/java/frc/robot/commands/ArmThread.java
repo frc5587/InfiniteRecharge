@@ -12,6 +12,8 @@ public class ArmThread extends CommandBase {
   private Arm arm;
   private Notifier notifier = new Notifier(this::updateArm);
   private double lastAngle = 30;
+  private double lastSet;
+  private double setPointThreshDegrees = 0.2;
 
   /**
    * Creates a commands that schedules a thread for updating the arm based 
@@ -36,13 +38,9 @@ public class ArmThread extends CommandBase {
     // saves last angle
     this.lastAngle = angleToSetDegrees;
 
-    double diff =  this.lastAngle - arm.getAngleDegrees();
+    lastSet = (this.lastAngle - arm.getAngleDegrees()) / 2 + arm.getAngleDegrees();
 
-    double set = diff / 2 + arm.getAngleDegrees();
-    
-    // debugging
-    SmartDashboard.putNumber("Arm Setpoint", angleToSetDegrees);
-    arm.setArmAngleDegrees(set);
+    arm.setArmAngleDegrees(lastSet);
   }
 
   /**
@@ -62,5 +60,10 @@ public class ArmThread extends CommandBase {
     limelight.turnOff();
     notifier.stop();
     System.out.println("ArmThread ending - interrupted: " + interrupted);
+  }
+
+  @Override
+  public boolean isFinished() {
+    return (lastAngle - setPointThreshDegrees <= lastSet && lastSet <= lastAngle + setPointThreshDegrees);
   }
 }

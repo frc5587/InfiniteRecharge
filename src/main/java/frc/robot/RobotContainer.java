@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.Conveyor;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -154,7 +155,7 @@ public class RobotContainer {
       .whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight)))
       .whenInactive(() -> shooter.setThrottle(0));
 
-    leftStickButton.whileHeld(armThread);
+    leftStickButton.whenHeld(new SequentialCommandGroup(findTarget, armThread));
     // rightStickButton.whileHeld(() -> shooter.setVelocity(1600), shooter).whenReleased(() -> shooter.setVelocity(0), shooter);
     rightStickButton.whileHeld(shooterThread);
 

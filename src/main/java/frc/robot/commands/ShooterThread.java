@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import java.util.concurrent.TimeUnit;
+
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -37,24 +39,29 @@ public class ShooterThread extends CommandBase {
     // 1.3 power: 
     // double speedRPM = 2.58 * limelight.calculateShooterSpeed(arm.getAngleRadians(), Limelight.Target.FRONT) * Math.pow(arm.getAngleRadians(), 1);
 
-    double speedRPM = limelight.calculateShooterSpeed(arm.getAngleRadians(), Limelight.Target.FRONT);
+    double speedRPM = limelight.calculateShooterSpeed(Math.toRadians(46), Limelight.Target.FRONT);
 
     SmartDashboard.putNumber("Actual Shooter Speed", shooter.getShooterSpeed());
     SmartDashboard.putNumber("Shooter Setpoint", speedRPM);
     shooter.setVelocity(speedRPM);
-
-    // if (shooter.atSetpoint()) {
-    //   moveConveyor = true;
-    // } 
-    // if (moveConveyor) {
-    //   conveyor.moveConveyorForward();
-    // }
+    if (shooter.atSetpoint()) {
+      moveConveyor = true;
+    }
+    if (moveConveyor) {
+      conveyor.moveConveyorForward();
+    }
   }
 
   @Override
   public void initialize() {
-    shooter.enable();
     moveConveyor = false;
+    shooter.enable();
+    conveyor.moveConveyorBackward();
+    try {
+      TimeUnit.MILLISECONDS.sleep(200);  
+    } catch (InterruptedException interruptedException) {}
+    conveyor.stopConveyorMovement();
+
     notifier.startPeriodic(Constants.LimelightConstants.THREAD_PERIOD_TIME_SECONDS);
   }
 
