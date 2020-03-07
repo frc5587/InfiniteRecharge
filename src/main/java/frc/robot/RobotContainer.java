@@ -160,7 +160,7 @@ public class RobotContainer {
       .whileActiveContinuous(() -> shooter.setThrottle(xb.getTriggerAxis(Hand.kRight)))
       .whenInactive(() -> shooter.setThrottle(0));
 
-    leftStickButton.whenHeld(new SequentialCommandGroup(findTarget, armThread));
+    leftStickButton.whenHeld(armThread);
     // rightStickButton.whileHeld(() -> shooter.setVelocity(1600), shooter).whenReleased(() -> shooter.setVelocity(0), shooter);
     rightStickButton.whileHeld(shooterThread);
 

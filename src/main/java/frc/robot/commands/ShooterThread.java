@@ -33,11 +33,6 @@ public class ShooterThread extends CommandBase {
 
   public void updateShooter() {
     limelight.turnOn();
-    // TODO: adust coefficient
-    // 1st power: 2.58
-    // 2nd power: N/A
-    // 1.3 power: 
-    // double speedRPM = 2.58 * limelight.calculateShooterSpeed(arm.getAngleRadians(), Limelight.Target.FRONT) * Math.pow(arm.getAngleRadians(), 1);
 
     double speedRPM = limelight.calculateShooterSpeed(Math.toRadians(46), Limelight.Target.FRONT);
 
