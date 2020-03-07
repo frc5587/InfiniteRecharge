@@ -18,10 +18,10 @@ import frc.robot.Constants;
 public class Conveyor extends SubsystemBase {
   private final TalonSRX controlPanelTalon = new TalonSRX(Constants.ConveyorConstants.CONTROL_PANEL_MOTOR);
   private final TalonSRX conveyorBeltMotor = new TalonSRX(Constants.ConveyorConstants.CONVEYOR_MOTOR);
-  private final DigitalInput bottomLimit = new DigitalInput(Constants.IntakeConstants.BOTTOM_LIMIT);
-  private final DigitalInput topLimit = new DigitalInput(Constants.IntakeConstants.TOP_LIMIT);
-  private boolean previousSettingOfBottomSwitch = bottomLimit.get();
-  private boolean previousSettingOfTopSwitch = topLimit.get();
+  //private final DigitalInput bottomLimit = new DigitalInput(Constants.IntakeConstants.BOTTOM_LIMIT);
+  //private final DigitalInput topLimit = new DigitalInput(Constants.IntakeConstants.TOP_LIMIT);
+  //private boolean previousSettingOfBottomSwitch = bottomLimit.get();
+  //private boolean previousSettingOfTopSwitch = topLimit.get();
   private boolean shoot = false;
   private int currentNumberOfBalls = 3;
   /**
@@ -72,12 +72,12 @@ public class Conveyor extends SubsystemBase {
     // This method will be called once per scheduler run
        // updates the number of balls. Only works if limit switch was not previously
     // enabled.
-    if (bottomLimit.get() && bottomLimit.get() != previousSettingOfBottomSwitch && currentNumberOfBalls <= 5) {
+    //if (bottomLimit.get() && bottomLimit.get() != previousSettingOfBottomSwitch && currentNumberOfBalls <= 5) {
       currentNumberOfBalls += 1;
-    }
-    if (topLimit.get() && topLimit.get() != previousSettingOfTopSwitch && currentNumberOfBalls > 0) {
+    //}
+    //if (topLimit.get() && topLimit.get() != previousSettingOfTopSwitch && currentNumberOfBalls > 0) {
       currentNumberOfBalls -= 1;
-    }
+    //}
     // communicates to drive team about when to shoot.
     if (currentNumberOfBalls >= 5) {
       shoot = true;
@@ -88,8 +88,8 @@ public class Conveyor extends SubsystemBase {
     }
     // this is done to update the value of the limit switch in order to establish
     // previous and current state of limit switch
-    previousSettingOfBottomSwitch = bottomLimit.get();
-    previousSettingOfTopSwitch = topLimit.get();
+    //previousSettingOfBottomSwitch = bottomLimit.get();
+    //previousSettingOfTopSwitch = topLimit.get();
     SmartDashboard.putNumber("number_of_balls", currentNumberOfBalls);
   }
 }

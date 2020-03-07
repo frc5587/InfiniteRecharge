@@ -17,14 +17,11 @@ import frc.robot.Constants.IntakeConstants;
  * this subsystem controls the collection and movement of balls for shooting.
  */
 public class Intake extends SubsystemBase {
-  private final TalonSRX conveyorBeltMotor = new TalonSRX(IntakeConstants.CONVEYOR_MOTOR);
   private final TalonSRX intakeTalon = new TalonSRX(IntakeConstants.INTAKE_MOTOR);
-  private final TalonSRX centeringTalon = new TalonSRX(IntakeConstants.CENTERING_MOTOR);
 
   
   public Intake() {
     intakeTalon.setInverted(true);
-    conveyorBeltMotor.setInverted(true);
   }
 
   /**
@@ -32,7 +29,6 @@ public class Intake extends SubsystemBase {
    */
   public void moveIntakeForward() {
     intakeTalon.set(ControlMode.PercentOutput, IntakeConstants.THROTTLE);
-    centeringTalon.set(ControlMode.PercentOutput, IntakeConstants.THROTTLE / 2);
   }
 
   /**
@@ -40,7 +36,6 @@ public class Intake extends SubsystemBase {
    */
   public void moveIntakeBackward() {
     intakeTalon.set(ControlMode.PercentOutput, -IntakeConstants.THROTTLE);
-    centeringTalon.set(ControlMode.PercentOutput, -IntakeConstants.THROTTLE / 2);
   }
 
   /**
@@ -48,7 +43,6 @@ public class Intake extends SubsystemBase {
    */
   public void stopIntakeMovement() {
     intakeTalon.set(ControlMode.PercentOutput, 0);
-    centeringTalon.set(ControlMode.PercentOutput, 0);
   }
 
   @Override

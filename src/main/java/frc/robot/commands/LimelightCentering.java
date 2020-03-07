@@ -18,6 +18,7 @@ public class LimelightCentering extends CommandBase {
   private final Drivetrain drivetrain;
   private final Limelight limelight;
   private final Notifier notifier;
+  private boolean notifierRunning;
 
   /**
    * Creates a new LimelightCentring.
@@ -37,6 +38,9 @@ public class LimelightCentering extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // Whether the Notifier has run its first loop
+    notifierRunning = false;
+
     // Run the update method based on the given period
     notifier.startPeriodic(Constants.DrivetrainConstants.TURN_PID_UPDATE_PERIOD_SEC);
 
@@ -64,8 +68,9 @@ public class LimelightCentering extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // TODO: add deadband sensing so that command will finish
-    return false;
+    // Finish once the turn PID controller is at the setpoint, indicating that it is
+    // centred on the target
+    return notifierRunning && drivetrain.atSetpoint();
   }
 
   /**
@@ -81,14 +86,25 @@ public class LimelightCentering extends CommandBase {
    * @see Drivetrain#enable()
    */
   private void updatePID() {
-    // Get the difference between centre and vision target (error)
-    var angleError = limelight.getHorizontalAngleOffset();
-    SmartDashboard.putNumber("Angle Error", angleError);
+    notifierRunning = true;
 
-    // Calculate the desired angle using the error and current angle
-    var currentHeading = drivetrain.getHeading180();
-    double desiredAngle = currentHeading - angleError;
-    SmartDashboard.putNumber("Current Angle", currentHeading);
+    double desiredAngle;
+    if (limelight.isTargetDetected()) {
+      // Get the difference between centre and vision target (error)
+      var angleError = limelight.getHorizontalAngleOffset();
+      SmartDashboard.putNumber("Angle Error", angleError);
+
+      // Calculate the desired angle using the error and current angle
+      var currentHeading = drivetrain.getHeading180();
+      desiredAngle = currentHeading - angleError;
+    } else if (drivetrain.getLastAngleSetpoint() != Double.NaN) {
+      // Default to the last registered setpoint and search for target along the way
+      // TODO: Check that this doesn't lead to early finishing of Command
+      desiredAngle = drivetrain.getLastAngleSetpoint();
+    } else {
+      desiredAngle = drivetrain.getHeading180();
+    }
+
     SmartDashboard.putNumber("Desired Angle", desiredAngle);
 
     // Set the angle PID controller to the desired angle
