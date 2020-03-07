@@ -30,6 +30,7 @@ public class FindTarget extends CommandBase {
    */
   @Override
   public void execute() {
+    limelight.turnOn();
     if (arm.getLimitSwitchVal()) {
       direction = 1;
     }
@@ -50,6 +51,7 @@ public class FindTarget extends CommandBase {
    */
   @Override
   public void end(boolean interrupted) {
+    limelight.turnOff();
     arm.setArm(0);
   }
 }
