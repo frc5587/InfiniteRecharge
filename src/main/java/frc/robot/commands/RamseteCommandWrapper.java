@@ -117,7 +117,7 @@ public class RamseteCommandWrapper extends CommandBase {
   }
 
   public enum AutoPaths {
-    RightStartToPowerPort, BackwardsRightStartToPowerPort, FarSideOfTrenchToLoading, SuperCoolPath, ForwardStop, SCurve, ReverseRightSideToPowerPort;
+    RightStartToPowerPort, BackwardsRightStartToPowerPort, FarSideOfTrenchToLoading, SuperCoolPath, ForwardStop, SCurve, ReverseRightSideToPowerPort, ReverseToRendezvous, SCurveFromRendezvous, ReverseToTrench, ReverseUnderTrench;
 
     /**
      * Get the path to the corresponding path JSON file (generated with PathWeaver)
@@ -149,6 +149,18 @@ public class RamseteCommandWrapper extends CommandBase {
           break;
         case ReverseRightSideToPowerPort:
           path += "Reverse Right Side To Power Port.wpilib.json";
+          break;
+        case ReverseToRendezvous:
+          path += "Reverse To Rendezvous.wpilib.json";
+          break;
+        case SCurveFromRendezvous:
+          path += "S Curve From Rendezvous.wpilib.json";
+          break;
+        case ReverseUnderTrench:
+          path += "Reverse Under Trench.wpilib.json";
+          break;
+        case ReverseToTrench:
+          path += "Reverse To Trench.wpilib.json";
           break;
       }
 
