@@ -10,6 +10,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShooterJRAD;
 import frc.robot.subsystems.Conveyor;
+import edu.wpi.first.wpilibj.Timer;
 
 public class ShooterThread extends CommandBase {
   private Arm arm;
@@ -18,6 +19,7 @@ public class ShooterThread extends CommandBase {
   private Conveyor conveyor;
   private Notifier notifier = new Notifier(this::updateShooter);
   private boolean moveConveyor = false;
+  private Timer timer = new Timer();
   // private int startBalls;
 
   public ShooterThread(Arm arm, ShooterJRAD shooter, Limelight limelight, Conveyor conveyor) {
@@ -34,7 +36,7 @@ public class ShooterThread extends CommandBase {
   public void updateShooter() {
     limelight.turnOn();
 
-    double speedRPM = limelight.calculateShooterSpeed(Math.toRadians(46), Limelight.Target.FRONT);
+    double speedRPM = limelight.calculateShooterSpeed(arm.getAngleRadians(), Limelight.Target.FRONT);
 
     SmartDashboard.putNumber("Actual Shooter Speed", shooter.getShooterSpeed());
     SmartDashboard.putNumber("Shooter Setpoint", speedRPM);
@@ -49,6 +51,8 @@ public class ShooterThread extends CommandBase {
 
   @Override
   public void initialize() {
+    timer.reset();
+    timer.start();
     moveConveyor = false;
     shooter.enable();
     conveyor.moveConveyorBackward();
@@ -71,7 +75,8 @@ public class ShooterThread extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return (timer.get() >= 5);
+    // return false;
     // return conveyor.getCurrentNumberOfBalls() == 0 && startBalls != 0;
   }
 }

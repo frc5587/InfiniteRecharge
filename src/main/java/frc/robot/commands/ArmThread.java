@@ -64,6 +64,7 @@ public class ArmThread extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return (lastAngle - setPointThreshDegrees <= lastSet && lastSet <= lastAngle + setPointThreshDegrees);
+    // return (lastAngle - setPointThreshDegrees <= lastSet && lastSet <= lastAngle + setPointThreshDegrees);
+    return false;
   }
 }
