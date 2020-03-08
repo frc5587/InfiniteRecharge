@@ -40,7 +40,7 @@ public class ShooterThread extends CommandBase {
     limelight.turnOn();
     timer.start();
 
-    double speedRPM = limelight.calculateShooterSpeed(Math.toRadians(46), Limelight.Target.FRONT);
+    double speedRPM = limelight.calculateShooterSpeed(arm.getAngleRadians(), Limelight.Target.FRONT);
 
     SmartDashboard.putNumber("Actual Shooter Speed", shooter.getShooterSpeed());
     SmartDashboard.putNumber("Shooter Setpoint", speedRPM);
@@ -55,6 +55,8 @@ public class ShooterThread extends CommandBase {
 
   @Override
   public void initialize() {
+    timer.reset();
+    timer.start();
     moveConveyor = false;
     shooter.enable();
     conveyor.moveConveyorBackward();
