@@ -39,7 +39,6 @@ public class ResetEncoder extends CommandBase {
  */
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Reset encoder ending, interrupted: " + interrupted);
     arm.setArm(0);
   }
 }

@@ -3,6 +3,7 @@ package frc.robot.commands;
 import java.util.concurrent.TimeUnit;
 
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -18,21 +19,26 @@ public class ShooterThread extends CommandBase {
   private Conveyor conveyor;
   private Notifier notifier = new Notifier(this::updateShooter);
   private boolean moveConveyor = false;
-  // private int startBalls;
+  private boolean isAuto;
+  private Timer timer = new Timer(); 
 
-  public ShooterThread(Arm arm, ShooterJRAD shooter, Limelight limelight, Conveyor conveyor) {
+  public ShooterThread(Arm arm, ShooterJRAD shooter, Limelight limelight, Conveyor conveyor, boolean isAuto) {
     this.arm = arm;
     this.shooter = shooter;
     this.limelight = limelight;
     this.conveyor = conveyor;
-
-    // this.startBalls = this.conveyor.getCurrentNumberOfBalls();
+    this.isAuto = isAuto;
 
     addRequirements(this.shooter, this.conveyor);
   }
 
+  public ShooterThread(Arm arm, ShooterJRAD shooter, Limelight limelight, Conveyor conveyor) {
+    this(arm, shooter, limelight, conveyor, false);
+  }
+
   public void updateShooter() {
     limelight.turnOn();
+    timer.start();
 
     double speedRPM = limelight.calculateShooterSpeed(Math.toRadians(46), Limelight.Target.FRONT);
 
@@ -67,11 +73,16 @@ public class ShooterThread extends CommandBase {
     conveyor.stopConveyorMovement();
     shooter.disable();
     shooter.setThrottle(0);
+    timer.stop();
+    timer.reset();
   }
 
   @Override
   public boolean isFinished() {
+    if (isAuto) {
+      return timer.get() >= 5;
+    }
     return false;
-    // return conveyor.getCurrentNumberOfBalls() == 0 && startBalls != 0;
+    
   }
 }

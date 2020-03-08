@@ -32,21 +32,11 @@ public class AutoIntake extends CommandBase {
       conveyor.moveConveyorForward();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  // Sets the intake to zero if parameter is met.
-  @Override
-  public void execute() {
-    // We can only hold 5 balls, therefore when the sensors detect more than that
-    // the robot disables the intake motors.
-    if (conveyor.getCurrentNumberOfBalls() >= 5) {
-      intake.stopIntakeMovement();
-      conveyor.stopConveyorMovement();
-    }
-  }
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    intake.stopIntakeMovement();
+    conveyor.stopConveyorMovement();
   }
 
   // Returns true when the command should end.

@@ -33,7 +33,6 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmThread;
-import frc.robot.commands.AutoConveyor;
 import frc.robot.commands.FindTarget;
 import frc.robot.commands.LimelightCentering;
 import frc.robot.commands.ManualArmControl;
@@ -80,7 +79,6 @@ public class RobotContainer {
   private final ShooterThread shooterThread = new ShooterThread(arm, shooter, limelight, conveyor);
   private final ResetEncoder resetEncoder = new ResetEncoder(arm);
   private final FindTarget findTarget = new FindTarget(arm, limelight);
-  private final AutoConveyor autoConveyor = new AutoConveyor(conveyor);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
