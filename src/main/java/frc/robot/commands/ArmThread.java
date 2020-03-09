@@ -6,6 +6,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Limelight;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Timer;
 
 public class ArmThread extends CommandBase {
   private Limelight limelight;
@@ -14,6 +15,7 @@ public class ArmThread extends CommandBase {
   private double lastAngle = 30;
   private double lastSet;
   private double setPointThreshDegrees = 0.2;
+  private Timer timer = new Timer();
 
   /**
    * Creates a commands that schedules a thread for updating the arm based 
@@ -52,6 +54,8 @@ public class ArmThread extends CommandBase {
    */
   @Override
   public void initialize() {
+    timer.reset();
+    timer.start();
     notifier.startPeriodic(Constants.LimelightConstants.THREAD_PERIOD_TIME_SECONDS);
   }
 
@@ -64,6 +68,6 @@ public class ArmThread extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return (lastAngle - setPointThreshDegrees <= lastSet && lastSet <= lastAngle + setPointThreshDegrees);
+    return (lastAngle - setPointThreshDegrees <= lastSet && lastSet <= lastAngle + setPointThreshDegrees && timer.get() >= .2);
   }
 }

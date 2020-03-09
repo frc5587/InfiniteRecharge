@@ -47,6 +47,7 @@ public class LimelightCentering extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    limelight.turnOn();
   }
 
   // Called once the command ends or is interrupted.
@@ -84,7 +85,6 @@ public class LimelightCentering extends CommandBase {
    */
   private void updatePID() {
     double desiredAngle;
-    limelight.turnOn();
 
     if (limelight.isTargetDetected()) {
       // Get the difference between centre and vision target (error)
