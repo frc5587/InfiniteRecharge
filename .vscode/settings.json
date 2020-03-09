@@ -15,5 +15,8 @@
   "code-runner.customCommand": "cd \"$workspaceRoot\" && ./gradlew build",
   "code-runner.executorMap": {
     "java": "cd \"$workspaceRoot\" && ./gradlew deploy"
-  }
+  },
+  "cSpell.words": [
+    "drivetrain's"
+  ]
 }

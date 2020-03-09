@@ -40,5 +40,6 @@ public class ResetEncoder extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     arm.setArm(0);
+    arm.resetEncoder();
   }
 }
