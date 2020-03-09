@@ -117,7 +117,7 @@ public class RamseteCommandWrapper extends CommandBase {
   }
 
   public enum AutoPaths {
-    RightStartToPowerPort, BackwardsRightStartToPowerPort, FarSideOfTrenchToLoading, SuperCoolPath, ForwardStop, SCurve, ReverseRightSideToPowerPort, ReverseToRendezvous, SCurveFromRendezvous, ReverseToTrench, ReverseUnderTrench;
+    RightStartToPowerPort, BackwardsRightStartToPowerPort, FarSideOfTrenchToLoading, SuperCoolPath, ForwardStop, SCurve, ReverseRightSideToPowerPort, ReverseToRendezvous, SCurveFromRendezvous, ReverseToTrench, ReverseUnderTrench, Back, Forward, Circle;
 
     /**
      * Get the path to the corresponding path JSON file (generated with PathWeaver)
@@ -162,9 +162,18 @@ public class RamseteCommandWrapper extends CommandBase {
         case ReverseToTrench:
           path += "Reverse To Trench.wpilib.json";
           break;
+        case Back:
+          path += "Back.wpilib.json";
+          break;
+        case Forward:
+          path += "Forward.wpilib.json";
+          break;
+        case Circle:
+          path += "Circle.wpilib.json";
+          break;
       }
 
-      // Join the path with where the code is deployed to on the roborIO, in order to
+      // Join the path with where the code is deployed to on the roboRIO, in order to
       // get the complete path
       return Filesystem.getDeployDirectory().toPath().resolve(path);
     }

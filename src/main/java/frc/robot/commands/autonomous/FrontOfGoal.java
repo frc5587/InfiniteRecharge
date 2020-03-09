@@ -24,14 +24,15 @@ public class FrontOfGoal extends SequentialCommandGroup {
       Limelight limelight) {
 
     addCommands(
-        new SequentialCommandGroup(new ResetEncoder(arm), new FindTarget(arm, limelight),
-            new ParallelCommandGroup(new ArmThread(arm, limelight), new ShooterThread(arm, shooter, limelight, conveyor, true))),
-        new ParallelCommandGroup(
-            new RamseteCommandWrapper(drivetrain, AutoPaths.RightStartToPowerPort/*ReverseRightSideToPowerPort*/),
-            new AutoIntake(intake, conveyor)),
-        new LimelightCentering(drivetrain, limelight),
-        new SequentialCommandGroup(new FindTarget(arm, limelight), new ParallelCommandGroup(new ArmThread(arm, limelight),
-            new ShooterThread(arm, shooter, limelight, conveyor, true))));
+        // new SequentialCommandGroup(new ResetEncoder(arm), new FindTarget(arm, limelight),
+            // new ParallelCommandGroup(new ParallelRaceGroup(new ArmThread(arm, limelight), new LimelightCentering(drivetrain, limelight)), new ShooterThread(arm, shooter, limelight, conveyor, true))),
+            new RamseteCommandWrapper(drivetrain, AutoPaths.Forward/*RightStartToPowerPort/*ReverseRightSideToPowerPort*/));
+        // new ParallelCommandGroup(
+        //     new RamseteCommandWrapper(drivetrain, AutoPaths.RightStartToPowerPort/*ReverseRightSideToPowerPort*/),
+        //     new AutoIntake(intake, conveyor)),
+        // new LimelightCentering(drivetrain, limelight),
+        // new SequentialCommandGroup(new FindTarget(arm, limelight), new ParallelCommandGroup(new ArmThread(arm, limelight),
+        //     new ShooterThread(arm, shooter, limelight, conveyor, true))));
   }
 
 }

@@ -21,11 +21,12 @@ public class CloseWall extends SequentialCommandGroup {
   public CloseWall(Arm arm, Conveyor conveyor, Drivetrain drivetrain, Intake intake, Limelight limelight,
       ShooterJRAD shooter) {
     addCommands(
-        new ParallelRaceGroup(new RamseteCommandWrapper(drivetrain, AutoPaths.ReverseToTrench), new AutoIntake(intake, conveyor)),
-        new ParallelRaceGroup(new LimelightCentering(drivetrain, limelight)),
-        new SequentialCommandGroup(new FindTarget(arm, limelight),
-            new ParallelRaceGroup(new ArmThread(arm, limelight), new ShooterThread(arm, shooter, limelight, conveyor, true))),
-        new ParallelCommandGroup(new RamseteCommandWrapper(drivetrain, AutoPaths.ReverseUnderTrench),
-            new AutoIntake(intake, conveyor)));
+        // new ParallelRaceGroup(new RamseteCommandWrapper(drivetrain, AutoPaths.ReverseToTrench), new AutoIntake(intake, conveyor)),
+        // new ParallelRaceGroup(new LimelightCentering(drivetrain, limelight)),
+        // new SequentialCommandGroup(new FindTarget(arm, limelight),
+        //     new ParallelRaceGroup(new ArmThread(arm, limelight), new ShooterThread(arm, shooter, limelight, conveyor, true))),
+        // new ParallelCommandGroup(new RamseteCommandWrapper(drivetrain, AutoPaths.ReverseUnderTrench),
+        //     new AutoIntake(intake, conveyor)));
+        new RamseteCommandWrapper(drivetrain, AutoPaths.ReverseToTrench));
   }
 }

@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants.DrivetrainConstants;
@@ -91,6 +92,14 @@ public class Drivetrain extends PIDSubsystem {
     controller.enableContinuousInput(-180, 180);
     controller.setIntegratorRange(-1, 1);
     controller.setTolerance(DrivetrainConstants.TURN_PID_TOLERANCE_DEG);
+  }
+
+  public void logData() {
+    SmartDashboard.putNumber("left enc", leftEncoder.getPosition());
+    SmartDashboard.putNumber("right enc", rightEncoder.getPosition());
+    SmartDashboard.putNumber("gyro", ahrs.getAngle());
+    System.out.println("left enc: " + leftEncoder.getPosition() + "   right enc: " + rightEncoder.getPosition() + "     ahrs: " + ahrs.getAngle());
+    System.out.println("heading:  " + getHeading());
   }
 
   public void arcadeDrive(double throttle, double curve) {
