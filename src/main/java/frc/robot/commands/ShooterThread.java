@@ -80,9 +80,7 @@ public class ShooterThread extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    System.out.println(timer.get());
     if (isAuto) {
-      System.out.println("auto");
       return timer.get() >= 5;
     }
     return false;
