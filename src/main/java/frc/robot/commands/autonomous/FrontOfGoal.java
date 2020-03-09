@@ -8,6 +8,7 @@ import frc.robot.commands.FindTarget;
 import frc.robot.commands.ArmThread;
 import frc.robot.commands.LimelightCentering;
 import frc.robot.commands.RamseteCommandWrapper;
+import frc.robot.commands.ResetEncoder;
 import frc.robot.commands.ShooterThread;
 import frc.robot.commands.RamseteCommandWrapper.AutoPaths;
 import frc.robot.subsystems.Arm;
@@ -23,7 +24,7 @@ public class FrontOfGoal extends SequentialCommandGroup {
       Limelight limelight) {
 
     addCommands(
-        new SequentialCommandGroup(new FindTarget(arm, limelight),
+        new SequentialCommandGroup(new ResetEncoder(arm), new FindTarget(arm, limelight),
             new ParallelCommandGroup(new ArmThread(arm, limelight), new ShooterThread(arm, shooter, limelight, conveyor, true))),
         new ParallelCommandGroup(
             new RamseteCommandWrapper(drivetrain, AutoPaths.RightStartToPowerPort/*ReverseRightSideToPowerPort*/),
