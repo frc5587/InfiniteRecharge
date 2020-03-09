@@ -60,7 +60,7 @@ public class ShooterThread extends CommandBase {
     shooter.enable();
     conveyor.moveConveyorBackward();
     try {
-      TimeUnit.MILLISECONDS.sleep(200);  
+      TimeUnit.MILLISECONDS.sleep(100);  
     } catch (InterruptedException interruptedException) {}
     conveyor.stopConveyorMovement();
 

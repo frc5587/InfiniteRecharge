@@ -170,7 +170,6 @@ public class RamseteCommandWrapper extends CommandBase {
           break;
         case Circle:
           path += "Circle.wpilib.json";
-          break;
       }
 
       // Join the path with where the code is deployed to on the roboRIO, in order to
