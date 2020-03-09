@@ -86,7 +86,7 @@ public class RobotContainer {
   public RobotContainer() {
 
     // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
-    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, joy::getY, () -> -joy.getX()));
+    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, /*joy::getY,*/ () -> joy.getY(), () -> -joy.getX()));
     // arm.setDefaultCommand(armThread);
     // intake.setDefaultCommand(new IntakeStopper(intake, conveyor));
 

@@ -119,7 +119,7 @@ public class ShooterFeedbackController {
    * @return true if the speed is above the setpoint
    */
   public boolean atSetpoint() {
-    return (motorVelocitySupplier.getAsDouble() >= setpointVelocityRPM * JRADConstants.kLoadRatio);
+    return (motorVelocitySupplier.getAsDouble() > setpointVelocityRPM * JRADConstants.kLoadRatio);
   }
 
   public void reset() {
