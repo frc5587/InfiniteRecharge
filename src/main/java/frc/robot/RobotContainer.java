@@ -204,7 +204,10 @@ public class RobotContainer {
     // // return new RamseteCommandWrapper(drivetrain, exampleTrajectory);
     // return new RamseteCommandWrapper(drivetrain, AutoPaths.SuperCoolPath);
 
-    CloseWall closeWall = new CloseWall(arm, conveyor, drivetrain, intake, limelight, shooter);
-    return closeWall;
+    // CloseWall closeWall = new CloseWall(arm, conveyor, drivetrain, intake, limelight, shooter);
+    // return closeWall;
+
+    FrontOfGoal frontOfGoal = new FrontOfGoal(drivetrain, shooter, arm, conveyor, intake, limelight);
+    return frontOfGoal;
   }
 }
