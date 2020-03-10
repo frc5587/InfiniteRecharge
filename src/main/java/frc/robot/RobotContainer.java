@@ -64,7 +64,6 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final Drivetrain drivetrain = new Drivetrain();
   private final Limelight limelight = new Limelight();
-  private final MachineLearning machineLearning = new MachineLearning();
   private final Climber climber = new Climber();
   private final Arm arm = new Arm();
   private final Intake intake = new Intake();
@@ -86,15 +85,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
-    // shooter.setDefaultCommand(new Shoot(shooter, joy::getY));
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, /*joy::getY,*/ () -> joy.getY(), () -> -joy.getX()));
-    // arm.setDefaultCommand(armThread);
-    // intake.setDefaultCommand(new IntakeStopper(intake, conveyor));
-
-    
-    // var rightStickButton = new JoystickButton(xb, XboxController.Button.kA.value);
-    
 
     // Configure the button bindings
     configureButtonBindings();
@@ -108,7 +99,6 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    var buttonEleven = new JoystickButton(joy, 11);
     var buttonTwelve = new JoystickButton(joy, 12);
     var upDPad = new POVButton(xb, 0);
     var leftTrigger = new Trigger(() -> xb.getTrigger(Hand.kLeft));
