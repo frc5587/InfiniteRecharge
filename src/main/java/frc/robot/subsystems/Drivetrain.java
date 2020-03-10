@@ -273,6 +273,7 @@ public class Drivetrain extends PIDSubsystem {
   public void periodic() {
     // Call periodic of PIDSubsystem to ensure PID controller runs
     super.periodic();
+    logData();
 
     // Update the pose
     var gyroAngle = Rotation2d.fromDegrees(getHeading360());
