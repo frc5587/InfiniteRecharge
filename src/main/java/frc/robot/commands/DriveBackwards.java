@@ -22,12 +22,12 @@ public class DriveBackwards extends CommandBase {
 
     @Override
     public void execute() {
-        drivetrain.setDrive(.75);
+        drivetrain.setDrive(-.65);
     }
 
     @Override
     public boolean isFinished() {
-        return timer.get() > 7;
+        return timer.get() > 1;
     }
 
     @Override
