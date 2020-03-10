@@ -26,7 +26,7 @@ public class FrontOfGoal extends SequentialCommandGroup {
     addCommands(
         // new SequentialCommandGroup(new ResetEncoder(arm), new FindTarget(arm, limelight),
             // new SequentialCommandGroup(new ParallelRaceGroup(new ArmThread(arm, limelight), new LimelightCentering(drivetrain, limelight)), new ShooterThread(arm, shooter, limelight, conveyor, true))),
-            new RamseteCommandWrapper(drivetrain, AutoPaths.Forward/*RightStartToPowerPort/*ReverseRightSideToPowerPort*/));
+            new RamseteCommandWrapper(drivetrain, AutoPaths.Loop/*RightStartToPowerPort/*ReverseRightSideToPowerPort*/));
         // new ParallelCommandGroup(
         //     new RamseteCommandWrapper(drivetrain, AutoPaths.RightStartToPowerPort/*ReverseRightSideToPowerPort*/),
         //     new AutoIntake(intake, conveyor)),

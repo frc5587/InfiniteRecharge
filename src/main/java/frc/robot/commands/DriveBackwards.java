@@ -2,6 +2,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
+
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj.Timer;
 
 public class DriveBackwards extends CommandBase {
@@ -18,6 +21,7 @@ public class DriveBackwards extends CommandBase {
     public void initialize() {
         timer.reset();
         timer.start();
+        drivetrain.setIdleMode(IdleMode.kBrake);
     }
 
     @Override

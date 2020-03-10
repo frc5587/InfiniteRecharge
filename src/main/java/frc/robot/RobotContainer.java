@@ -45,6 +45,7 @@ import frc.robot.commands.TargetBall;
 import frc.robot.commands.RamseteCommandWrapper.AutoPaths;
 import frc.robot.commands.autonomous.CloseWall;
 import frc.robot.commands.autonomous.FrontOfGoal;
+import frc.robot.commands.autonomous.ShootAndReverse;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
@@ -201,13 +202,16 @@ public class RobotContainer {
     //     // Pass config
     //     config);
 
-    // // return new RamseteCommandWrapper(drivetrain, exampleTrajectory);
+    // return new RamseteCommandWrapper(drivetrain, exampleTrajectory);
     // return new RamseteCommandWrapper(drivetrain, AutoPaths.SuperCoolPath);
 
     // CloseWall closeWall = new CloseWall(arm, conveyor, drivetrain, intake, limelight, shooter);
     // return closeWall;
 
-    FrontOfGoal frontOfGoal = new FrontOfGoal(drivetrain, shooter, arm, conveyor, intake, limelight);
-    return frontOfGoal;
+    ShootAndReverse shootAndReverse = new ShootAndReverse(arm, conveyor, drivetrain, intake, limelight, shooter);
+    return shootAndReverse;
+
+    // FrontOfGoal frontOfGoal = new FrontOfGoal(drivetrain, shooter, arm, conveyor, intake, limelight);
+    // return frontOfGoal;
   }
 }

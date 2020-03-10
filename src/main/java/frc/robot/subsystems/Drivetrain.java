@@ -289,7 +289,7 @@ public class Drivetrain extends PIDSubsystem {
   }
 
   public void setDrive(double speed) {
-    leftGroup.set(speed);
+    leftGroup.set(-speed);
     rightGroup.set(speed);
   }
 }
