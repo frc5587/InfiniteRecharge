@@ -108,12 +108,18 @@ public class Limelight extends SubsystemBase {
         * Math.sin(currentArmAngle);
   }
 
-  public double getShooterGoalHorizontalDifference(double currentArmAngle) {
+  public double getShooterGoalHorizontalDifference(double currentArmAngle, Target t) {
     this.lastDistance = this.isTargetDetected()
         ? getLimelightGoalHorizontalDifference(currentArmAngle) - getStubbyThing(currentArmAngle)
         : this.lastDistance;
-    return this.lastDistance;
+    return this.lastDistance + (t == Target.FRONT ? 0 : LimelightConstants.INNER_OUTER_GOAL_DISTANCE_METERS);
   }
+
+  // public double getShooterInnerGoalHorizontalDifference(double currentArmAngle)
+  // {
+  // return getShooterGoalHorizontalDifference(currentArmAngle) +
+  // LimelightConstants.INNER_OUTER_GOAL_DISTANCE_METERS;
+  // }
 
   /**
    * Get the angle between the shooter and the front of the target
@@ -124,7 +130,7 @@ public class Limelight extends SubsystemBase {
    */
   public double getShooterFrontGoalAngle(double currentArmAngle) {
     return Math.atan((LimelightConstants.GOAL_HEIGHT_METERS - getShooterHeight(currentArmAngle))
-        / getShooterGoalHorizontalDifference(currentArmAngle));
+        / getShooterGoalHorizontalDifference(currentArmAngle, Target.FRONT));
   }
 
   /**
@@ -165,10 +171,12 @@ public class Limelight extends SubsystemBase {
    * @return the horizontal difference between the shooter and the desired target,
    *         in meters
    */
-  private double getShooterGoalHorizontalDifference(double currentArmAngle, Target t) {
-    return (LimelightConstants.GOAL_HEIGHT_METERS - getShooterHeight(currentArmAngle))
-        / Math.tan(getUnadjustedAngle(currentArmAngle, t));
-  }
+  // private double getShooterGoalHorizontalDifference(double currentArmAngle,
+  // Target t) {
+  // return (LimelightConstants.GOAL_HEIGHT_METERS -
+  // getShooterHeight(currentArmAngle))
+  // / Math.tan(getUnadjustedAngle(currentArmAngle, t));
+  // }
 
   /**
    * Get how much the ball being thrown deviates from a straight line trajectory
@@ -181,7 +189,7 @@ public class Limelight extends SubsystemBase {
    */
   public double getDropHeight(double currentArmAngle, double shooterVelocity) {
     var unadjustedAngle = getShooterFrontGoalAngle(currentArmAngle);
-    var horizontalDifference = getShooterGoalHorizontalDifference(unadjustedAngle);
+    var horizontalDifference = getShooterGoalHorizontalDifference(unadjustedAngle, Target.FRONT);
     return horizontalDifference * Math.tan(unadjustedAngle) - 0.5 * LimelightConstants.G_METERS_PER_SECOND_SQUARED
         * Math.pow(horizontalDifference / (shooterVelocity * Math.cos(unadjustedAngle)), 2);
   }
@@ -197,7 +205,8 @@ public class Limelight extends SubsystemBase {
   public double getAdjustedAngle(double currentArmAngle, double shooterVelocity) {
     var unadjustedAngle = getShooterFrontGoalAngle(currentArmAngle);
     return Math.atan((LimelightConstants.GOAL_HEIGHT_METERS - getShooterHeight(unadjustedAngle)
-        + getDropHeight(unadjustedAngle, shooterVelocity)) / getShooterGoalHorizontalDifference(unadjustedAngle));
+        + getDropHeight(unadjustedAngle, shooterVelocity))
+        / getShooterGoalHorizontalDifference(unadjustedAngle, Target.FRONT));
   }
 
   /***
@@ -212,7 +221,7 @@ public class Limelight extends SubsystemBase {
    */
   public double calculateArmMovement(double currentArmAngleRadians, Target t) {
     // the horizontal distance between the target and shooter
-    double distanceMeters = this.getShooterGoalHorizontalDifference(currentArmAngleRadians);
+    double distanceMeters = this.getShooterGoalHorizontalDifference(currentArmAngleRadians, t);
     return calculateArmAngleDegrees(distanceMeters, getWorkingHeight(currentArmAngleRadians));
   }
 
@@ -239,7 +248,8 @@ public class Limelight extends SubsystemBase {
    * @return the speed of the shooter - RPM
    */
   public double calculateShooterSpeed(double currentArmAngleRadians, Target t) {
-    return Shooter.calculateShooterSpeed(currentArmAngleRadians);
+    return ShooterJRAD.calculateShooterSpeed(getShooterGoalHorizontalDifference(currentArmAngleRadians, t),
+        currentArmAngleRadians);
   }
 
   /**
@@ -256,7 +266,7 @@ public class Limelight extends SubsystemBase {
     } else {
       limelightTable.getEntry("ledMode").setNumber(1);
     }
-  } 
+  }
 
   public void turnOn() {
     lightOn = true;

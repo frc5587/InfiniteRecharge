@@ -59,9 +59,8 @@ public class ShooterThread extends CommandBase {
     moveConveyor = false;
     shooter.enable();
     conveyor.moveConveyorBackward();
-    try {
-      TimeUnit.MILLISECONDS.sleep(100);  
-    } catch (InterruptedException interruptedException) {}
+    while (timer.get() < 0.05) {}
+    
     conveyor.stopConveyorMovement();
 
     notifier.startPeriodic(Constants.LimelightConstants.THREAD_PERIOD_TIME_SECONDS);

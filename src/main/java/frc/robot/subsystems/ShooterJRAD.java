@@ -94,13 +94,13 @@ public class ShooterJRAD extends SubsystemBase {
    * @return the speed of the shooter - RPM
    */
   public static double calculateShooterSpeed(double distanceFromTarget, double armAngle) {
-    return 60 * Math.sqrt(2 * ShooterConstants.G * Limelight.getWorkingHeight(armAngle))
-            / (ShooterConstants.FLYWHEEL_CIRCUMFERENCE * Math.sin(armAngle) * ShooterConstants.GEARING);
+    // return 60 * Math.sqrt(2 * ShooterConstants.G * Limelight.getWorkingHeight(armAngle))
+    //         / (ShooterConstants.FLYWHEEL_CIRCUMFERENCE * Math.sin(armAngle) * ShooterConstants.GEARING);
 
-    // return (((1 / (Math.sqrt((Limelight.getWorkingHeight(armAngle)
-    //     - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * ShooterConstants.G)))))
-    //     * (distanceFromTarget / Math.cos(armAngle))
-    //     * (ShooterConstants.CONVERSION_FACTOR / (ShooterConstants.FLYWHEEL_RADIUS * ShooterConstants.GEARING))));
+    return (((1 / (Math.sqrt((Limelight.getWorkingHeight(armAngle)
+        - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * ShooterConstants.G)))))
+        * (distanceFromTarget / Math.cos(armAngle))
+        * (ShooterConstants.CONVERSION_FACTOR / (ShooterConstants.FLYWHEEL_RADIUS * ShooterConstants.GEARING))));
   }
 
   /**

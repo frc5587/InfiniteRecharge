@@ -12,11 +12,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
+import edu.wpi.first.wpilibj.Timer;
 
 public class LimelightCentering extends CommandBase {
   private final Drivetrain drivetrain;
   private final Limelight limelight;
   private final Notifier notifier;
+  private final Timer timer = new Timer();
 
   /**
    * Creates a new LimelightCentring.
@@ -36,6 +38,8 @@ public class LimelightCentering extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.reset();
+    timer.start();
     // Run the update method based on the given period
     notifier.startPeriodic(Constants.DrivetrainConstants.TURN_PID_UPDATE_PERIOD_SEC);
 
@@ -67,7 +71,7 @@ public class LimelightCentering extends CommandBase {
   public boolean isFinished() {
     // Finish once the turn PID controller is at the setpoint, indicating that it is
     // centred on the target
-    return drivetrain.atSetpoint();
+    return (drivetrain.atSetpoint() && timer.get() >= 0.1);
     // return false;
   }
 

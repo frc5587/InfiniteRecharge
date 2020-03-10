@@ -98,8 +98,7 @@ public class Drivetrain extends PIDSubsystem {
     SmartDashboard.putNumber("left enc", leftEncoder.getPosition());
     SmartDashboard.putNumber("right enc", rightEncoder.getPosition());
     SmartDashboard.putNumber("gyro", ahrs.getAngle());
-    System.out.println("left enc: " + leftEncoder.getPosition() + "   right enc: " + rightEncoder.getPosition() + "     ahrs: " + ahrs.getAngle());
-    System.out.println("heading:  " + getHeading());
+    System.out.println("ahrs: " + ahrs.getAngle());
   }
 
   public void arcadeDrive(double throttle, double curve) {
