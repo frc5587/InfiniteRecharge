@@ -3,6 +3,7 @@ package frc.robot.commands.autonomous;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.ArmThread;
+import frc.robot.commands.DriveBackwards;
 import frc.robot.commands.FindTarget;
 import frc.robot.commands.LimelightCentering;
 import frc.robot.commands.ResetEncoder;
@@ -21,6 +22,7 @@ public class ShootAndReverse extends SequentialCommandGroup {
                 new FindTarget(arm, limelight), 
                 new SequentialCommandGroup(new ParallelRaceGroup(new ArmThread(arm, limelight), 
                                                         new LimelightCentering(drivetrain, limelight)), 
-                    new ShooterThread(arm, shooter, limelight, conveyor))));
+                    new ShooterThread(arm, shooter, limelight, conveyor))),
+            new DriveBackwards(drivetrain));
     }
 }

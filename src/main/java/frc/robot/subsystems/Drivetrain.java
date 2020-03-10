@@ -282,4 +282,14 @@ public class Drivetrain extends PIDSubsystem {
     // Log the pose
     poseHistory.put(Timer.getFPGATimestamp(), getPose());
   }
+
+  public void stopDrivetrain() {
+    leftGroup.set(0);
+    rightGroup.set(0);
+  }
+
+  public void setDrive(double speed) {
+    leftGroup.set(speed);
+    rightGroup.set(speed);
+  }
 }
