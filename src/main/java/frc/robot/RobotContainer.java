@@ -62,7 +62,7 @@ import frc.robot.subsystems.ShooterJRAD;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Drivetrain drivetrain = new Drivetrain();
+  public final Drivetrain drivetrain = new Drivetrain();
   private final Limelight limelight = new Limelight();
   private final MachineLearning machineLearning = new MachineLearning();
   private final Climber climber = new Climber();

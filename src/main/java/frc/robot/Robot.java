@@ -19,10 +19,9 @@ import frc.robot.subsystems.Drivetrain;
  * project.
  */
 public class Robot extends TimedRobot {
-  Drivetrain drive = new Drivetrain();
-
   private RobotContainer m_robotContainer;
   private Command m_autonomousCommand;
+  Drivetrain drive = m_robotContainer.drivetrain;
 
   /**
    * This function is run when the robot is first started up and should be used for any
