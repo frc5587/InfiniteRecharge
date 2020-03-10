@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import java.util.concurrent.TimeUnit;
-
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
