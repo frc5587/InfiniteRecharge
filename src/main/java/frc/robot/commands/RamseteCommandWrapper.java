@@ -51,7 +51,11 @@ public class RamseteCommandWrapper extends CommandBase {
     } catch (IOException ex) {
       DriverStation.reportError("Unable to open " + path + " trajectory: " + trajectoryPath, ex.getStackTrace());
     }
-    // Now set trajectory (or null, if not found)
+
+    // Yell at us if we leave the trajectory at null
+    if (trajectory == null) {
+      throw new NullPointerException();
+    }
     this.trajectory = trajectory;
   }
 
@@ -86,7 +90,7 @@ public class RamseteCommandWrapper extends CommandBase {
           drivetrain::tankLRVolts, drivetrain);
 
       // Run path following command, then stop at the end
-      pathFollowCommand = ramsete.andThen(drivetrain::stop, drivetrain);
+      pathFollowCommand = ramsete;//.andThen(drivetrain::stop, drivetrain);
 
       pathFollowCommand.schedule();
     }
@@ -104,6 +108,7 @@ public class RamseteCommandWrapper extends CommandBase {
     if (pathFollowCommand != null) {
       pathFollowCommand.cancel();
     }
+    drivetrain.stop();
   }
 
   // Returns true when the command should end.
