@@ -177,7 +177,7 @@ public class Drivetrain extends PIDSubsystem {
   }
 
   public double getHeading360() {
-    return Math.IEEEremainder(getHeading(), 360.0);
+    return Math.IEEEremainder(getHeading(), 360.0/*d*/);
     // return gyro.getAngle();
   }
 

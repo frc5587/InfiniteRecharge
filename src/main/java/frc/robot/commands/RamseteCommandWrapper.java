@@ -70,6 +70,7 @@ public class RamseteCommandWrapper extends CommandBase {
   @Override
   public void initialize() {
     drivetrain.setIdleMode(IdleMode.kBrake);
+    // drivetrain.resetOdometry();
 
     // Start the pathFollowCommand
     if (trajectory != null) {
