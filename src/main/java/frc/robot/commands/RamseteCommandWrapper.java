@@ -52,6 +52,8 @@ public class RamseteCommandWrapper extends CommandBase {
       DriverStation.reportError("Unable to open " + path + " trajectory: " + trajectoryPath, ex.getStackTrace());
     }
 
+    // trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath); // comment out try catch ^
+
     // Yell at us if we leave the trajectory at null
     if (trajectory == null) {
       throw new NullPointerException();
