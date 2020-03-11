@@ -112,7 +112,7 @@ public class Limelight extends SubsystemBase {
     this.lastDistance = this.isTargetDetected()
         ? getLimelightGoalHorizontalDifference(currentArmAngle) - getStubbyThing(currentArmAngle)
         : this.lastDistance;
-    return this.lastDistance + (t == Target.FRONT ? 0 : LimelightConstants.INNER_OUTER_GOAL_DISTANCE_METERS);
+    return this.lastDistance;// + (t == Target.FRONT ? 0 : LimelightConstants.INNER_OUTER_GOAL_DISTANCE_METERS);
   }
 
   // public double getShooterInnerGoalHorizontalDifference(double currentArmAngle)

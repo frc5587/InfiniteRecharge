@@ -100,7 +100,7 @@ public class ShooterJRAD extends SubsystemBase {
     return (((1 / (Math.sqrt((Limelight.getWorkingHeight(armAngle)
         - (distanceFromTarget * Math.tan(armAngle)) / (-.5 * ShooterConstants.G)))))
         * (distanceFromTarget / Math.cos(armAngle))
-        * (ShooterConstants.CONVERSION_FACTOR / (ShooterConstants.FLYWHEEL_RADIUS * ShooterConstants.GEARING))));
+        * (ShooterConstants.CONVERSION_FACTOR / (ShooterConstants.FLYWHEEL_RADIUS))));
   }
 
   /**
